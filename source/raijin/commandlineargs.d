@@ -55,7 +55,7 @@ public:
 			writeln("  --", key);
 		}
 
-		writeln("  --help SHSHITITAFDDADSt");
+		writeln("  --help");
 		writeln();
 	}
 
