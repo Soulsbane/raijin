@@ -1,6 +1,7 @@
 module raijin.keyvalueconfig;
 
-import std.conv;
+public import std.conv;
+
 import std.string;
 import std.stdio : File;
 import std.file : exists, readText;
@@ -80,14 +81,7 @@ public:
 
 	T get(T = string)(immutable string key) pure @safe
 	{
-		if(isNumeric!T)
-		{
-			return to!T(values_.get(key, "0"));
-		}
-		else
-		{
-			return to!T(values_.get(key, ""));
-		}
+		return to!T(values_.get(key, "0"));
 	}
 
 	T get(T = string)(immutable string key, string defval) pure @safe
