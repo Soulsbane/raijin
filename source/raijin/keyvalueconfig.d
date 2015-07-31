@@ -10,20 +10,36 @@ import std.traits : isNumeric;
 struct KeyValueConfig
 {
 private:
-	void load() @safe
+	void load(immutable string fileName) @safe
 	{
-		if(exists(fileName_))
+		string text;
+
+		if(fileName.indexOf("=") == -1)
 		{
-			auto lines = readText(fileName_).lineSplitter();
-
-			foreach(line; lines)
+			if(exists(fileName))
 			{
-				auto fields = split(line, separator_);
+				text = readText(fileName);
+			}
+		}
+		else
+		{
+			text = fileName; // In this case it's a string not a filename.
+		}
 
-				if(fields.length == 2)
-				{
-					values_[strip(fields[0])] = strip(fields[1]);
-				}
+		processText(text);
+	}
+
+	void processText(immutable string text) @safe
+	{
+		auto lines = text.lineSplitter();
+
+		foreach(line; lines)
+		{
+			auto fields = split(line, separator_);
+
+			if(fields.length == 2)
+			{
+				values_[fields[0].strip] = fields[1].strip;
 			}
 		}
 	}
@@ -42,7 +58,7 @@ public:
 	this(immutable string fileName)
 	{
 		fileName_ = fileName;
-		load();
+		load(fileName);
 	}
 
 	~this()
