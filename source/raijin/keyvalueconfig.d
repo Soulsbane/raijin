@@ -47,7 +47,10 @@ public:
 
 	~this()
 	{
-		save();
+		if(valuesModified_)
+		{
+			save();
+		}
 	}
 
 	bool contains(immutable string key) pure @safe
@@ -86,6 +89,8 @@ public:
 		{
 			values_[key] = to!string(value);
 		}
+
+		valuesModified_ = true;
 	}
 
 	string opIndex(string key)
@@ -102,5 +107,6 @@ private:
 	immutable char separator_ = '=';
 	string[string] values_;
 	immutable string fileName_;
+	bool valuesModified_;
 }
 
