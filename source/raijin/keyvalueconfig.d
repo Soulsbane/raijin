@@ -93,6 +93,11 @@ public:
 		valuesModified_ = true;
 	}
 
+	bool remove(immutable string key) pure @safe
+	{
+		return values_.remove(key);
+	}
+
 	string opIndex(string key)
 	{
 		return get(key);
