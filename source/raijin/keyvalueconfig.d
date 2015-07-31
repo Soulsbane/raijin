@@ -50,7 +50,7 @@ public:
 		save();
 	}
 
-	bool hasValue(immutable string key) pure @safe
+	bool contains(immutable string key) pure @safe
 	{
 		if(key in values_)
 		{
@@ -59,7 +59,7 @@ public:
 		return false;
 	}
 
-	T getValue(T = string)(immutable string key) pure @safe
+	T get(T = string)(immutable string key) pure @safe
 	{
 		if(isNumeric!T)
 		{
@@ -71,12 +71,12 @@ public:
 		}
 	}
 
-	T getValue(T = string)(immutable string key, string defval) pure @safe
+	T get(T = string)(immutable string key, string defval) pure @safe
 	{
 		return to!T(values_.get(key, defval));
 	}
 
-	void setValue(T)(immutable string key, T value) pure @safe
+	void set(T)(immutable string key, T value) pure @safe
 	{
 		static if(is(T == string))
 		{
@@ -90,17 +90,12 @@ public:
 
 	string opIndex(string key)
 	{
-		return getValue(key);
+		return get(key);
 	}
-
-	/*T opIndex(T)(string key)
-	{
-		return getValue!T(key);
-	}*/
 
 	void opIndexAssign(T = string)(T value, string key)
 	{
-		setValue(key, value);
+		set(key, value);
 	}
 
 private:
