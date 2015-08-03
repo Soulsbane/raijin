@@ -21,6 +21,8 @@ private:
 			{
 				text = readText(fileName);
 			}
+
+			fileName_ = fileName;
 		}
 		else
 		{
@@ -58,7 +60,6 @@ private:
 public:
 	this(immutable string fileName)
 	{
-		fileName_ = fileName;
 		load(fileName);
 	}
 
@@ -121,7 +122,7 @@ public:
 private:
 	immutable char separator_ = '=';
 	string[string] values_;
-	immutable string fileName_;
+	string fileName_ = "app.config";
 	bool valuesModified_;
 }
 
