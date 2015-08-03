@@ -11,26 +11,6 @@ import std.traits : isNumeric;
 struct KeyValueConfig
 {
 private:
-	void load(immutable string fileName) @safe
-	{
-		string text;
-
-		if(fileName.indexOf("=") == -1)
-		{
-			if(exists(fileName))
-			{
-				text = readText(fileName);
-			}
-
-			fileName_ = fileName;
-		}
-		else
-		{
-			text = fileName; // In this case it's a string not a filename.
-		}
-
-		processText(text);
-	}
 
 	void processText(immutable string text) @safe
 	{
@@ -58,16 +38,41 @@ private:
 	}
 
 public:
-	this(immutable string fileName)
-	{
-		load(fileName);
-	}
-
 	~this()
 	{
 		if(valuesModified_)
 		{
 			save();
+		}
+	}
+
+	bool loadFile(string fileName = "app.config") @safe
+	{
+		if(exists(fileName))
+		{
+			processText(readText(fileName));
+			fileName_ = fileName;
+
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
+
+	bool loadString(immutable string text, string fileName = "app.config")
+	{
+		if(text.length > 0)
+		{
+			processText(text);
+			fileName_ = fileName;
+
+			return true;
+		}
+		else
+		{
+			return false;
 		}
 	}
 
