@@ -3,10 +3,10 @@ module raijin.keyvalueconfig;
 public import std.conv;
 
 import std.string;
-import std.stdio : File;
+import std.stdio : File, writeln;
 import std.file : exists, readText;
 import std.algorithm : sort;
-import std.traits : isNumeric;
+import std.traits : isNumeric, isBoolean;
 
 struct KeyValueConfig
 {
@@ -87,7 +87,18 @@ public:
 
 	T get(T = string)(immutable string key) pure @safe
 	{
-		return to!T(values_.get(key, "0"));
+		if(isBoolean!T)
+		{
+			return to!T(values_.get(key, "false"));
+		}
+		else if(isNumeric!T)
+		{
+			return to!T(values_.get(key, "0"));
+		}
+		else
+		{
+			return to!T(values_.get(key, ""));
+		}
 	}
 
 	T get(T = string)(immutable string key, string defval) pure @safe
