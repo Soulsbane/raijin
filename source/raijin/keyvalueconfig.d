@@ -1,28 +1,48 @@
 module raijin.keyvalueconfig;
 
-public import std.conv;
-
+import std.conv;
 import std.string;
 import std.stdio : File, writeln;
 import std.file : exists, readText;
-import std.algorithm : sort;
+import std.algorithm : sort, findSplit;
 import std.traits : isNumeric, isBoolean;
+import std.array : empty;
+import std.typecons;
 
 struct KeyValueConfig
 {
-private:
+	alias string[string] KeyValueData;
+	alias KeyValueData[string] GroupData;
 
+private:
 	void processText(immutable string text) @safe
 	{
 		auto lines = text.lineSplitter();
+		string currentGroupName = defaultGroupName_;
 
 		foreach(line; lines)
 		{
-			auto fields = split(line, separator_);
+			line = strip(line);
 
-			if(fields.length == 2)
+			if(line.empty)
 			{
-				values_[fields[0].strip] = fields[1].strip;
+				continue;
+			}
+			else if(line.startsWith("[") && line.endsWith("]"))
+			{
+				string groupName = line[1..$-1];
+				currentGroupName = groupName;
+			}
+			else
+			{
+				auto groupAndKey = line.findSplit("=");
+	            auto key = groupAndKey[0].stripRight();
+	            auto value = groupAndKey[2].stripLeft();
+
+	            if (groupAndKey[1].length)
+	            {
+	            	values_[currentGroupName][key] = value;
+	           	}
 			}
 		}
 	}
@@ -31,10 +51,36 @@ private:
 	{
 		auto configfile = File(fileName_, "w+");
 
-		foreach(key; sort(values_.keys))
+		foreach(groupName, data; values_)
 		{
-			configfile.writeln(key, separator_, values_[key]);
+			if(groupName != defaultGroupName_)
+			{
+				configfile.writeln("[", groupName, "]");
+			}
+
+			foreach(key, value; data)
+			{
+				configfile.writeln(key, separator_, value);
+			}
 		}
+	}
+
+	bool isGroupString(immutable string value) pure @safe
+	{
+		if(value.indexOf(".") == -1)
+		{
+			return false;
+		}
+		return true;
+	}
+
+	auto getGroupAndKeyFromString(immutable string value) pure @safe
+	{
+		auto groupAndKey = value.findSplit(".");
+		auto group = groupAndKey[0].strip();
+		auto key = groupAndKey[2].strip();
+
+		return tuple!("group", "key")(group, key);
 	}
 
 public:
@@ -76,7 +122,130 @@ public:
 		}
 	}
 
+	T get(T = string)(immutable string mapKey) pure @safe
+	{
+		string defaultValue;
+
+		if(isBoolean!T)
+		{
+			defaultValue = "false";
+		}
+
+		if(isNumeric!T)
+		{
+			defaultValue = "0";
+		}
+
+		if(isGroupString(mapKey))
+		{
+			auto groupAndKey = getGroupAndKeyFromString(mapKey);
+			auto groupValues = values_[groupAndKey.group];
+			auto groupValue = groupValues.get(groupAndKey.key, defaultValue);
+
+			return to!T(groupValue); // INFO: Returns the value from the group format ["group.value"]
+		}
+		else
+		{
+			auto groupValues = values_[defaultGroupName_];
+			return to!T(groupValues.get(mapKey, defaultValue));
+		}
+	}
+
+	T get(T = string)(immutable string mapKey, string defaultValue) pure @safe
+	{
+		if(isGroupString(mapKey))
+		{
+			auto groupAndKey = getGroupAndKeyFromString(mapKey);
+			auto groupValues = values_[groupAndKey.group];
+			auto groupValue = groupValues.get(groupAndKey.key, defaultValue);
+
+			return to!T(groupValue);  // INFO: Returns the value from the group format ["group.value"]
+		}
+		else
+		{
+			auto groupValues = values_[defaultGroupName_];
+			return to!T(groupValues.get(mapKey, defaultValue));
+		}
+	}
+
+	KeyValueData getGroup(immutable string groupName) pure @safe
+	{
+		return values_[groupName];
+	}
+
+	void set(T)(immutable string mapKey, T value) pure @safe
+	{
+		static if(!is(T == string))
+		{
+			string convValue = to!string(value);
+		}
+		else
+		{
+			string convValue = value;
+		}
+
+		if(isGroupString(mapKey))
+		{
+			auto groupAndKey = getGroupAndKeyFromString(mapKey);
+			values_[groupAndKey.group][groupAndKey.key] = convValue;
+		}
+		else
+		{
+			values_[defaultGroupName_][mapKey] = convValue;
+		}
+
+		valuesModified_ = true;
+	}
+
+	void setDefaultGroupName(immutable string name) pure @safe
+	{
+		defaultGroupName_ = name;
+	}
+
 	bool contains(immutable string key) pure @safe
+	{
+		if(isGroupString(key))
+		{
+			auto groupAndKey = getGroupAndKeyFromString(key);
+			return contains(groupAndKey.group, groupAndKey.key);
+		}
+		else
+		{
+			return contains(defaultGroupName_, key);
+		}
+	}
+
+	bool contains(immutable string groupName, immutable string key) pure @safe
+	{
+		if(containsGroup(groupName))
+		{
+			auto group = getGroup(groupName);
+
+			if(key in group)
+			{
+				return true;
+			}
+			else
+			{
+				return false;
+			}
+		}
+		else
+		{
+			auto group = getGroup(defaultGroupName_);
+
+			if(key in group)
+			{
+				return true;
+			}
+			else
+			{
+				return false;
+			}
+		}
+	}
+
+	bool containsGroup(immutable string key) pure @safe
 	{
 		if(key in values_)
 		{
@@ -85,60 +254,60 @@ public:
 		return false;
 	}
 
-	T get(T = string)(immutable string key) pure @safe
-	{
-		if(isBoolean!T)
-		{
-			return to!T(values_.get(key, "false"));
-		}
-		else if(isNumeric!T)
-		{
-			return to!T(values_.get(key, "0"));
-		}
-		else
-		{
-			return to!T(values_.get(key, ""));
-		}
-	}
-
-	T get(T = string)(immutable string key, string defval) pure @safe
-	{
-		return to!T(values_.get(key, defval));
-	}
-
-	void set(T)(immutable string key, T value) pure @safe
-	{
-		static if(is(T == string))
-		{
-			values_[key] = value;
-		}
-		else
-		{
-			values_[key] = to!string(value);
-		}
-
-		valuesModified_ = true;
-	}
-
 	bool remove(immutable string key) pure @safe
+	{
+		if(isGroupString(key))
+		{
+			auto groupAndKey = getGroupAndKeyFromString(key);
+			auto group = getGroup(groupAndKey.group);
+
+			return group.remove(groupAndKey.key);
+		}
+		else
+		{
+			auto group = getGroup(defaultGroupName_);
+			return group.remove(key);
+		}
+	}
+
+	bool remove(immutable string groupName, immutable string key) pure @safe
+	{
+		auto group = getGroup(groupName);
+		return group.remove(key);
+	}
+
+	bool removeGroup(immutable string key) pure @safe
 	{
 		return values_.remove(key);
 	}
 
-	string opIndex(string key)
+	string opIndex(string mapKey)
 	{
-		return get(key);
+		return get(mapKey);
 	}
 
-	void opIndexAssign(T = string)(T value, string key)
+	void opIndexAssign(T = string)(T value, string mapKey)
 	{
-		set(key, value);
+		set(mapKey, value);
 	}
 
 private:
 	immutable char separator_ = '=';
-	string[string] values_;
+	GroupData values_;
+	// TODO: Create a random name for default group
+	string defaultGroupName_ = "10DefaultGroup";
 	string fileName_ = "app.config";
 	bool valuesModified_;
 }
 
+unittest
+{
+	import std.stdio;
+
+	KeyValueConfig config;
+	config["blah.sucks"] = "this is it";
+	writeln(config["blah.sucks"]);
+
+	config["it"] = "comes in the night";
+	writeln(config["it"]);
+}
