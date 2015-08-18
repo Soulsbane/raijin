@@ -261,9 +261,7 @@ public:
 		if(isGroupString(key))
 		{
 			auto groupAndKey = getGroupAndKeyFromString(key);
-			auto group = getGroup(groupAndKey.group);
-
-			return group.remove(groupAndKey.key);
+			return remove(groupAndKey.group, groupAndKey.key);
 		}
 		else
 		{
