@@ -139,10 +139,7 @@ public:
 		if(isGroupString(mapKey))
 		{
 			auto groupAndKey = getGroupAndKeyFromString(mapKey);
-			auto groupValues = values_[groupAndKey.group];
-			auto groupValue = groupValues.get(groupAndKey.key, defaultValue);
-
-			return to!T(groupValue); // INFO: Returns the value from the group format ["group.value"]
+			return get(groupAndKey.group, groupAndKey.key, defaultValue);
 		}
 		else
 		{
@@ -156,16 +153,21 @@ public:
 		if(isGroupString(mapKey))
 		{
 			auto groupAndKey = getGroupAndKeyFromString(mapKey);
-			auto groupValues = values_[groupAndKey.group];
-			auto groupValue = groupValues.get(groupAndKey.key, defaultValue);
-
-			return to!T(groupValue);  // INFO: Returns the value from the group format ["group.value"]
+			return get(groupAndKey.group, groupAndKey.key, defaultValue);
 		}
 		else
 		{
 			auto groupValues = values_[defaultGroupName_];
 			return to!T(groupValues.get(mapKey, defaultValue));
 		}
+	}
+
+	T get(T = string)(immutable string groupName, immutable string mapKey, string defaultValue) pure @safe
+	{
+		auto group = getGroup(groupName);
+		auto groupValue = group.get(mapKey, defaultValue);
+
+		return to!T(groupValue);
 	}
 
 	KeyValueData getGroup(immutable string groupName) pure @safe
