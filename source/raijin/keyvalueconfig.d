@@ -8,6 +8,7 @@ import std.algorithm : sort, findSplit;
 import std.traits : isNumeric, isBoolean;
 import std.array : empty;
 import std.typecons;
+import std.datetime : Clock;
 
 struct KeyValueConfig
 {
@@ -17,6 +18,11 @@ struct KeyValueConfig
 private:
 	void processText(immutable string text) @safe
 	{
+		if(defaultGroupName_ == defaultGroupName_.init) // If default group name wasn't changed generate a random string for it.
+		{
+			setDefaultGroupName(Clock.currTime().toString);
+		}
+
 		auto lines = text.lineSplitter();
 		string currentGroupName = defaultGroupName_;
 
@@ -204,6 +210,11 @@ public:
 		defaultGroupName_ = name;
 	}
 
+	string getDefaultGroupName()
+	{
+		return defaultGroupName_;
+	}
+
 	bool contains(immutable string key) pure @safe
 	{
 		if(isGroupString(key))
@@ -295,7 +306,7 @@ private:
 	immutable char separator_ = '=';
 	GroupData values_;
 	// TODO: Create a random name for default group
-	string defaultGroupName_ = "10DefaultGroup";
+	string defaultGroupName_;
 	string fileName_ = "app.config";
 	bool valuesModified_;
 }
