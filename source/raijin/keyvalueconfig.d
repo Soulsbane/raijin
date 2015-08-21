@@ -1,3 +1,9 @@
+/**
+*	This modules manages a config file format in the form of key=value. Much like an ini file but simpler.
+*
+*	Author: Paul Crane
+*/
+
 module raijin.keyvalueconfig;
 
 import std.conv;
@@ -98,6 +104,14 @@ public:
 		}
 	}
 
+	/**
+	* Loads a config fileName(app.config by default) to be processed.
+	*
+	* Params:
+	*  fileName = The name of the file to be processed/loaded.
+	* Returns:
+	*  Returns true on a successful load false otherwise.
+	*/
 	bool loadFile(string fileName = "app.config") @safe
 	{
 		if(exists(fileName))
@@ -113,6 +127,15 @@ public:
 		}
 	}
 
+	/**
+	*	Similar to loadFile but loads and processes the passed string instead.
+	*
+	*	Params:
+	*		text = The string to process.
+	*		fileName = The name of the file to save processed strings key/values.
+	*	Returns:
+	*		Returns true on a successful load false otherwise.
+	*/
 	bool loadString(immutable string text, string fileName = "app.config")
 	{
 		if(text.length > 0)
@@ -128,6 +151,16 @@ public:
 		}
 	}
 
+	/**
+	*	Gets the value T of the key/value pair where T is the type the value should be converted to.
+	*
+	*	Params:
+	*		mapKey = Name of the key to get.
+	*
+	*	Returns:
+	*		The value of value of the key/value pair.
+	*
+	*/
 	T get(T = string)(immutable string mapKey) pure @safe
 	{
 		string defaultValue;
@@ -154,6 +187,17 @@ public:
 		}
 	}
 
+	/**
+	*	Gets the value T of the key/value pair where T is the type the value should be converted to.
+	*
+	*	Params:
+	*		mapKey = Name of the key to get.
+	*		defaultValue = Allow the assignment of a default value if key does not exist.
+	*
+	*	Returns:
+	*		The value of value of the key/value pair.
+	*
+	*/
 	T get(T = string)(immutable string mapKey, string defaultValue) pure @safe
 	{
 		if(isGroupString(mapKey))
@@ -168,6 +212,18 @@ public:
 		}
 	}
 
+	/**
+	*	Gets the value T of the key/value pair where T is the type the value should be converted to.
+	*
+	*	Params:
+	*		groupName = Name of the group to retrieve ie portion [groupName] of config file/string.
+	*		mapKey = Name of the key to get.
+	*		defaultValue = Allow the assignment of a default value if key does not exist.
+	*
+	*	Returns:
+	*		The value of value of the key/value pair.
+	*
+	*/
 	T get(T = string)(immutable string groupName, immutable string mapKey, string defaultValue) pure @safe
 	{
 		auto group = getGroup(groupName);
@@ -176,6 +232,16 @@ public:
 		return to!T(groupValue);
 	}
 
+	/**
+	*	Gets the group portion of a config file/string.
+	*
+	*	Params:
+	*		groupName = Name of the the group to retrieve.
+	*
+	*	Returns:
+	*		Retruns an associative array of key/value pairs for the groupName.
+	*
+	*/
 	KeyValueData getGroup(immutable string groupName) pure @safe
 	{
 		return values_[groupName];
@@ -305,7 +371,6 @@ public:
 private:
 	immutable char separator_ = '=';
 	GroupData values_;
-	// TODO: Create a random name for default group
 	string defaultGroupName_;
 	string fileName_ = "app.config";
 	bool valuesModified_;
@@ -318,7 +383,7 @@ unittest
 	KeyValueConfig config;
 	config["blah.sucks"] = "this is it";
 	writeln(config["blah.sucks"]);
-
+	assert(config["blah.sucks"] == "hell");
 	config["it"] = "comes in the night";
 	writeln(config["it"]);
 }
