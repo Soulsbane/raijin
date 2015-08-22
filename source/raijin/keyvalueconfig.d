@@ -162,13 +162,13 @@ public:
 	*	Gets the value T of the key/value pair where T is the type the value should be converted to.
 	*
 	*	Params:
-	*		mapKey = Name of the key to get.
+	*		key = Name of the key to get.
 	*
 	*	Returns:
 	*		The value of value of the key/value pair.
 	*
 	*/
-	T get(T = string)(immutable string mapKey) pure @safe
+	T get(T = string)(immutable string key) pure @safe
 	{
 		string defaultValue;
 
@@ -182,15 +182,15 @@ public:
 			defaultValue = "0";
 		}
 
-		if(isGroupString(mapKey))
+		if(isGroupString(key))
 		{
-			auto groupAndKey = getGroupAndKeyFromString(mapKey);
+			auto groupAndKey = getGroupAndKeyFromString(key);
 			return get(groupAndKey.group, groupAndKey.key, defaultValue);
 		}
 		else
 		{
 			auto groupValues = values_[defaultGroupName_];
-			return to!T(groupValues.get(mapKey, defaultValue));
+			return to!T(groupValues.get(key, defaultValue));
 		}
 	}
 
@@ -198,24 +198,24 @@ public:
 	*	Gets the value T of the key/value pair where T is the type the value should be converted to.
 	*
 	*	Params:
-	*		mapKey = Name of the key to get.
+	*		key = Name of the key to get.
 	*		defaultValue = Allow the assignment of a default value if key does not exist.
 	*
 	*	Returns:
 	*		The value of value of the key/value pair.
 	*
 	*/
-	T get(T = string)(immutable string mapKey, string defaultValue) pure @safe
+	T get(T = string)(immutable string key, string defaultValue) pure @safe
 	{
-		if(isGroupString(mapKey))
+		if(isGroupString(key))
 		{
-			auto groupAndKey = getGroupAndKeyFromString(mapKey);
+			auto groupAndKey = getGroupAndKeyFromString(key);
 			return get(groupAndKey.group, groupAndKey.key, defaultValue);
 		}
 		else
 		{
 			auto groupValues = values_[defaultGroupName_];
-			return to!T(groupValues.get(mapKey, defaultValue));
+			return to!T(groupValues.get(key, defaultValue));
 		}
 	}
 
@@ -223,18 +223,18 @@ public:
 	*	Gets the value T of the key/value pair where T is the type the value should be converted to.
 	*
 	*	Params:
-	*		groupName = Name of the group to retrieve ie portion [groupName] of config file/string.
-	*		mapKey = Name of the key to get.
+	*		group = Name of the group to retrieve ie portion [groupName] of config file/string.
+	*		key = Name of the key to get.
 	*		defaultValue = Allow the assignment of a default value if key does not exist.
 	*
 	*	Returns:
 	*		The value of value of the key/value pair.
 	*
 	*/
-	T get(T = string)(immutable string groupName, immutable string mapKey, string defaultValue) pure @safe
+	T get(T = string)(immutable string group, immutable string key, string defaultValue) pure @safe
 	{
-		auto group = getGroup(groupName);
-		auto groupValue = group.get(mapKey, defaultValue);
+		auto groupValues = getGroup(group);
+		auto groupValue = groupValues.get(key, defaultValue);
 
 		return to!T(groupValue);
 	}
@@ -243,25 +243,25 @@ public:
 	*	Gets the group portion of a config file/string.
 	*
 	*	Params:
-	*		groupName = Name of the the group to retrieve.
+	*		group = Name of the the group to retrieve.
 	*
 	*	Returns:
-	*		Retruns an associative array of key/value pairs for the groupName.
+	*		Retruns an associative array of key/value pairs for the group.
 	*
 	*/
-	KeyValueData getGroup(immutable string groupName) pure @safe
+	KeyValueData getGroup(immutable string group) pure @safe
 	{
-		return values_[groupName];
+		return values_[group];
 	}
 
 	/**
 	*	Sets a config value.
 	*
 	*	Params:
-	*		mapKey = Name of the key to set.
+	*		key = Name of the key to set.
 	*		value = The value to be set to.
 	*/
-	void set(T)(immutable string mapKey, T value) pure @safe
+	void set(T)(immutable string key, T value) pure @safe
 	{
 		static if(!is(T == string))
 		{
@@ -272,14 +272,14 @@ public:
 			string convValue = value;
 		}
 
-		if(isGroupString(mapKey))
+		if(isGroupString(key))
 		{
-			auto groupAndKey = getGroupAndKeyFromString(mapKey);
+			auto groupAndKey = getGroupAndKeyFromString(key);
 			values_[groupAndKey.group][groupAndKey.key] = convValue;
 		}
 		else
 		{
-			values_[defaultGroupName_][mapKey] = convValue;
+			values_[defaultGroupName_][key] = convValue;
 		}
 
 		valuesModified_ = true;
@@ -340,13 +340,13 @@ public:
 	*	Returns:
 	*		true if the config contains the key false otherwise.
 	*/
-	bool contains(immutable string groupName, immutable string key) pure @safe
+	bool contains(immutable string group, immutable string key) pure @safe
 	{
-		if(containsGroup(groupName))
+		if(containsGroup(group))
 		{
-			auto group = getGroup(groupName);
+			auto groupValues = getGroup(group);
 
-			if(key in group)
+			if(key in groupValues)
 			{
 				return true;
 			}
@@ -357,9 +357,9 @@ public:
 		}
 		else
 		{
-			auto group = getGroup(defaultGroupName_);
+			auto groupValues = getGroup(defaultGroupName_);
 
-			if(key in group)
+			if(key in groupValues)
 			{
 				return true;
 			}
@@ -414,19 +414,19 @@ public:
 
 	/**
 	*	Removes a key/value from config.
-	*	The key can be either its name of in the format of groupName.keyName or just the keyName.
+	*	The key can be either its name of in the format of group.keyor just the key.
 	*
 	*	Params:
-	*		groupName = Name of the group where key is found.
+	*		group = Name of the group where key is found.
 	*		key = Name of the key to remove.
 	*
 	*	Returns:
 	*		true if it was successfully removed false otherwise.
 	*/
-	bool remove(immutable string groupName, immutable string key) pure @safe
+	bool remove(immutable string group, immutable string key) pure @safe
 	{
-		auto group = getGroup(groupName);
-		return group.remove(key);
+		auto groupValues = getGroup(group);
+		return groupValues.remove(key);
 	}
 
 	/**
@@ -443,14 +443,14 @@ public:
 		return values_.remove(key);
 	}
 
-	string opIndex(string mapKey) pure @safe
+	string opIndex(string key) pure @safe
 	{
-		return get(mapKey);
+		return get(key);
 	}
 
-	void opIndexAssign(T = string)(T value, string mapKey) pure @safe
+	void opIndexAssign(T = string)(T value, string key) pure @safe
 	{
-		set(mapKey, value);
+		set(key, value);
 	}
 
 private:
