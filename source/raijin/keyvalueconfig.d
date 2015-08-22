@@ -61,18 +61,21 @@ private:
 
 	void save() @trusted
 	{
-		auto configfile = File(fileName_, "w+");
-
-		foreach(groupName, data; values_)
+		if(fileName_ != string.init)
 		{
-			if(groupName != defaultGroupName_)
-			{
-				configfile.writeln("[", groupName, "]");
-			}
+			auto configfile = File(fileName_, "w+");
 
-			foreach(key, value; data)
+			foreach(groupName, data; values_)
 			{
-				configfile.writeln(key, separator_, value);
+				if(groupName != defaultGroupName_)
+				{
+					configfile.writeln("[", groupName, "]");
+				}
+
+				foreach(key, value; data)
+				{
+					configfile.writeln(key, separator_, value);
+				}
 			}
 		}
 	}
@@ -132,16 +135,20 @@ public:
 	*
 	*	Params:
 	*		text = The string to process.
-	*		fileName = The name of the file to save processed strings key/values.
+	*		fileName = The name of the file to save processed strings key/values. If no fileName is provided values will NOT BE SAVED!
 	*	Returns:
 	*		Returns true on a successful load false otherwise.
 	*/
-	bool loadString(immutable string text, string fileName = "app.config")
+	bool loadString(immutable string text, string fileName = string.init)
 	{
 		if(text.length > 0)
 		{
 			processText(text);
-			fileName_ = fileName;
+
+			if(fileName != string.init)
+			{
+				fileName_ = fileName;
+			}
 
 			return true;
 		}
@@ -372,7 +379,7 @@ private:
 	immutable char separator_ = '=';
 	GroupData values_;
 	string defaultGroupName_;
-	string fileName_ = "app.config";
+	string fileName_;
 	bool valuesModified_;
 }
 
