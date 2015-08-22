@@ -185,7 +185,7 @@ public:
 		if(isGroupString(key))
 		{
 			auto groupAndKey = getGroupAndKeyFromString(key);
-			return get(groupAndKey.group, groupAndKey.key, defaultValue);
+			return get!T(groupAndKey.group, groupAndKey.key, defaultValue);
 		}
 		else
 		{
@@ -210,7 +210,7 @@ public:
 		if(isGroupString(key))
 		{
 			auto groupAndKey = getGroupAndKeyFromString(key);
-			return get(groupAndKey.group, groupAndKey.key, defaultValue);
+			return get!T(groupAndKey.group, groupAndKey.key, defaultValue);
 		}
 		else
 		{
