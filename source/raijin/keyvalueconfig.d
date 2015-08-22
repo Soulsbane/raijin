@@ -365,12 +365,12 @@ public:
 		return values_.remove(key);
 	}
 
-	string opIndex(string mapKey)
+	string opIndex(string mapKey) pure @safe
 	{
 		return get(mapKey);
 	}
 
-	void opIndexAssign(T = string)(T value, string mapKey)
+	void opIndexAssign(T = string)(T value, string mapKey) pure @safe
 	{
 		set(mapKey, value);
 	}
