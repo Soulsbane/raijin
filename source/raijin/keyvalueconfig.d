@@ -139,7 +139,7 @@ public:
 	*	Returns:
 	*		Returns true on a successful load false otherwise.
 	*/
-	bool loadString(immutable string text, string fileName = string.init)
+	bool loadString(immutable string text, string fileName = string.init) @safe
 	{
 		if(text.length > 0)
 		{
