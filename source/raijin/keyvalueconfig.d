@@ -386,11 +386,26 @@ private:
 unittest
 {
 	import std.stdio;
+	string text = "
+		aBool=true
+		float = 3443.443
+		number=12071
+		sentence=This is a really long sentence to test for a really long value string!
+		time=12:04
+		[section]
+		groupSection=is really cool if this works!
+		japan=true
+		[another]
+		world=hello
+		japan=false
+	";
 
 	KeyValueConfig config;
-	config["blah.sucks"] = "this is it";
-	writeln(config["blah.sucks"]);
-	assert(config["blah.sucks"] == "hell");
-	config["it"] = "comes in the night";
-	writeln(config["it"]);
+
+	bool loaded = config.loadString(text);
+	assert(loaded == true, "Failed to load string!");
+
+	assert(config.containsGroup("section") == true);
+	config.removeGroup("section");
+	assert(config.containsGroup("section") == false);
 }
