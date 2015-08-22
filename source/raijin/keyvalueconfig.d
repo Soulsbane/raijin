@@ -254,6 +254,13 @@ public:
 		return values_[groupName];
 	}
 
+	/**
+	*	Sets a config value.
+	*
+	*	Params:
+	*		mapKey = Name of the key to set.
+	*		value = The value to be set to.
+	*/
 	void set(T)(immutable string mapKey, T value) pure @safe
 	{
 		static if(!is(T == string))
@@ -278,16 +285,38 @@ public:
 		valuesModified_ = true;
 	}
 
+	/**
+	*	Sets the name used for the default section.
+	*
+	*	Params:
+	*		name = The name of the default section should be called.
+	*/
 	void setDefaultGroupName(immutable string name) pure @safe
 	{
 		defaultGroupName_ = name;
 	}
 
+	/**
+	*	Gets the name of the default section.
+	*
+	*	Returns:
+	*		The name of the default section.
+	*/
 	string getDefaultGroupName()
 	{
 		return defaultGroupName_;
 	}
 
+	/**
+	*	Determines if the key is found in the config file.
+	*	The key can be either its name of in the format of groupName.keyName or just the keyName.
+	*
+	*	Params:
+	*		key = Name of the key to get the value of
+	*
+	*	Returns:
+	*		true if the config contains the key false otherwise.
+	*/
 	bool contains(immutable string key) pure @safe
 	{
 		if(isGroupString(key))
@@ -301,6 +330,16 @@ public:
 		}
 	}
 
+	/**
+	*	Determines if the key is found in the config file.
+	*
+	*	Params:
+	*		groupName = Name of the group to retries keyName from.
+	*		key = Name of the key to get the value from.
+	*
+	*	Returns:
+	*		true if the config contains the key false otherwise.
+	*/
 	bool contains(immutable string groupName, immutable string key) pure @safe
 	{
 		if(containsGroup(groupName))
@@ -331,6 +370,15 @@ public:
 		}
 	}
 
+	/**
+	*	Determines if the given groupName Exists.
+	*
+	*	Params:
+	*		key = Name of the group to check for.
+	*
+	*	Returns:
+	*		true if the group exists false otherwise.
+	*/
 	bool containsGroup(immutable string key) pure @safe
 	{
 		if(key in values_)
@@ -340,6 +388,16 @@ public:
 		return false;
 	}
 
+	/**
+	*	Removes a key/value from config.
+	*	The key can be either its name of in the format of groupName.keyName or just the keyName.
+	*
+	*	Params:
+	*		key = Name of the key to remove.
+	*
+	*	Returns:
+	*		true if it was successfully removed false otherwise.
+	*/
 	bool remove(immutable string key) pure @safe
 	{
 		if(isGroupString(key))
@@ -354,12 +412,32 @@ public:
 		}
 	}
 
+	/**
+	*	Removes a key/value from config.
+	*	The key can be either its name of in the format of groupName.keyName or just the keyName.
+	*
+	*	Params:
+	*		groupName = Name of the group where key is found.
+	*		key = Name of the key to remove.
+	*
+	*	Returns:
+	*		true if it was successfully removed false otherwise.
+	*/
 	bool remove(immutable string groupName, immutable string key) pure @safe
 	{
 		auto group = getGroup(groupName);
 		return group.remove(key);
 	}
 
+	/**
+	*	Removes a group from config.
+	*
+	*	Params:
+	*		key = Name of the group to remove.
+	*
+	*	Returns:
+	*		true if group was successfully removed false otherwise.
+	*/
 	bool removeGroup(immutable string key) pure @safe
 	{
 		return values_.remove(key);
