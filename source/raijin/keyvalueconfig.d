@@ -481,9 +481,9 @@ unittest
 	KeyValueConfig config;
 
 	bool loaded = config.loadString(text);
-	assert(loaded == true, "Failed to load string!");
+	assert(loaded, "Failed to load string!");
 
-	assert(config.containsGroup("section") == true);
+	assert(config.containsGroup("section"));
 	config.removeGroup("section");
-	assert(config.containsGroup("section") == false);
+	assert(!config.containsGroup("section"));
 }
