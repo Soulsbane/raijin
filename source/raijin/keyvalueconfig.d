@@ -108,12 +108,12 @@ public:
 	}
 
 	/**
-	* Loads a config fileName(app.config by default) to be processed.
+	*	Loads a config fileName(app.config by default) to be processed.
 	*
-	* Params:
-	*  fileName = The name of the file to be processed/loaded.
-	* Returns:
-	*  Returns true on a successful load false otherwise.
+	*	Params:
+	*		fileName = The name of the file to be processed/loaded.
+	*	Returns:
+	*		Returns true on a successful load false otherwise.
 	*/
 	bool loadFile(string fileName = "app.config") @safe
 	{
