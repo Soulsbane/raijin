@@ -2,7 +2,7 @@ module raijin.commandlineargs;
 
 import std.conv;
 import std.string : split, removechars;
-import std.traits : isNumeric;
+import std.traits : isNumeric, isBoolean;
 import std.stdio : writeln;
 
 public enum ProcessReturnValues { NOTPROCESSED, PROCESSED, INVALIDOPTION, NOARGS, HELP }
@@ -12,14 +12,19 @@ class CommandLineArgs
 public:
 	final T get(T = string)(immutable string key) @safe
 	{
+		string defaultValue;
+
+		if(isBoolean!T)
+		{
+			defaultValue = "false";
+		}
+
 		if(isNumeric!T)
 		{
-			return to!T(values_.get(key, "0"));
+			defaultValue = "0";
 		}
-		else
-		{
-			return to!T(values_.get(key, ""));
-		}
+
+		return to!T(values_.get(key, defaultValue));
 	}
 
 	final T get(T = string)(immutable string key, string defaultValue) @safe
