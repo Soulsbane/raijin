@@ -6,8 +6,8 @@
 
 module raijin.keyvalueconfig;
 
-import std.conv;
-import std.string;
+import std.conv : to;
+import std.string : lineSplitter, indexOf, strip, startsWith, endsWith, stripLeft, stripRight;
 import std.stdio : File, writeln;
 import std.file : exists, readText;
 import std.algorithm : sort, findSplit;
