@@ -24,7 +24,7 @@ struct KeyValueConfig
 private:
 	void processText(immutable string text) @safe
 	{
-		if(defaultGroupName_ == defaultGroupName_.init) // If default group name wasn't changed generate a random string for it.
+		if(defaultGroupName_ == string.init) // If default group name wasn't changed generate a random string for it.
 		{
 			setDefaultGroupName(Clock.currTime().toString);
 		}
