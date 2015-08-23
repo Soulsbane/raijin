@@ -13,7 +13,7 @@ import std.file : exists, readText;
 import std.algorithm : sort, findSplit;
 import std.traits : isNumeric, isBoolean;
 import std.array : empty;
-import std.typecons;
+import std.typecons : tuple;
 import std.datetime : Clock;
 
 struct KeyValueConfig
