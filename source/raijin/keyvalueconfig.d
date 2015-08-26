@@ -64,17 +64,30 @@ private:
 		if(fileName_ != string.init)
 		{
 			auto configfile = File(fileName_, "w+");
+			auto defaultGroup = getGroup(defaultGroupName_);
+
+			foreach(key, value; defaultGroup) // INFO: Print the default group values first.
+			{
+				configfile.writeln(key, separator_, value);
+			}
 
 			foreach(groupName, data; values_)
 			{
 				if(groupName != defaultGroupName_)
 				{
-					configfile.writeln("[", groupName, "]");
-				}
+					if(groupName != defaultGroupName_)
+					{
+						configfile.writeln("[", groupName, "]");
+					}
 
-				foreach(key, value; data)
+					foreach(key, value; data)
+					{
+						configfile.writeln(key, separator_, value);
+					}
+				}
+				else
 				{
-					configfile.writeln(key, separator_, value);
+					continue;
 				}
 			}
 		}
