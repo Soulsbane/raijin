@@ -358,28 +358,12 @@ public:
 		if(containsGroup(group))
 		{
 			auto groupValues = getGroup(group);
-
-			if(key in groupValues)
-			{
-				return true;
-			}
-			else
-			{
-				return false;
-			}
+			return cast(bool)(key in groupValues);
 		}
 		else
 		{
 			auto groupValues = getGroup(defaultGroupName_);
-
-			if(key in groupValues)
-			{
-				return true;
-			}
-			else
-			{
-				return false;
-			}
+			return cast(bool)(key in groupValues);
 		}
 	}
 
@@ -394,11 +378,7 @@ public:
 	*/
 	bool containsGroup(immutable string key) pure @safe
 	{
-		if(key in values_)
-		{
-			return true;
-		}
-		return false;
+		return cast(bool)(key in values_);
 	}
 
 	/**
