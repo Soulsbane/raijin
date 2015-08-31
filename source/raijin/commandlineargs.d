@@ -7,29 +7,40 @@ import std.stdio : writeln;
 
 public enum ProcessReturnValues { NOTPROCESSED, PROCESSED, INVALIDOPTION, NOARGS, HELP }
 
+struct ArgValues
+{
+	string value;
+	string description;
+}
+
 class CommandLineArgs
 {
-public:
 	final T get(T = string)(immutable string key) @safe
 	{
-		string defaultValue;
+		ArgValues defaultValues;
 
 		if(isBoolean!T)
 		{
-			defaultValue = "false";
+			defaultValues.value = "false";
 		}
 
 		if(isNumeric!T)
 		{
-			defaultValue = "0";
+			defaultValues.value = "0";
 		}
 
-		return to!T(values_.get(key, defaultValue));
+		auto values = values_.get(key, defaultValues);
+
+		return to!T(values.value);
 	}
 
 	final T get(T = string)(immutable string key, string defaultValue) @safe
 	{
-		return to!T(values_.get(key, defaultValue));
+		ArgValues defaultValues;
+		defaultValues.value = defaultValue;
+		auto values = values_.get(key, defaultValues);
+
+		return to!T(values.value);
 	}
 
 	final string opIndex(immutable string key) @safe
@@ -39,7 +50,10 @@ public:
 
 	final void opIndexAssign(string value, immutable string key) @safe
 	{
-		values_[key] = value;
+		ArgValues values;
+		values.value = value;
+
+		values_[key] = values;
 	}
 
 	final bool contains(immutable string key) @safe
@@ -47,13 +61,13 @@ public:
 		return cast(bool)(key in values_);
 	}
 
-	void printHelp() @trusted // NOTE: This should really be overriden since the default is very minimal.
+	void printHelp() @trusted
 	{
 		writeln("The following options are available:");
 
-		foreach(key; values_.byKey)
+		foreach(key, value; values_)
 		{
-			writeln("  --", key);
+			writeln("  --", key, ": ", value.description);
 		}
 
 		writeln("  --help");
@@ -68,7 +82,6 @@ public:
 		{
 			if(elements[0] == "--help")
 			{
-				// Call inherited help function
 				printHelp();
 				return ProcessReturnValues.HELP;
 			}
@@ -83,7 +96,10 @@ public:
 
 					if(contains(key))
 					{
-						values_[key] = keyValue[1];
+						ArgValues values;
+						values.value = keyValue[1];
+
+						values_[key] = values;
 					}
 					else
 					{
@@ -105,5 +121,5 @@ public:
 	}
 
 private:
-	static string[string] values_;
+	static ArgValues[string] values_;
 }
