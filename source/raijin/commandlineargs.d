@@ -1,11 +1,12 @@
 module raijin.commandlineargs;
 
 import std.conv;
-import std.string : split, removechars;
+import std.string : removechars, stripLeft, stripRight;
 import std.traits : isNumeric, isBoolean;
+import std.algorithm : findSplit;
 import std.stdio : writeln;
 
-public enum ProcessReturnValues { NOTPROCESSED, PROCESSED, INVALIDOPTION, NOARGS, HELP }
+public enum ProcessReturnValues { NOTPROCESSED, PROCESSED, INVALIDOPTION, INVALIDPAIR, NOARGS, HELP }
 
 struct ArgValues
 {
@@ -93,18 +94,21 @@ class CommandLineArgs
 
 			foreach(element; elements)
 			{
-				auto keyValue = element.split("=");
+				auto keyValuePair = element.findSplit("=");
+	            auto key = keyValuePair[0].stripRight();
+	            auto separator = keyValuePair[1];
+	            auto value = keyValuePair[2].stripLeft();
 
-				if(keyValue.length > 1)
+				if(separator.length && value.length)
 				{
-					auto key = keyValue[0].removechars("--");
+					auto modifiedKey = key.removechars("--");
 
-					if(contains(key))
+					if(contains(modifiedKey))
 					{
 						ArgValues values;
-						values.value = keyValue[1];
+						values.value = value;
 
-						values_[key] = values;
+						values_[modifiedKey] = values;
 					}
 					else
 					{
@@ -113,7 +117,7 @@ class CommandLineArgs
 				}
 				else
 				{
-					return ProcessReturnValues.INVALIDOPTION;
+					return ProcessReturnValues.INVALIDPAIR;
 				}
 			}
 
