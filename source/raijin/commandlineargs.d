@@ -56,6 +56,11 @@ class CommandLineArgs
 		values_[key] = values;
 	}
 
+	final void opIndexAssign(ArgValues values, immutable string key) @safe
+	{
+		values_[key] = values;
+	}
+
 	final bool contains(immutable string key) @safe
 	{
 		return cast(bool)(key in values_);
