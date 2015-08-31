@@ -44,11 +44,7 @@ public:
 
 	final bool contains(immutable string key) @safe
 	{
-		if(key in values_)
-		{
-			return true;
-		}
-		return false;
+		return cast(bool)(key in values_);
 	}
 
 	void printHelp() @trusted // NOTE: This should really be overriden since the default is very minimal.
