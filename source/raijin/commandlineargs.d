@@ -44,6 +44,20 @@ class CommandLineArgs
 		return to!T(values.value);
 	}
 
+	final void addCommand(immutable string key, immutable string defaultValue, immutable string description) @safe
+	{
+		ArgValues values;
+		values.value = defaultValue;
+		values.description = description;
+
+		values_[key] = values;
+	}
+
+	final void addCommand(immutable string key, immutable ArgValues values) @safe
+	{
+		values_[key] = values;
+	}
+
 	final string opIndex(immutable string key) @safe
 	{
 		return get(key);
