@@ -198,7 +198,7 @@ public:
 		if(isGroupString(key))
 		{
 			auto groupAndKey = getGroupAndKeyFromString(key);
-			return get!T(groupAndKey.group, groupAndKey.key, defaultValue);
+			return getGroupValue!T(groupAndKey.group, groupAndKey.key, defaultValue);
 		}
 		else
 		{
@@ -218,12 +218,12 @@ public:
 	*		The value of value of the key/value pair.
 	*
 	*/
-	T get(T = string)(immutable string key, string defaultValue) pure @safe
+	T getWithDefault(T = string)(immutable string key, string defaultValue) pure @safe
 	{
 		if(isGroupString(key))
 		{
 			auto groupAndKey = getGroupAndKeyFromString(key);
-			return get!T(groupAndKey.group, groupAndKey.key, defaultValue);
+			return getGroupValue!T(groupAndKey.group, groupAndKey.key, defaultValue);
 		}
 		else
 		{
@@ -244,12 +244,19 @@ public:
 	*		The value of value of the key/value pair.
 	*
 	*/
-	T get(T = string)(immutable string group, immutable string key, string defaultValue) pure @safe
+	T getGroupValue(T = string)(immutable string group, immutable string key, string defaultValue) pure @safe
 	{
-		auto groupValues = getGroup(group);
-		auto groupValue = groupValues.get(key, defaultValue);
+		if(containsGroup(group))
+		{
+			auto groupValues = getGroup(group);
+			auto groupValue = groupValues.get(key, defaultValue);
 
-		return to!T(groupValue);
+			return to!T(groupValue);
+		}
+		else
+		{
+			return getWithDefault!T(key, defaultValue);
+		}
 	}
 
 	/**
@@ -445,6 +452,8 @@ public:
 	{
 		set(key, value);
 	}
+
+	//alias get!int getInt;
 
 private:
 	immutable char separator_ = '=';
