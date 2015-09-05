@@ -246,10 +246,22 @@ public:
 	*/
 	T get(T = string)(immutable string group, immutable string key, string defaultValue) pure @safe
 	{
-		auto groupValues = getGroup(group);
+		if(containsGroup(group))
+		{
+			auto groupValues = getGroup(group);
+		    auto groupValue = groupValues.get(key, defaultValue);
+
+		    return to!T(groupValue);
+		}
+		else
+		{
+		    return get!T(key, defaultValue);
+		}
+
+	/*	auto groupValues = getGroup(group);
 		auto groupValue = groupValues.get(key, defaultValue);
 
-		return to!T(groupValue);
+		return to!T(groupValue);*/
 	}
 
 	/**
