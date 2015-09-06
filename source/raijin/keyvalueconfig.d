@@ -458,6 +458,17 @@ public:
 		set(key, value);
 	}
 
+	// FIXME: Surely there is a better way to do this but at the moment dmd can't decern which overloaded function to use.
+	private T getT(T)(immutable string key) pure @safe
+	{
+		return get!T(key);
+	}
+
+	alias getInt = getT!int;
+	alias getLong = getT!long;
+	alias getBool = getT!bool;
+	alias getDouble = getT!double;
+
 private:
 	immutable char separator_ = '=';
 	GroupData values_;
