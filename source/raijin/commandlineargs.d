@@ -94,6 +94,16 @@ class CommandLineArgs
 		writeln();
 	}
 
+	void handleInvalidArgs() @safe
+	{
+		writeln("Invalid option! For help us -help.");
+	}
+
+	void handleProcessedArgs() @safe
+	{
+		writeln("PROCESSED");
+	}
+
 	final ProcessReturnValues process(string[] arguments) @safe
 	{
 		auto elements = arguments[1 .. $]; // INFO: Remove program name.
@@ -102,7 +112,6 @@ class CommandLineArgs
 		{
 			if(elements[0].removechars("-") == "help")
 			{
-				printHelp();
 				return ProcessReturnValues.HELP;
 			}
 
@@ -140,6 +149,24 @@ class CommandLineArgs
 		else
 		{
 			return ProcessReturnValues.NOARGS;
+		}
+	}
+
+	void processArgs(string[] arguments) @safe
+	{
+		auto processed = process(arguments);
+
+		switch(processed) with (ProcessReturnValues)
+		{
+			case PROCESSED:
+				handleProcessedArgs();
+				break;
+			case HELP:
+				printHelp();
+				break;
+			default:
+				handleInvalidArgs();
+				break;
 		}
 	}
 
