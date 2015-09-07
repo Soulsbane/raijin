@@ -59,6 +59,36 @@ private:
 		}
 	}
 
+	bool isGroupString(immutable string value) pure @safe
+	{
+		if(value.indexOf(".") == -1)
+		{
+			return false;
+		}
+		return true;
+	}
+
+	auto getGroupAndKeyFromString(immutable string value) pure @safe
+	{
+		auto groupAndKey = value.findSplit(".");
+		auto group = groupAndKey[0].strip();
+		auto key = groupAndKey[2].strip();
+
+		return tuple!("group", "key")(group, key);
+	}
+
+public:
+	~this()
+	{
+		if(valuesModified_)
+		{
+			save();
+		}
+	}
+
+	/**
+	*	Saves config values to config file.
+	*/
 	void save() @trusted
 	{
 		if(fileName_ != string.init)
@@ -90,33 +120,6 @@ private:
 					continue;
 				}
 			}
-		}
-	}
-
-	bool isGroupString(immutable string value) pure @safe
-	{
-		if(value.indexOf(".") == -1)
-		{
-			return false;
-		}
-		return true;
-	}
-
-	auto getGroupAndKeyFromString(immutable string value) pure @safe
-	{
-		auto groupAndKey = value.findSplit(".");
-		auto group = groupAndKey[0].strip();
-		auto key = groupAndKey[2].strip();
-
-		return tuple!("group", "key")(group, key);
-	}
-
-public:
-	~this()
-	{
-		if(valuesModified_)
-		{
-			save();
 		}
 	}
 
