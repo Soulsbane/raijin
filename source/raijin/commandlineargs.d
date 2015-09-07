@@ -83,14 +83,14 @@ class CommandLineArgs
 
 	void printHelp() @trusted
 	{
-		writeln("The following options are available:");
+		writeln("The following options are available:\n");
 
 		foreach(key, value; values_)
 		{
-			writeln("  --", key, ": ", value.description);
+			writeln("  -", key, ": ", value.description);
 		}
 
-		writeln("  --help");
+		writeln("  -help");
 		writeln();
 	}
 
@@ -100,7 +100,7 @@ class CommandLineArgs
 
 		if(elements.length > 0)
 		{
-			if(elements[0] == "--help")
+			if(elements[0].removechars("-") == "help")
 			{
 				printHelp();
 				return ProcessReturnValues.HELP;
