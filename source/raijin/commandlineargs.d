@@ -6,7 +6,7 @@ import std.traits : isNumeric, isBoolean;
 import std.algorithm : findSplit;
 import std.stdio : writeln;
 
-public enum ProcessReturnValues { NOTPROCESSED, PROCESSED, INVALIDOPTION, INVALIDPAIR, NOARGS, HELP }
+public enum ProcessReturnValues { PROCESSED, INVALIDOPTION, INVALIDPAIR, NOARGS, HELP }
 
 struct ArgValues
 {
