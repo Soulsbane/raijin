@@ -6,7 +6,7 @@ import std.traits : isNumeric, isBoolean;
 import std.algorithm : findSplit;
 import std.stdio : writeln;
 
-public enum ProcessReturnValues { PROCESSED, INVALIDOPTION, INVALIDPAIR, NOARGS, HELP }
+public enum ProcessReturnValues { PROCESSED, INVALIDOPTION, INVALIDPAIR, SINGLEARG, NOARGS, HELP }
 
 struct ArgValues
 {
@@ -122,11 +122,10 @@ class CommandLineArgs
 	            auto key = keyValuePair[0].stripRight();
 	            auto separator = keyValuePair[1];
 	            auto value = keyValuePair[2].stripLeft();
+				auto modifiedKey = key.removechars("--");
 
 				if(separator.length && value.length)
 				{
-					auto modifiedKey = key.removechars("--");
-
 					if(contains(modifiedKey))
 					{
 						ArgValues values;
@@ -141,7 +140,21 @@ class CommandLineArgs
 				}
 				else
 				{
-					return ProcessReturnValues.INVALIDPAIR;
+					if(separator.length)
+					{
+						return ProcessReturnValues.INVALIDPAIR;
+					}
+					else
+					{
+						if(contains(modifiedKey))
+						{
+							return ProcessReturnValues.SINGLEARG;
+						}
+						else
+						{
+							return ProcessReturnValues.INVALIDOPTION;
+						}
+					}
 				}
 			}
 
@@ -160,6 +173,9 @@ class CommandLineArgs
 		switch(processed) with (ProcessReturnValues)
 		{
 			case PROCESSED:
+				handleProcessedArgs();
+				break;
+			case SINGLEARG:
 				handleProcessedArgs();
 				break;
 			case HELP:
