@@ -96,7 +96,7 @@ class CommandLineArgs
 
 	void handleInvalidArgs() @safe
 	{
-		writeln("Invalid option! For help us -help.");
+		writeln("Invalid option! For help use -help.");
 	}
 
 	void handleProcessedArgs() @safe
@@ -107,6 +107,7 @@ class CommandLineArgs
 	final ProcessReturnValues process(string[] arguments) @safe
 	{
 		auto elements = arguments[1 .. $]; // INFO: Remove program name.
+		rawArguments_ = elements;
 
 		if(elements.length > 0)
 		{
@@ -172,4 +173,5 @@ class CommandLineArgs
 
 private:
 	static ArgValues[string] values_;
+	string[] rawArguments_;
 }
