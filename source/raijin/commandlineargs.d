@@ -94,9 +94,9 @@ class CommandLineArgs
 		writeln();
 	}
 
-	void handleInvalidArgs() @safe
+	void handleInvalidArgs(ProcessReturnValues error) @safe
 	{
-		writeln("Invalid option! For help use -help.");
+		writeln("Invalid option! For help use -help. Error Code: ", error);
 	}
 
 	void handleProcessedArgs() @safe
@@ -166,7 +166,7 @@ class CommandLineArgs
 				printHelp();
 				break;
 			default:
-				handleInvalidArgs();
+				handleInvalidArgs(processed);
 				break;
 		}
 	}
