@@ -16,6 +16,9 @@ import std.array : empty;
 import std.typecons : tuple;
 import std.datetime : Clock;
 
+/**
+*	Manages a config file with the key=value format.
+*/
 struct KeyValueConfig
 {
 	alias string[string] KeyValueData;
@@ -362,7 +365,7 @@ public:
 	*	Determines if the key is found in the config file.
 	*
 	*	Params:
-	*		groupName = Name of the group to retries keyName from.
+	*		group = Name of the group to get entries from.
 	*		key = Name of the key to get the value from.
 	*
 	*	Returns:
