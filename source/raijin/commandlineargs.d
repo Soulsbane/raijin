@@ -1,12 +1,12 @@
 module raijin.commandlineargs;
 
-import std.conv;
+import std.conv : to;
 import std.string : removechars, stripLeft, stripRight;
 import std.traits : isNumeric, isBoolean;
 import std.algorithm : findSplit;
 import std.stdio : writeln;
 
-public enum ProcessReturnValues { PROCESSED, INVALIDOPTION, INVALIDPAIR, SINGLEARG, NOARGS, HELP }
+public enum ProcessReturnValues { VALID_ARG, INVALID_ARG, INVALID_ARG_PAIR, FLAG_ARG, NO_ARGS, HELP_ARG }
 
 struct ArgValues
 {
@@ -81,7 +81,7 @@ class CommandLineArgs
 		return cast(bool)(key in values_);
 	}
 
-	void printHelp() @trusted
+	void onPrintHelp() @trusted
 	{
 		writeln("The following options are available:\n");
 
@@ -94,14 +94,14 @@ class CommandLineArgs
 		writeln();
 	}
 
-	void handleInvalidArgs(ProcessReturnValues error) @safe
+	void onInvalidArgs(ProcessReturnValues error) @safe
 	{
 		writeln("Invalid option! For help use -help. Error Code: ", error);
 	}
 
-	void handleProcessedArgs() @safe
+	void onValidArgs() @safe
 	{
-		writeln("PROCESSED");
+		writeln("VALID_ARG");
 	}
 
 	final ProcessReturnValues process(string[] arguments) @safe
@@ -113,7 +113,7 @@ class CommandLineArgs
 		{
 			if(elements[0].removechars("-") == "help")
 			{
-				return ProcessReturnValues.HELP;
+				return ProcessReturnValues.HELP_ARG;
 			}
 
 			foreach(element; elements)
@@ -135,59 +135,61 @@ class CommandLineArgs
 					}
 					else
 					{
-						return ProcessReturnValues.INVALIDOPTION;
+						return ProcessReturnValues.INVALID_ARG;
 					}
 				}
 				else
 				{
 					if(separator.length)
 					{
-						return ProcessReturnValues.INVALIDPAIR;
+						return ProcessReturnValues.INVALID_ARG_PAIR;
 					}
 					else
 					{
 						if(contains(modifiedKey))
 						{
-							return ProcessReturnValues.SINGLEARG;
+							ArgValues values;
+
+							values.value = "true";
+							values_[modifiedKey] = values;
+
+							return ProcessReturnValues.FLAG_ARG;
 						}
 						else
 						{
-							return ProcessReturnValues.INVALIDOPTION;
+							return ProcessReturnValues.INVALID_ARG;
 						}
 					}
 				}
 			}
 
-			return ProcessReturnValues.PROCESSED;
+			return ProcessReturnValues.VALID_ARG;
 		}
 		else
 		{
-			return ProcessReturnValues.NOARGS;
+			return ProcessReturnValues.NO_ARGS;
 		}
 	}
 
-	void processArgs(string[] arguments) @safe
+	final void processArgs(string[] arguments) @safe
 	{
 		auto processed = process(arguments);
 
 		switch(processed) with (ProcessReturnValues)
 		{
-			case PROCESSED:
-				handleProcessedArgs();
+			case VALID_ARG, FLAG_ARG:
+				onValidArgs();
 				break;
-			case SINGLEARG:
-				handleProcessedArgs();
-				break;
-			case HELP:
-				printHelp();
+			case HELP_ARG:
+				onPrintHelp();
 				break;
 			default:
-				handleInvalidArgs(processed);
+				onInvalidArgs(processed);
 				break;
 		}
 	}
 
 private:
 	static ArgValues[string] values_;
-	string[] rawArguments_;
+	static string[] rawArguments_;
 }
