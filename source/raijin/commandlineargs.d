@@ -6,7 +6,7 @@ import std.traits : isNumeric, isBoolean;
 import std.algorithm : findSplit;
 import std.stdio : writeln;
 
-public enum ProcessReturnValues { VALID_ARG, INVALID_ARG, INVALID_ARG_PAIR, FLAG_ARG, NO_ARGS, HELP_ARG }
+public enum CommandLineArgTypes { VALID_ARG, INVALID_ARG, INVALID_ARG_PAIR, FLAG_ARG, NO_ARGS, HELP_ARG }
 
 struct ArgValues
 {
@@ -94,7 +94,7 @@ class CommandLineArgs
 		writeln();
 	}
 
-	void onInvalidArgs(ProcessReturnValues error) @safe
+	void onInvalidArgs(CommandLineArgTypes error) @safe
 	{
 		writeln("Invalid option! For help use -help. Error Code: ", error);
 	}
@@ -104,7 +104,7 @@ class CommandLineArgs
 		writeln("VALID_ARG");
 	}
 
-	final ProcessReturnValues process(string[] arguments) @safe
+	final CommandLineArgTypes process(string[] arguments) @safe
 	{
 		auto elements = arguments[1 .. $]; // INFO: Remove program name.
 		rawArguments_ = elements;
@@ -113,7 +113,7 @@ class CommandLineArgs
 		{
 			if(elements[0].removechars("-") == "help")
 			{
-				return ProcessReturnValues.HELP_ARG;
+				return CommandLineArgTypes.HELP_ARG;
 			}
 
 			foreach(element; elements)
@@ -135,14 +135,14 @@ class CommandLineArgs
 					}
 					else
 					{
-						return ProcessReturnValues.INVALID_ARG;
+						return CommandLineArgTypes.INVALID_ARG;
 					}
 				}
 				else
 				{
 					if(separator.length)
 					{
-						return ProcessReturnValues.INVALID_ARG_PAIR;
+						return CommandLineArgTypes.INVALID_ARG_PAIR;
 					}
 					else
 					{
@@ -153,21 +153,21 @@ class CommandLineArgs
 							values.value = "true";
 							values_[modifiedKey] = values;
 
-							return ProcessReturnValues.FLAG_ARG;
+							return CommandLineArgTypes.FLAG_ARG;
 						}
 						else
 						{
-							return ProcessReturnValues.INVALID_ARG;
+							return CommandLineArgTypes.INVALID_ARG;
 						}
 					}
 				}
 			}
 
-			return ProcessReturnValues.VALID_ARG;
+			return CommandLineArgTypes.VALID_ARG;
 		}
 		else
 		{
-			return ProcessReturnValues.NO_ARGS;
+			return CommandLineArgTypes.NO_ARGS;
 		}
 	}
 
@@ -175,7 +175,7 @@ class CommandLineArgs
 	{
 		auto processed = process(arguments);
 
-		switch(processed) with (ProcessReturnValues)
+		switch(processed) with (CommandLineArgTypes)
 		{
 			case VALID_ARG, FLAG_ARG:
 				onValidArgs();
