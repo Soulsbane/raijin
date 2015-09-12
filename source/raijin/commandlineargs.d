@@ -1,3 +1,8 @@
+/**
+*	This module contains a simple class that processes command line arguments.
+*
+*	Author: Paul Crane
+*/
 module raijin.commandlineargs;
 
 import std.conv : to;
@@ -14,8 +19,22 @@ struct ArgValues
 	string description;
 }
 
+/**
+*	Handles the processing of command line arguments.
+*/
 class CommandLineArgs
 {
+	/**
+	*	Retrieves the value of key where key is the name of the command line argument and converts it to T.
+	*	T is the the type that returned value should be converted to.
+	*
+	*	Params:
+	*		key = Name of the command line argument to get.
+	*
+	*	Returns:
+	*		The value of value of the command line argument to getcommand line argument to get
+	*
+	*/
 	final T get(T = string)(immutable string key) @safe
 	{
 		ArgValues defaultValues;
@@ -35,6 +54,18 @@ class CommandLineArgs
 		return to!T(values.value);
 	}
 
+	/**
+	*	Retrieves the value of key where key is the name of the command line argument and converts it to T.
+	*	T is the the type that returned value should be converted to.
+	*
+	*	Params:
+	*		key = Name of the command line argument to get.
+	*		defaultValue = Allow the assignment of a default value if key does not exist.
+	*
+	*	Returns:
+	*		The value of value of the command line argument to getcommand line argument to get
+	*
+	*/
 	final T get(T = string)(immutable string key, string defaultValue) @safe
 	{
 		ArgValues defaultValues;
@@ -44,6 +75,14 @@ class CommandLineArgs
 		return to!T(values.value);
 	}
 
+	/**
+	*	Registers a command line argument
+	*
+	*	Params:
+	*		key = Name of the command line argument to register.
+	*		defaultValue = The default value to use if no value is supplied.
+	*		description = The description of what the command line argument does.
+	*/
 	final void addCommand(immutable string key, immutable string defaultValue, immutable string description) @safe
 	{
 		ArgValues values;
@@ -53,6 +92,13 @@ class CommandLineArgs
 		values_[key] = values;
 	}
 
+	/**
+	*	Registers a command line argument
+	*
+	*	Params:
+	*		key = Name of the command line argument to register.
+	*		values = ArgValues struct.
+	*/
 	final void addCommand(immutable string key, immutable ArgValues values) @safe
 	{
 		values_[key] = values;
@@ -76,11 +122,23 @@ class CommandLineArgs
 		values_[key] = values;
 	}
 
+	/**
+	*	Determines if the key(command line argument) exists.
+	*
+	*	Params:
+	*		key = Name of the key to get the value from.
+	*
+	*	Returns:
+	*		true if the command line argument exists, false otherwise.
+	*/
 	final bool contains(immutable string key) @safe
 	{
 		return cast(bool)(key in values_);
 	}
 
+	/**
+	*	Default print method for printing registered command line options.
+	*/
 	void onPrintHelp() @trusted
 	{
 		writeln("The following options are available:\n");
@@ -94,16 +152,29 @@ class CommandLineArgs
 		writeln();
 	}
 
+	/**
+	*	Called when an invalid argument is passed on the command line.
+	*/
 	void onInvalidArgs(CommandLineArgTypes error) @safe
 	{
 		writeln("Invalid option! For help use -help. Error Code: ", error);
 	}
 
+	/**
+	*	Called when an valid argument is passed on the command line.
+	*/
 	void onValidArgs() @safe
 	{
 		writeln("VALID_ARG");
 	}
 
+	/**
+	*	Handles the registration of command line arguments passed to the program. Ideally processArgs method should be
+	*	used as it simplifies handling of command line arguments. But if you need a more fine grain approach use this method.
+	*
+	*	Params:
+	*		arguments = The arguments that are sent from main()
+	*/
 	final CommandLineArgTypes process(string[] arguments) @safe
 	{
 		auto elements = arguments[1 .. $]; // INFO: Remove program name.
@@ -171,6 +242,12 @@ class CommandLineArgs
 		}
 	}
 
+	/**
+	*	Handles the registration of command line arguments passed to the program.
+	*
+	*	Params:
+	*		arguments = The arguments that are sent from main()
+	*/
 	final void processArgs(string[] arguments) @safe
 	{
 		auto processed = process(arguments);
