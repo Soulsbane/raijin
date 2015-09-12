@@ -15,6 +15,7 @@ public enum CommandLineArgTypes { VALID_ARG, INVALID_ARG, INVALID_ARG_PAIR, FLAG
 
 struct ArgValues
 {
+	string defaultValue;
 	string value;
 	string description;
 }
@@ -41,6 +42,7 @@ class CommandLineArgs
 
 		if(isBoolean!T)
 		{
+			defaultValues.defaultValue = "false";
 			defaultValues.value = "false";
 		}
 
@@ -69,6 +71,8 @@ class CommandLineArgs
 	final T get(T = string)(immutable string key, string defaultValue) @safe
 	{
 		ArgValues defaultValues;
+
+		defaultValues.defaultValue = defaultValue;
 		defaultValues.value = defaultValue;
 		auto values = values_.get(key, defaultValues);
 
@@ -86,6 +90,8 @@ class CommandLineArgs
 	final void addCommand(immutable string key, immutable string defaultValue, immutable string description) @safe
 	{
 		ArgValues values;
+
+		values.defaultValue = defaultValue;
 		values.value = defaultValue;
 		values.description = description;
 
