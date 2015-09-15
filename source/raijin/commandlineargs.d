@@ -161,7 +161,7 @@ class CommandLineArgs
 	/**
 	*	Called when an invalid argument is passed on the command line.
 	*/
-	void onInvalidArgs(CommandLineArgTypes error) @safe
+	void onInvalidArgs(CommandLineArgTypes error, string[] arguments) @safe
 	{
 		writeln("Invalid option! For help use -help. Error Code: ", error);
 	}
@@ -267,7 +267,7 @@ class CommandLineArgs
 				onPrintHelp();
 				break;
 			default:
-				onInvalidArgs(processed);
+				onInvalidArgs(processed, arguments);
 				break;
 		}
 	}
