@@ -18,6 +18,7 @@ struct ArgValues
 	string defaultValue;
 	string value;
 	string description;
+	bool required;
 }
 
 /**
@@ -87,13 +88,14 @@ class CommandLineArgs
 	*		defaultValue = The default value to use if no value is supplied.
 	*		description = The description of what the command line argument does.
 	*/
-	final void addCommand(immutable string key, immutable string defaultValue, immutable string description) @safe
+	final void addCommand(immutable string key, immutable string defaultValue, immutable string description, bool required = false) @safe
 	{
 		ArgValues values;
 
 		values.defaultValue = defaultValue;
 		values.value = defaultValue;
 		values.description = description;
+		values.required = required;
 
 		values_[key] = values;
 	}
