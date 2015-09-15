@@ -10,6 +10,9 @@ import std.string : removechars, stripLeft, stripRight, indexOf;
 import std.traits : isNumeric, isBoolean;
 import std.algorithm : findSplit;
 import std.stdio : writeln;
+import std.typecons : Flag;
+
+alias IgnoreFirstArg = Flag!"ignoreFirstArg";
 
 public enum CommandLineArgTypes { VALID_ARG, INVALID_ARG, INVALID_ARG_PAIR, FLAG_ARG, NO_ARGS, HELP_ARG }
 
@@ -191,7 +194,7 @@ class CommandLineArgs
 	*	Params:
 	*		arguments = The arguments that are sent from main()
 	*/
-	final CommandLineArgTypes process(string[] arguments, bool ignoreFirstArg = false) @safe
+	final CommandLineArgTypes process(string[] arguments, IgnoreFirstArg ignoreFirstArg = IgnoreFirstArg.no) @safe
 	{
 		auto elements = arguments[1 .. $]; // INFO: Remove program name.
 		rawArguments_ = elements;
@@ -271,7 +274,7 @@ class CommandLineArgs
 	*	Params:
 	*		arguments = The arguments that are sent from main()
 	*/
-	final void processArgs(string[] arguments, bool ignoreFirstArg = false) @safe
+	final void processArgs(string[] arguments, IgnoreFirstArg ignoreFirstArg = IgnoreFirstArg.no) @safe
 	{
 		auto processed = process(arguments, ignoreFirstArg);
 
