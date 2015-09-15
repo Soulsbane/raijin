@@ -13,6 +13,7 @@ import std.stdio : writeln;
 import std.typecons : Flag;
 
 alias IgnoreFirstArg = Flag!"ignoreFirstArg";
+alias RequiredArg = Flag!"requiredArg";
 
 public enum CommandLineArgTypes { VALID_ARG, INVALID_ARG, INVALID_ARG_PAIR, FLAG_ARG, NO_ARGS, HELP_ARG }
 
@@ -91,7 +92,7 @@ class CommandLineArgs
 	*		defaultValue = The default value to use if no value is supplied.
 	*		description = The description of what the command line argument does.
 	*/
-	final void addCommand(immutable string key, immutable string defaultValue, immutable string description, bool required = false) @safe
+	final void addCommand(immutable string key, immutable string defaultValue, immutable string description, RequiredArg required = RequiredArg.no) @safe
 	{
 		ArgValues values;
 
