@@ -175,6 +175,14 @@ class CommandLineArgs
 	}
 
 	/**
+	*	Called when an valid argument is passed on the command line.
+	*/
+	void onNoArgs() @safe
+	{
+		writeln("No arguments were passed!");
+	}
+
+	/**
 	*	Handles the registration of command line arguments passed to the program. Ideally processArgs method should be
 	*	used as it simplifies handling of command line arguments. But if you need a more fine grain approach use this method.
 	*
@@ -272,6 +280,9 @@ class CommandLineArgs
 				break;
 			case HELP_ARG:
 				onPrintHelp();
+				break;
+			case NO_ARGS:
+				onNoArgs();
 				break;
 			default:
 				onInvalidArgs(processed, arguments);
