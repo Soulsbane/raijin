@@ -6,7 +6,7 @@
 module raijin.commandlineargs;
 
 import std.conv : to;
-import std.string : removechars, stripLeft, stripRight;
+import std.string : removechars, stripLeft, stripRight, indexOf;
 import std.traits : isNumeric, isBoolean;
 import std.algorithm : findSplit;
 import std.stdio : writeln;
@@ -181,7 +181,7 @@ class CommandLineArgs
 	*	Params:
 	*		arguments = The arguments that are sent from main()
 	*/
-	final CommandLineArgTypes process(string[] arguments) @safe
+	final CommandLineArgTypes process(string[] arguments, bool ignoreFirstArg = false) @safe
 	{
 		auto elements = arguments[1 .. $]; // INFO: Remove program name.
 		rawArguments_ = elements;
@@ -193,6 +193,8 @@ class CommandLineArgs
 				return CommandLineArgTypes.HELP_ARG;
 			}
 
+			bool isNotFirst = false;
+
 			foreach(element; elements)
 			{
 				auto keyValuePair = element.findSplit("=");
@@ -201,6 +203,12 @@ class CommandLineArgs
 	            auto value = keyValuePair[2].stripLeft();
 				auto modifiedKey = key.removechars("--");
 
+				if(ignoreFirstArg && (element.indexOf("-") == -1))
+				{
+					isNotFirst = true;
+				}
+				else
+				{
 				if(separator.length && value.length)
 				{
 					if(contains(modifiedKey))
@@ -229,14 +237,13 @@ class CommandLineArgs
 
 							values.value = "true";
 							values_[modifiedKey] = values;
-
-							return CommandLineArgTypes.FLAG_ARG;
 						}
 						else
 						{
 							return CommandLineArgTypes.INVALID_ARG;
 						}
 					}
+				}
 				}
 			}
 
@@ -254,9 +261,9 @@ class CommandLineArgs
 	*	Params:
 	*		arguments = The arguments that are sent from main()
 	*/
-	final void processArgs(string[] arguments) @safe
+	final void processArgs(string[] arguments, bool ignoreFirstArg = false) @safe
 	{
-		auto processed = process(arguments);
+		auto processed = process(arguments, ignoreFirstArg);
 
 		switch(processed) with (CommandLineArgTypes)
 		{
