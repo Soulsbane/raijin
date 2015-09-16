@@ -228,10 +228,7 @@ class CommandLineArgs
 				{
 					if(contains(modifiedKey))
 					{
-						ArgValues values;
-						values.value = value;
-
-						values_[modifiedKey] = values;
+						values_[modifiedKey].value = value;
 					}
 					else
 					{
@@ -248,10 +245,7 @@ class CommandLineArgs
 					{
 						if(contains(modifiedKey))
 						{
-							ArgValues values;
-
-							values.value = "true";
-							values_[modifiedKey] = values;
+							values_[modifiedKey].value = "true";
 						}
 						else
 						{
