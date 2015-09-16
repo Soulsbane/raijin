@@ -10,12 +10,13 @@ import std.string : removechars, stripLeft, stripRight, indexOf;
 import std.traits : isNumeric, isBoolean;
 import std.algorithm : findSplit;
 import std.stdio : writeln;
-import std.typecons : Flag;
+public import std.typecons : Flag, Tuple;
 
 alias IgnoreFirstArg = Flag!"ignoreFirstArg";
 alias RequiredArg = Flag!"requiredArg";
 
 public enum CommandLineArgTypes { VALID_ARG, INVALID_ARG, INVALID_ARG_PAIR, FLAG_ARG, NO_ARGS, HELP_ARG }
+alias ProcessReturnCodes = Tuple!(CommandLineArgTypes, "type", string, "command");
 
 struct ArgValues
 {
@@ -167,9 +168,9 @@ class CommandLineArgs
 	/**
 	*	Called when an invalid argument is passed on the command line.
 	*/
-	void onInvalidArgs(CommandLineArgTypes error, string[] arguments) @safe
+	void onInvalidArgs(CommandLineArgTypes error, string command) @safe
 	{
-		writeln("Invalid option! For help use -help. Error Code: ", error);
+		writeln("Invalid option, ", command, "! For help use -help");
 	}
 
 	/**
@@ -195,7 +196,7 @@ class CommandLineArgs
 	*	Params:
 	*		arguments = The arguments that are sent from main()
 	*/
-	final CommandLineArgTypes process(string[] arguments, IgnoreFirstArg ignoreFirstArg = IgnoreFirstArg.no) @safe
+	final auto process(string[] arguments, IgnoreFirstArg ignoreFirstArg = IgnoreFirstArg.no) @safe
 	{
 		auto elements = arguments[1 .. $]; // INFO: Remove program name.
 		rawArguments_ = elements;
@@ -204,7 +205,7 @@ class CommandLineArgs
 		{
 			if(elements[0].removechars("-") == "help")
 			{
-				return CommandLineArgTypes.HELP_ARG;
+				return ProcessReturnCodes(CommandLineArgTypes.HELP_ARG, "--help");
 			}
 
 			bool isNotFirst = false;
@@ -234,14 +235,14 @@ class CommandLineArgs
 					}
 					else
 					{
-						return CommandLineArgTypes.INVALID_ARG;
+						return ProcessReturnCodes(CommandLineArgTypes.INVALID_ARG, element);
 					}
 				}
 				else
 				{
 					if(separator.length)
 					{
-						return CommandLineArgTypes.INVALID_ARG_PAIR;
+						return ProcessReturnCodes(CommandLineArgTypes.INVALID_ARG_PAIR, element);
 					}
 					else
 					{
@@ -254,18 +255,18 @@ class CommandLineArgs
 						}
 						else
 						{
-							return CommandLineArgTypes.INVALID_ARG;
+							return ProcessReturnCodes(CommandLineArgTypes.INVALID_ARG, element);
 						}
 					}
 				}
 				}
 			}
 
-			return CommandLineArgTypes.VALID_ARG;
+			return ProcessReturnCodes(CommandLineArgTypes.VALID_ARG, "");
 		}
 		else
 		{
-			return CommandLineArgTypes.NO_ARGS;
+			return ProcessReturnCodes(CommandLineArgTypes.NO_ARGS, "");
 		}
 	}
 
@@ -274,12 +275,13 @@ class CommandLineArgs
 	*
 	*	Params:
 	*		arguments = The arguments that are sent from main()
+	*		ignoreFirstArg = Ignore the first argument passed and continue processing the remaining arguments
 	*/
 	final void processArgs(string[] arguments, IgnoreFirstArg ignoreFirstArg = IgnoreFirstArg.no) @safe
 	{
 		auto processed = process(arguments, ignoreFirstArg);
 
-		switch(processed) with (CommandLineArgTypes)
+		switch(processed.type) with (CommandLineArgTypes)
 		{
 			case VALID_ARG, FLAG_ARG:
 				onValidArgs();
@@ -291,7 +293,7 @@ class CommandLineArgs
 				onNoArgs();
 				break;
 			default:
-				onInvalidArgs(processed, arguments);
+				onInvalidArgs(processed.type, processed.command);
 				break;
 		}
 	}
