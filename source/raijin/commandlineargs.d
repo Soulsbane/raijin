@@ -10,12 +10,12 @@ import std.string : removechars, stripLeft, stripRight, indexOf;
 import std.traits : isNumeric, isBoolean;
 import std.algorithm : findSplit;
 import std.stdio : writeln;
-public import std.typecons : Flag, Tuple;
+import std.typecons : Flag, Tuple;
 
 alias IgnoreFirstArg = Flag!"ignoreFirstArg";
 alias RequiredArg = Flag!"requiredArg";
 
-public enum CommandLineArgTypes { VALID_ARG, INVALID_ARG, INVALID_ARG_PAIR, FLAG_ARG, NO_ARGS, HELP_ARG }
+enum CommandLineArgTypes { VALID_ARG, INVALID_ARG, INVALID_ARG_PAIR, FLAG_ARG, NO_ARGS, HELP_ARG }
 alias ProcessReturnCodes = Tuple!(CommandLineArgTypes, "type", string, "command");
 
 struct ArgValues
