@@ -224,35 +224,35 @@ class CommandLineArgs
 				}
 				else
 				{
-				if(separator.length && value.length)
-				{
-					if(contains(modifiedKey))
-					{
-						values_[modifiedKey].value = value;
-					}
-					else
-					{
-						return ProcessReturnCodes(CommandLineArgTypes.INVALID_ARG, element);
-					}
-				}
-				else
-				{
-					if(separator.length)
-					{
-						return ProcessReturnCodes(CommandLineArgTypes.INVALID_ARG_PAIR, element);
-					}
-					else
+					if(separator.length && value.length)
 					{
 						if(contains(modifiedKey))
 						{
-							values_[modifiedKey].value = "true";
+							values_[modifiedKey].value = value;
 						}
 						else
 						{
 							return ProcessReturnCodes(CommandLineArgTypes.INVALID_ARG, element);
 						}
 					}
-				}
+					else
+					{
+						if(separator.length)
+						{
+							return ProcessReturnCodes(CommandLineArgTypes.INVALID_ARG_PAIR, element);
+						}
+						else
+						{
+							if(contains(modifiedKey))
+							{
+								values_[modifiedKey].value = "true";
+							}
+							else
+							{
+								return ProcessReturnCodes(CommandLineArgTypes.INVALID_ARG, element);
+							}
+						}
+					}
 				}
 			}
 
