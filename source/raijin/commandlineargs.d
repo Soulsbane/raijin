@@ -203,11 +203,6 @@ class CommandLineArgs
 
 		if(elements.length > 0)
 		{
-			if(elements[0].removechars("-") == "help") // Needs moved to loop section
-			{
-				return ProcessReturnCodes(CommandLineArgTypes.HELP_ARG, "--help");
-			}
-
 			foreach(element; elements)
 			{
 				auto keyValuePair = element.findSplit("=");
@@ -246,6 +241,11 @@ class CommandLineArgs
 							}
 							else
 							{
+								if(modifiedKey == "help")
+								{
+									return ProcessReturnCodes(CommandLineArgTypes.HELP_ARG, "-help");
+								}
+
 								return ProcessReturnCodes(CommandLineArgTypes.INVALID_ARG, element);
 							}
 						}
