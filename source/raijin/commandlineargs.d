@@ -203,12 +203,10 @@ class CommandLineArgs
 
 		if(elements.length > 0)
 		{
-			if(elements[0].removechars("-") == "help")
+			if(elements[0].removechars("-") == "help") // Needs moved to loop section
 			{
 				return ProcessReturnCodes(CommandLineArgTypes.HELP_ARG, "--help");
 			}
-
-			bool isNotFirst = false;
 
 			foreach(element; elements)
 			{
@@ -220,7 +218,6 @@ class CommandLineArgs
 
 				if(ignoreFirstArg && (element.indexOf("-") == -1))
 				{
-					isNotFirst = true;
 				}
 				else
 				{
