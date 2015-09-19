@@ -14,6 +14,7 @@ import std.typecons : Flag, Tuple;
 
 alias IgnoreFirstArg = Flag!"ignoreFirstArg";
 alias RequiredArg = Flag!"requiredArg";
+alias AllowInvalidArgs = Flag!"allowInvalidArgs";
 
 enum CommandLineArgTypes { VALID_ARGS, INVALID_ARG, INVALID_ARG_PAIR, NO_ARGS, HELP_ARG }
 alias ProcessReturnCodes = Tuple!(CommandLineArgTypes, "type", string, "command");
@@ -196,7 +197,8 @@ class CommandLineArgs
 	*	Params:
 	*		arguments = The arguments that are sent from main()
 	*/
-	final auto process(string[] arguments, IgnoreFirstArg ignoreFirstArg = IgnoreFirstArg.no) @safe
+	final auto process(string[] arguments, IgnoreFirstArg ignoreFirstArg = IgnoreFirstArg.no,
+		AllowInvalidArgs allowInvalidArgs = AllowInvalidArgs.no) @safe
 	{
 		auto elements = arguments[1 .. $]; // INFO: Remove program name.
 		rawArguments_ = elements;
@@ -232,14 +234,20 @@ class CommandLineArgs
 						}
 						else
 						{
-							return ProcessReturnCodes(CommandLineArgTypes.INVALID_ARG, element);
+							if(allowInvalidArgs == false)
+							{
+								return ProcessReturnCodes(CommandLineArgTypes.INVALID_ARG, element);
+							}
 						}
 					}
 					else
 					{
 						if(separator.length)
 						{
-							return ProcessReturnCodes(CommandLineArgTypes.INVALID_ARG_PAIR, element);
+							if(allowInvalidArgs == false)
+							{
+								return ProcessReturnCodes(CommandLineArgTypes.INVALID_ARG_PAIR, element);
+							}
 						}
 						else
 						{
@@ -254,7 +262,10 @@ class CommandLineArgs
 									return ProcessReturnCodes(CommandLineArgTypes.HELP_ARG, "-help");
 								}
 
-								return ProcessReturnCodes(CommandLineArgTypes.INVALID_ARG, element);
+								if(allowInvalidArgs == false)
+								{
+									return ProcessReturnCodes(CommandLineArgTypes.INVALID_ARG, element);
+								}
 							}
 						}
 					}
@@ -276,9 +287,10 @@ class CommandLineArgs
 	*		arguments = The arguments that are sent from main()
 	*		ignoreFirstArg = Ignore the first argument passed and continue processing the remaining arguments
 	*/
-	final void processArgs(string[] arguments, IgnoreFirstArg ignoreFirstArg = IgnoreFirstArg.no) @safe
+	final void processArgs(string[] arguments, IgnoreFirstArg ignoreFirstArg = IgnoreFirstArg.no,
+		AllowInvalidArgs allowInvalidArgs = AllowInvalidArgs.no) @safe
 	{
-		auto processed = process(arguments, ignoreFirstArg);
+		auto processed = process(arguments, ignoreFirstArg, allowInvalidArgs);
 
 		switch(processed.type) with (CommandLineArgTypes)
 		{
