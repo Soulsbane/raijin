@@ -15,7 +15,7 @@ import std.typecons : Flag, Tuple;
 alias IgnoreFirstArg = Flag!"ignoreFirstArg";
 alias RequiredArg = Flag!"requiredArg";
 
-enum CommandLineArgTypes { VALID_ARG, INVALID_ARG, INVALID_ARG_PAIR, FLAG_ARG, NO_ARGS, HELP_ARG }
+enum CommandLineArgTypes { VALID_ARGS, INVALID_ARG, INVALID_ARG_PAIR, NO_ARGS, HELP_ARG }
 alias ProcessReturnCodes = Tuple!(CommandLineArgTypes, "type", string, "command");
 
 struct ArgValues
@@ -178,7 +178,7 @@ class CommandLineArgs
 	*/
 	void onValidArgs() @safe
 	{
-		writeln("VALID_ARG");
+		writeln("VALID_ARGS");
 	}
 
 	/**
@@ -261,7 +261,7 @@ class CommandLineArgs
 				}
 			}
 
-			return ProcessReturnCodes(CommandLineArgTypes.VALID_ARG, "");
+			return ProcessReturnCodes(CommandLineArgTypes.VALID_ARGS, "");
 		}
 		else
 		{
@@ -282,7 +282,7 @@ class CommandLineArgs
 
 		switch(processed.type) with (CommandLineArgTypes)
 		{
-			case VALID_ARG, FLAG_ARG:
+			case VALID_ARGS, FLAG_ARG:
 				onValidArgs();
 				break;
 			case HELP_ARG:
