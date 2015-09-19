@@ -205,6 +205,11 @@ class CommandLineArgs
 		{
 			bool firstArgProcessed;
 
+			if(!ignoreFirstArg)
+			{
+				firstArgProcessed = true;
+			}
+
 			foreach(element; elements)
 			{
 				auto keyValuePair = element.findSplit("=");
@@ -213,7 +218,7 @@ class CommandLineArgs
 	            auto value = keyValuePair[2].stripLeft();
 				auto modifiedKey = key.removechars("--");
 
-				if(ignoreFirstArg && firstArgProcessed == false)//(element.indexOf("-") == -1))
+				if(ignoreFirstArg && (element.indexOf("-") == -1))
 				{
 					firstArgProcessed = true;
 				}
