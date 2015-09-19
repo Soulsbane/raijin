@@ -282,7 +282,7 @@ class CommandLineArgs
 
 		switch(processed.type) with (CommandLineArgTypes)
 		{
-			case VALID_ARGS, FLAG_ARG:
+			case VALID_ARGS:
 				onValidArgs();
 				break;
 			case HELP_ARG:
