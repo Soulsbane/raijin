@@ -191,13 +191,15 @@ class CommandLineArgs
 	}
 
 	/**
-	*	Handles the registration of command line arguments passed to the program. Ideally processArgs method should be
-	*	used as it simplifies handling of command line arguments. But if you need a more fine grain approach use this method.
+	*	Handles the registration of command line arguments passed to the program. This is the internal command line
+	*	argument processing method. The method processArgs should be used as it simplifies handling of command line
+	*	arguments.
 	*
 	*	Params:
 	*		arguments = The arguments that are sent from main()
+	*		ignoreFirstArg = Causes the first argument passed to be ignored(ie won't cause a INVALID_ARG error).
 	*/
-	final auto process(string[] arguments, IgnoreFirstArg ignoreFirstArg = IgnoreFirstArg.no,
+	private final auto process(string[] arguments, IgnoreFirstArg ignoreFirstArg = IgnoreFirstArg.no,
 		AllowInvalidArgs allowInvalidArgs = AllowInvalidArgs.no) @safe
 	{
 		auto elements = arguments[1 .. $]; // INFO: Remove program name.
