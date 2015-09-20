@@ -192,6 +192,41 @@ class CommandLineArgs
 	}
 
 	/**
+	*	Handles the registration of command line arguments passed to the program.
+	*
+	*	Params:
+	*		arguments = The arguments that are sent from main()
+	*		ignoreFirstArg = Ignore the first argument passed and continue processing the remaining arguments
+	*		allowInvalidArgs = Any invalid arguments will be ignored and onInvalidArgs won't be called.
+	*/
+	final void processArgs(string[] arguments, IgnoreFirstArg ignoreFirstArg = IgnoreFirstArg.no,
+		AllowInvalidArgs allowInvalidArgs = AllowInvalidArgs.no) @safe
+	{
+		auto processed = process(arguments, ignoreFirstArg, allowInvalidArgs);
+		bool requiredArgsNotProcessed = checkRequiredArgs();
+
+		if(!requiredArgsNotProcessed)
+		{
+			switch(processed.type) with (CommandLineArgTypes)
+			{
+				case VALID_ARGS:
+					onValidArgs();
+					break;
+				case HELP_ARG:
+					onPrintHelp();
+					break;
+				case NO_ARGS:
+					onNoArgs();
+					break;
+				default:
+					onInvalidArgs(processed.type, processed.command);
+					break;
+			}
+		}
+	}
+
+private:
+	/**
 	*	Handles the registration of command line arguments passed to the program. This is the internal command line
 	*	argument processing method. The method processArgs should be used as it simplifies handling of command line
 	*	arguments.
@@ -201,7 +236,7 @@ class CommandLineArgs
 	*		ignoreFirstArg = Ignore the first argument passed and continue processing the remaining arguments
 	*		allowInvalidArgs = Any invalid arguments will be ignored and onInvalidArgs won't be called.
 	*/
-	private final auto process(string[] arguments, IgnoreFirstArg ignoreFirstArg = IgnoreFirstArg.no,
+	final auto process(string[] arguments, IgnoreFirstArg ignoreFirstArg = IgnoreFirstArg.no,
 		AllowInvalidArgs allowInvalidArgs = AllowInvalidArgs.no) @safe
 	{
 		auto elements = arguments[1 .. $]; // INFO: Remove program name.
@@ -286,55 +321,21 @@ class CommandLineArgs
 		}
 	}
 
-private bool checkRequiredArgs() @safe
-{
-	bool requiredArgsNotProcessed;
-
-	foreach(key, value; values_)
+	bool checkRequiredArgs() @safe
 	{
-		if(value.required && !value.requiredFlag)
+		bool requiredArgsNotProcessed;
+
+		foreach(key, value; values_)
 		{
-			writeln("The argument --", key, " must be supplied. Please supply the argument or use -help for more information.");
-			requiredArgsNotProcessed = true;
-			break; // If there is one required argument missing the others don't matter so bail out.
-		}
-	}
-
-	return requiredArgsNotProcessed;
-}
-
-	/**
-	*	Handles the registration of command line arguments passed to the program.
-	*
-	*	Params:
-	*		arguments = The arguments that are sent from main()
-	*		ignoreFirstArg = Ignore the first argument passed and continue processing the remaining arguments
-	*		allowInvalidArgs = Any invalid arguments will be ignored and onInvalidArgs won't be called.
-	*/
-	final void processArgs(string[] arguments, IgnoreFirstArg ignoreFirstArg = IgnoreFirstArg.no,
-		AllowInvalidArgs allowInvalidArgs = AllowInvalidArgs.no) @safe
-	{
-		auto processed = process(arguments, ignoreFirstArg, allowInvalidArgs);
-		bool requiredArgsNotProcessed = checkRequiredArgs();
-
-		if(!requiredArgsNotProcessed)
-		{
-			switch(processed.type) with (CommandLineArgTypes)
+			if(value.required && !value.requiredFlag)
 			{
-				case VALID_ARGS:
-					onValidArgs();
-					break;
-				case HELP_ARG:
-					onPrintHelp();
-					break;
-				case NO_ARGS:
-					onNoArgs();
-					break;
-				default:
-					onInvalidArgs(processed.type, processed.command);
-					break;
+				writeln("The argument --", key, " must be supplied. Please supply the argument or use -help for more information.");
+				requiredArgsNotProcessed = true;
+				break; // If there is one required argument missing the others don't matter so bail out.
 			}
 		}
+
+		return requiredArgsNotProcessed;
 	}
 
 private:
