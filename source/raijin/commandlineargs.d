@@ -198,6 +198,7 @@ class CommandLineArgs
 	*	Params:
 	*		arguments = The arguments that are sent from main()
 	*		ignoreFirstArg = Ignore the first argument passed and continue processing the remaining arguments
+	*		allowInvalidArgs = Any invalid arguments will be ignored and onInvalidArgs won't be called.
 	*/
 	private final auto process(string[] arguments, IgnoreFirstArg ignoreFirstArg = IgnoreFirstArg.no,
 		AllowInvalidArgs allowInvalidArgs = AllowInvalidArgs.no) @safe
@@ -288,6 +289,7 @@ class CommandLineArgs
 	*	Params:
 	*		arguments = The arguments that are sent from main()
 	*		ignoreFirstArg = Ignore the first argument passed and continue processing the remaining arguments
+	*		allowInvalidArgs = Any invalid arguments will be ignored and onInvalidArgs won't be called.
 	*/
 	final void processArgs(string[] arguments, IgnoreFirstArg ignoreFirstArg = IgnoreFirstArg.no,
 		AllowInvalidArgs allowInvalidArgs = AllowInvalidArgs.no) @safe
