@@ -220,7 +220,7 @@ class CommandLineArgs
 	            auto value = keyValuePair[2].stripLeft();
 				auto modifiedKey = key.removechars("--");
 
-				if(ignoreFirstArg && (element.indexOf("-") == -1))
+				if(!firstArgProcessed && (element.indexOf("-") == -1))
 				{
 					firstArgProcessed = true;
 				}
