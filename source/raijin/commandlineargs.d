@@ -25,6 +25,7 @@ struct ArgValues
 	string value;
 	string description;
 	bool required;
+	bool requiredFlag; // INFO: Will be true when the argument is processed.
 }
 
 /**
@@ -234,6 +235,7 @@ class CommandLineArgs
 						if(contains(modifiedKey))
 						{
 							values_[modifiedKey].value = value;
+							values_[modifiedKey].requiredFlag = true;
 						}
 						else
 						{
@@ -257,6 +259,7 @@ class CommandLineArgs
 							if(contains(modifiedKey))
 							{
 								values_[modifiedKey].value = "true";
+								values_[modifiedKey].requiredFlag = true;
 							}
 							else
 							{
@@ -283,6 +286,23 @@ class CommandLineArgs
 		}
 	}
 
+private bool checkRequiredArgs() @safe
+{
+	bool requiredArgsNotProcessed;
+
+	foreach(key, value; values_)
+	{
+		if(value.required && !value.requiredFlag)
+		{
+			writeln("The argument --", key, " must be supplied. Please supply the argument or use -help for more information.");
+			requiredArgsNotProcessed = true;
+			break; // If there is one required argument missing the others don't matter so bail out.
+		}
+	}
+
+	return requiredArgsNotProcessed;
+}
+
 	/**
 	*	Handles the registration of command line arguments passed to the program.
 	*
@@ -295,21 +315,25 @@ class CommandLineArgs
 		AllowInvalidArgs allowInvalidArgs = AllowInvalidArgs.no) @safe
 	{
 		auto processed = process(arguments, ignoreFirstArg, allowInvalidArgs);
+		bool requiredArgsNotProcessed = checkRequiredArgs();
 
-		switch(processed.type) with (CommandLineArgTypes)
+		if(!requiredArgsNotProcessed)
 		{
-			case VALID_ARGS:
-				onValidArgs();
-				break;
-			case HELP_ARG:
-				onPrintHelp();
-				break;
-			case NO_ARGS:
-				onNoArgs();
-				break;
-			default:
-				onInvalidArgs(processed.type, processed.command);
-				break;
+			switch(processed.type) with (CommandLineArgTypes)
+			{
+				case VALID_ARGS:
+					onValidArgs();
+					break;
+				case HELP_ARG:
+					onPrintHelp();
+					break;
+				case NO_ARGS:
+					onNoArgs();
+					break;
+				default:
+					onInvalidArgs(processed.type, processed.command);
+					break;
+			}
 		}
 	}
 
