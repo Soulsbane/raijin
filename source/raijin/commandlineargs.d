@@ -199,7 +199,7 @@ class CommandLineArgs
 	*		ignoreFirstArg = Ignore the first argument passed and continue processing the remaining arguments
 	*		allowInvalidArgs = Any invalid arguments will be ignored and onInvalidArgs won't be called.
 	*/
-	final void processArgs(string[] arguments, IgnoreFirstArg ignoreFirstArg = IgnoreFirstArg.no,
+	final bool processArgs(string[] arguments, IgnoreFirstArg ignoreFirstArg = IgnoreFirstArg.no,
 		AllowInvalidArgs allowInvalidArgs = AllowInvalidArgs.no) @safe
 	{
 		auto processed = process(arguments, ignoreFirstArg, allowInvalidArgs);
@@ -220,17 +220,21 @@ class CommandLineArgs
 			{
 				case VALID_ARGS:
 					onValidArgs();
-					break;
+					return true;
 				case HELP_ARG:
 					onPrintHelp();
-					break;
+					return true;
 				case NO_ARGS:
 					onNoArgs();
-					break;
+					return true;
 				default:
 					onInvalidArgs(processed.type, processed.command);
-					break;
+					return false;
 			}
+		}
+		else
+		{
+			return false;
 		}
 	}
 
