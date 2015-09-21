@@ -329,7 +329,8 @@ private:
 		{
 			if(value.required && !value.requiredFlag)
 			{
-				writeln("The argument --", key, " must be supplied. Please supply the argument or use -help for more information.");
+				//writeln("The argument --", key, " must be supplied. Please supply the argument or use -help for more information.");
+				writeln("Error: -", key, " is a required argument must be supplied. Please supply ", "-", key, "or use -help for more information.");
 				requiredArgsNotProcessed = true;
 				break; // If there is one required argument missing the others don't matter so bail out.
 			}
