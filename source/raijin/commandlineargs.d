@@ -152,6 +152,25 @@ class CommandLineArgs
 	}
 
 	/**
+	*	Retrieves the raw value passed via the command line in a safe way.
+	*
+	*	Params:
+	*		index = The integer value denoting the number of the argument passed.
+	*		defaultValue = Default value to use if the index is out of range.
+	*
+	*	Returns:
+	*		The value of the command line argument at index or defaultValue otherwise.
+	*/
+	final string getSafe(size_t index, string defaultValue = string.init) @safe
+	{
+		if(rawArguments_.length >= index)
+		{
+			return rawArguments_[index - 1];
+		}
+		return defaultValue;
+	}
+
+	/**
 	*	Default print method for printing registered command line options.
 	*/
 	void onPrintHelp() @trusted
