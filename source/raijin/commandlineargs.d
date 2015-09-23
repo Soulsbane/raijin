@@ -25,7 +25,6 @@ struct ArgValues
 	string value;
 	string description;
 	bool required;
-	bool requiredFlag; // INFO: Will be true when the argument is processed.
 }
 
 /**
@@ -302,7 +301,7 @@ private:
 						if(contains(modifiedKey))
 						{
 							values_[modifiedKey].value = value;
-							values_[modifiedKey].requiredFlag = true;
+							values_[modifiedKey].required = false;
 						}
 						else
 						{
@@ -326,7 +325,7 @@ private:
 							if(contains(modifiedKey))
 							{
 								values_[modifiedKey].value = "true";
-								values_[modifiedKey].requiredFlag = true;
+								values_[modifiedKey].required = false;
 							}
 							else
 							{
@@ -359,9 +358,8 @@ private:
 
 		foreach(key, value; values_)
 		{
-			if(value.required && !value.requiredFlag)
+			if(value.required)
 			{
-				//writeln("The argument --", key, " must be supplied. Please supply the argument or use -help for more information.");
 				writeln("Error: -", key, " is a required argument must be supplied. Please supply ", "-", key, "or use -help for more information.");
 				requiredArgsNotProcessed = true;
 				break; // If there is one required argument missing the others don't matter so bail out.
