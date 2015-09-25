@@ -198,7 +198,10 @@ class CommandLineArgs
 	*/
 	void onValidArgs() @safe
 	{
-		writeln("VALID_ARGS");
+		debug
+		{
+			writeln("VALID_ARGS");
+		}
 	}
 
 	/**
@@ -206,7 +209,10 @@ class CommandLineArgs
 	*/
 	void onNoArgs() @safe
 	{
-		writeln("No arguments were passed!");
+		debug
+		{
+			writeln("No arguments were passed!");
+		}
 	}
 
 	/**
