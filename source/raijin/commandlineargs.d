@@ -160,7 +160,7 @@ class CommandLineArgs
 	*	Returns:
 	*		The value of the command line argument at index or defaultValue otherwise.
 	*/
-	final string getSafe(size_t index, string defaultValue = string.init) @safe
+	final string safeGet(size_t index, string defaultValue = string.init) @safe
 	{
 		if(rawArguments_.length >= index)
 		{
