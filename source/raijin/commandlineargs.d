@@ -304,7 +304,7 @@ private:
 				{
 					if(separator.length && value.length)
 					{
-						if(contains(modifiedKey))
+						if(contains(modifiedKey)) // Key value argument -key=value
 						{
 							values_[modifiedKey].value = value;
 							values_[modifiedKey].required = false;
@@ -319,7 +319,7 @@ private:
 					}
 					else
 					{
-						if(separator.length)
+						if(separator.length) // Broken argument in form of -key=
 						{
 							if(allowInvalidArgs == false)
 							{
@@ -328,7 +328,7 @@ private:
 						}
 						else
 						{
-							if(contains(modifiedKey))
+							if(contains(modifiedKey)) // Flag argument -key
 							{
 								values_[modifiedKey].value = "true";
 								values_[modifiedKey].required = false;
