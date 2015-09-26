@@ -366,7 +366,7 @@ private:
 		{
 			if(value.required)
 			{
-				writeln("Error: -", key, " is a required argument must be supplied. Please supply ", "-", key, "or use -help for more information.");
+				writeln("Error: -", key, " is a required argument and must be supplied. Please supply ", "-", key, "or use -help for more information.");
 				requiredArgsNotProcessed = true;
 				break; // If there is one required argument missing the others don't matter so bail out.
 			}
