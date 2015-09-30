@@ -6,12 +6,12 @@
 
 module raijin.stringutils;
 
-import std.string : indexOf;
+import std.string : indexOf, CaseSensitive;
 import std.conv : to;
 
-bool find(immutable string value, immutable string toFindValue) pure @safe
+bool find(immutable string value, immutable string toFindValue, CaseSensitive cs = CaseSensitive.no) pure @safe
 {
-	if(value.indexOf(toFindValue) == -1)
+	if(value.indexOf(toFindValue, cs) == -1)
 	{
 		return false;
 	}
