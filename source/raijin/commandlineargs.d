@@ -291,10 +291,9 @@ private:
 			foreach(element; elements)
 			{
 				auto keyValuePair = element.findSplit("=");
-	            auto key = keyValuePair[0].stripRight();
-	            auto separator = keyValuePair[1];
-	            auto value = keyValuePair[2].stripLeft();
-				auto modifiedKey = key.removechars("--");
+	            immutable string key = keyValuePair[0].stripRight.removechars("-");
+	            immutable string separator = keyValuePair[1];
+	            immutable string value = keyValuePair[2].stripLeft();
 
 				if(!firstArgProcessed && (element.indexOf("-") == -1))
 				{
@@ -304,10 +303,10 @@ private:
 				{
 					if(separator.length && value.length)
 					{
-						if(contains(modifiedKey)) // Key value argument -key=value
+						if(contains(key)) // Key value argument -key=value
 						{
-							values_[modifiedKey].value = value;
-							values_[modifiedKey].required = false;
+							values_[key].value = value;
+							values_[key].required = false;
 						}
 						else
 						{
@@ -328,14 +327,14 @@ private:
 						}
 						else
 						{
-							if(contains(modifiedKey)) // Flag argument -key
+							if(contains(key)) // Flag argument -key
 							{
-								values_[modifiedKey].value = "true";
-								values_[modifiedKey].required = false;
+								values_[key].value = "true";
+								values_[key].required = false;
 							}
 							else
 							{
-								if(modifiedKey == "help")
+								if(key == "help")
 								{
 									return ProcessReturnCodes(CommandLineArgTypes.HELP_ARG, "-help");
 								}
