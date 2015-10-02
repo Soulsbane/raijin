@@ -21,8 +21,8 @@ import std.datetime : Clock;
 */
 struct KeyValueConfig
 {
-	alias string[string] KeyValueData;
-	alias KeyValueData[string] GroupData;
+	alias KeyValueData = string[string];
+	alias GroupData = KeyValueData[string];
 
 private:
 	void processText(immutable string text) @safe
@@ -45,14 +45,14 @@ private:
 			}
 			else if(line.startsWith("[") && line.endsWith("]"))
 			{
-				string groupName = line[1..$-1];
+				immutable string groupName = line[1..$-1];
 				currentGroupName = groupName;
 			}
 			else
 			{
 				auto groupAndKey = line.findSplit("=");
 	            auto key = groupAndKey[0].stripRight();
-	            auto value = groupAndKey[2].stripLeft();
+	            immutable auto value = groupAndKey[2].stripLeft();
 
 	            if (groupAndKey[1].length)
 	            {
@@ -294,13 +294,15 @@ public:
 	*/
 	void set(T)(immutable string key, T value) pure @safe
 	{
+		string convValue;
+
 		static if(!is(T == string))
 		{
-			string convValue = to!string(value);
+			convValue = to!string(value);
 		}
 		else
 		{
-			string convValue = value;
+			convValue = value;
 		}
 
 		if(isGroupString(key))
@@ -485,7 +487,6 @@ private:
 
 unittest
 {
-	import std.stdio;
 	string text = "
 		aBool=true
 		float = 3443.443
@@ -502,7 +503,7 @@ unittest
 
 	KeyValueConfig config;
 
-	bool loaded = config.loadString(text);
+	immutable bool loaded = config.loadString(text);
 	assert(loaded, "Failed to load string!");
 
 	assert(config.containsGroup("section"));
