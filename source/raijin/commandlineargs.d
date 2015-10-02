@@ -226,7 +226,7 @@ class CommandLineArgs
 	final bool processArgs(string[] arguments, IgnoreFirstArg ignoreFirstArg = IgnoreFirstArg.no,
 		AllowInvalidArgs allowInvalidArgs = AllowInvalidArgs.no) @safe
 	{
-		auto processed = process(arguments, ignoreFirstArg, allowInvalidArgs);
+		immutable auto processed = process(arguments, ignoreFirstArg, allowInvalidArgs);
 		bool requiredArgsNotProcessed;
 
 		if(processed.type == CommandLineArgTypes.HELP_ARG)
