@@ -1,12 +1,17 @@
 module raijin.configpath;
 
-import std.path : buildNormalizedPath;
-import std.file : exists, mkdirRecurse;
+import std.path : buildNormalizedPath, baseName, stripExtension;
+import std.file : exists, mkdirRecurse, thisExePath;
 
 import standardpaths : writablePath, StandardPath;
 
-struct ConfigPath
+class ConfigPath
 {
+    this()
+    {
+        applicationName_ = thisExePath.baseName.stripExtension;
+    }
+
     this(immutable string organizationName, immutable string applicationName)
     {
         organizationName_ = organizationName;
