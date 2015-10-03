@@ -10,21 +10,23 @@ class ConfigPath
     this()
     {
         applicationName_ = thisExePath.baseName.stripExtension;
+        configDirPath_ = writablePath(StandardPath.Config);
     }
 
     this(immutable string organizationName, immutable string applicationName)
     {
         organizationName_ = organizationName;
         applicationName_ = applicationName;
+        configDirPath_ = writablePath(StandardPath.Config);
     }
 
     string getConfigDir(immutable string name = string.init)
     {
         if(name == string.init)
         {
-            return buildNormalizedPath(writablePath(StandardPath.Config), organizationName_, applicationName_);
+            return buildNormalizedPath(configDirPath_, organizationName_, applicationName_);
         }
-        return buildNormalizedPath(writablePath(StandardPath.Config), organizationName_, applicationName_, name);
+        return buildNormalizedPath(configDirPath_, organizationName_, applicationName_, name);
     }
 
     void createConfigDir(immutable string name = string.init)
