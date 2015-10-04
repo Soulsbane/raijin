@@ -20,7 +20,7 @@ class ConfigPath
         configDirPath_ = writablePath(StandardPath.Config);
     }
 
-    string getConfigDir(immutable string name = string.init)
+    string getConfigDir(string name = string.init)
     {
         if(name == string.init)
         {
