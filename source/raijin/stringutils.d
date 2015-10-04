@@ -28,7 +28,7 @@ string pluralize(string text, immutable uint count)
 	}
 	else
 	{
-		char lastChar = text[$ - 1];
+		immutable char lastChar = text[$ - 1];
 
 		if(lastChar == 'y')
 		{
