@@ -24,7 +24,7 @@ string pluralize(string text, immutable uint count)
 
 	if(count == 1)
 	{
-		pluralizedNumber = "1 " ~ text;
+		pluralizedNumber = text;
 	}
 	else
 	{
@@ -33,11 +33,11 @@ string pluralize(string text, immutable uint count)
 		if(lastChar == 'y')
 		{
 			pluralizedNumber = text[0 .. $ - 1];
-			pluralizedNumber = to!string(count) ~" " ~ pluralizedNumber ~ "ies";
+			pluralizedNumber = pluralizedNumber ~ "ies";
 		}
 		else
 		{
-			pluralizedNumber = to!string(count) ~" " ~ text ~ "s";
+			pluralizedNumber = text ~ "s";
 		}
 	}
 
