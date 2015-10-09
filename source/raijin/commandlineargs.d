@@ -262,7 +262,6 @@ class CommandLineArgs
 		}
 	}
 
-private:
 	/**
 	*	Handles the registration of command line arguments passed to the program. This is the internal command line
 	*	argument processing method. The method processArgs should be used as it simplifies handling of command line
@@ -357,6 +356,7 @@ private:
 		}
 	}
 
+private:
 	bool checkRequiredArgs() @safe
 	{
 		bool requiredArgsNotProcessed;
