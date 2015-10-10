@@ -290,9 +290,14 @@ class CommandLineArgs
 			foreach(element; elements)
 			{
 				auto keyValuePair = element.findSplit("=");
-	            immutable string key = keyValuePair[0].stripRight.removechars("-");
+	            string key = keyValuePair[0].stripRight;
 	            immutable string separator = keyValuePair[1];
 	            immutable string value = keyValuePair[2].stripLeft();
+
+				if(key[0] == '-') // Remove the leading dash character.
+				{
+					key = key[1 .. $];
+				}
 
 				if(!firstArgProcessed && (element.indexOf("-") == -1))
 				{
