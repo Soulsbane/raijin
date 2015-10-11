@@ -160,13 +160,33 @@ class CommandLineArgs
 	*	Returns:
 	*		The value of the command line argument at index or defaultValue otherwise.
 	*/
-	final string safeGet(size_t index, string defaultValue = string.init) @safe
+	final T safeGet(T = string)(size_t index, string defaultValue = string.init)
 	{
+		string value;
+
+		if(defaultValue == string.init)
+		{
+			if(isBoolean!T)
+			{
+				value = "false";
+			}
+
+			else if(isNumeric!T)
+			{
+				value = "0";
+			}
+			else
+			{
+				value = defaultValue;
+			}
+		}
+
 		if(rawArguments_.length >= index)
 		{
-			return rawArguments_[index - 1];
+			value = rawArguments_[index - 1];
 		}
-		return defaultValue;
+
+		return to!T(value);
 	}
 
 	/**
