@@ -154,8 +154,8 @@ class CommandLineArgs
 	{
 		if(contains(key))
 		{
-			immutable string value = values_[key];
-
+			immutable string value = get(key);
+			
 			if(value == "true" || value == "false")
 			{
 				return true;
