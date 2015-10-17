@@ -508,5 +508,5 @@ unittest
 
 	assert(config.containsGroup("section"));
 	config.removeGroup("section");
-	assert(!config.containsGroup("section"));
+	assert(config.containsGroup("section") == false);
 }
