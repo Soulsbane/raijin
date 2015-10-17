@@ -150,6 +150,22 @@ class CommandLineArgs
 		return cast(bool)(key in values_);
 	}
 
+	bool isFlag(immutable string key) @safe
+	{
+		if(contains(key))
+		{
+			immutable string value = values_[key];
+
+			if(value == "true" || value == "false")
+			{
+				return true;
+			}
+
+			return false;
+		}
+
+		return false;
+	}
 	/**
 	*	Retrieves the raw value passed via the command line in a safe way.
 	*
