@@ -150,12 +150,21 @@ class CommandLineArgs
 		return cast(bool)(key in values_);
 	}
 
+	/**
+	*	Determines if a registered command line argument is a flag.
+	*
+	*	Params:
+	*		key - Name of the command line argument to retrieve.
+	*
+	*	Returns:
+	*		True if the command line argument is a flag and false otherwise.
+	*/
 	bool isFlag(immutable string key) @safe
 	{
 		if(contains(key))
 		{
 			immutable string value = get(key);
-			
+
 			if(value == "true" || value == "false")
 			{
 				return true;
