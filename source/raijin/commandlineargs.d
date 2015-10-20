@@ -440,5 +440,5 @@ private:
 private:
 	static ArgValues[string] values_;
 	static string[] rawArguments_;
-	string programName_;
+	static string programName_;
 }
