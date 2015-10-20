@@ -214,6 +214,11 @@ class CommandLineArgs
 		return to!T(value);
 	}
 
+	string getProgramName()
+	{
+		return programName_;
+	}
+
 	/**
 	*	Default print method for printing registered command line options.
 	*/
@@ -321,6 +326,8 @@ class CommandLineArgs
 		AllowInvalidArgs allowInvalidArgs = AllowInvalidArgs.no) @safe
 	{
 		auto elements = arguments[1 .. $]; // INFO: Remove program name.
+
+		programName_ = arguments[0];
 		rawArguments_ = elements;
 
 		if(elements.length > 0)
@@ -427,4 +434,5 @@ private:
 private:
 	static ArgValues[string] values_;
 	static string[] rawArguments_;
+	string programName_;
 }
