@@ -214,6 +214,12 @@ class CommandLineArgs
 		return to!T(value);
 	}
 
+	/**
+	*	Returns the name of the program.
+	*
+	*	Returns:
+	*		The name of the program.
+	*/
 	string getProgramName()
 	{
 		return programName_;
