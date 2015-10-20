@@ -233,7 +233,7 @@ class CommandLineArgs
 	/**
 	*	Called when an invalid argument is passed on the command line.
 	*/
-	void onInvalidArgs(CommandLineArgTypes error, string command) @safe
+	void onInvalidArgs(CommandLineArgTypes error, string command) @trusted
 	{
 		writeln("Invalid option, ", command, "! For help use -help");
 	}
@@ -241,7 +241,7 @@ class CommandLineArgs
 	/**
 	*	Called when an valid argument is passed on the command line.
 	*/
-	void onValidArgs() @safe
+	void onValidArgs() @trusted
 	{
 		debug
 		{
@@ -252,7 +252,7 @@ class CommandLineArgs
 	/**
 	*	Called when an valid argument is passed on the command line.
 	*/
-	void onNoArgs() @safe
+	void onNoArgs() @trusted
 	{
 		debug
 		{
