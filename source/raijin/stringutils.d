@@ -43,3 +43,21 @@ string pluralize(string text, immutable uint count)
 
 	return pluralizedNumber;
 }
+
+// INFO: Surely there is a phobos function to do this but I couldn't find it.
+string removeLeadingChars(string key, dchar charToRemove) @trusted
+{
+	size_t i;
+	int numCharsToRemove;
+
+	while(i < key.length)
+	{
+		if(key[i] == charToRemove)
+		{
+			++numCharsToRemove;
+		}
+		++i;
+	}
+
+	return key[numCharsToRemove .. $];
+}

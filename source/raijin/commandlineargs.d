@@ -12,6 +12,8 @@ import std.algorithm : findSplit;
 import std.stdio : writeln;
 import std.typecons : Flag, Tuple;
 
+import raijin.stringutils : removeLeadingChars;
+
 alias IgnoreFirstArg = Flag!"ignoreFirstArg";
 alias RequiredArg = Flag!"requiredArg";
 alias AllowInvalidArgs = Flag!"allowInvalidArgs";
@@ -261,6 +263,17 @@ class CommandLineArgs
 	}
 
 	/**
+	*	called each time a valid argument is passed.
+	*/
+	void onValidArg(immutable string argument) @trusted
+	{
+		debug
+		{
+			writeln("onValidArg: ", argument);
+		}
+	}
+
+	/**
 	*	Called when an valid argument is passed on the command line.
 	*/
 	void onNoArgs() @trusted
@@ -352,10 +365,7 @@ class CommandLineArgs
 	            immutable string separator = keyValuePair[1];
 	            immutable string value = keyValuePair[2].stripLeft();
 
-				if(key[0] == '-') // Remove the leading dash character.
-				{
-					key = key[1 .. $];
-				}
+				key = key.removeLeadingChars('-');
 
 				if(!firstArgProcessed && (element.indexOf("-") == -1))
 				{
@@ -369,6 +379,8 @@ class CommandLineArgs
 						{
 							values_[key].value = value;
 							values_[key].required = false;
+
+							onValidArg(key);
 						}
 						else
 						{
@@ -393,6 +405,8 @@ class CommandLineArgs
 							{
 								values_[key].value = "true";
 								values_[key].required = false;
+
+								onValidArg(key);
 							}
 							else
 							{
