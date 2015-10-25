@@ -8,7 +8,7 @@ module raijin.stringutils;
 
 import std.string : indexOf, CaseSensitive;
 import std.conv : to;
-import std.array;
+import std.range.primitives : empty, popFront, front;
 
 bool find(immutable string value, immutable string toFindValue, CaseSensitive cs = CaseSensitive.no) pure @safe
 {
