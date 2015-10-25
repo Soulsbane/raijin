@@ -8,6 +8,7 @@ module raijin.stringutils;
 
 import std.string : indexOf, CaseSensitive;
 import std.conv : to;
+import std.array;
 
 bool find(immutable string value, immutable string toFindValue, CaseSensitive cs = CaseSensitive.no) pure @safe
 {
@@ -45,19 +46,18 @@ string pluralize(string text, immutable uint count)
 }
 
 // INFO: Surely there is a phobos function to do this but I couldn't find it.
-string removeLeadingChars(string key, dchar charToRemove) @trusted
+string removeLeadingChars(string str, dchar charToRemove) @trusted
 {
-	size_t i;
-	int numCharsToRemove;
+    while (!str.empty)
+    {
+        auto c = str.front;
 
-	while(i < key.length)
-	{
-		if(key[i] == charToRemove)
+        if (c != charToRemove)
 		{
-			++numCharsToRemove;
+            break;
 		}
-		++i;
-	}
 
-	return key[numCharsToRemove .. $];
+        str.popFront();
+    }
+    return str;
 }
