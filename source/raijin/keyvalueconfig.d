@@ -82,9 +82,9 @@ private:
 
 public:
 	/**
-	*	Workaround for a D bug where destructor wont' be call if variable is global.
-	*	If you want KeyValueConfig to save object destruction and your variable is a global you must intialize it
-	*	like shown in the example.
+	*	Workaround for a D bug where the destructor won't be called if your KeyValueConfig object is a global.
+	*	If you want KeyValueConfig to save automatically upon destruction and your object is a global then it must
+	*	be intialized as shown in the example.
 	*
 	*	Example:
 	*		KeyValueConfig config;
