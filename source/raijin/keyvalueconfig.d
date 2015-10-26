@@ -81,6 +81,17 @@ private:
 	}
 
 public:
+	/**
+	*	Workaround for a D bug where destructor wont' be call if variable is global.
+	*	If you want KeyValueConfig to save object destruction and your variable is a global you must intialize it
+	*	like shown in the example.
+	*
+	*	Example:
+	*		KeyValueConfig config;
+	*		config = KeyValueConfig(); // Should be in main or another function.
+	*/
+	this(T)(T fix) {}
+
 	~this()
 	{
 		if(valuesModified_)
