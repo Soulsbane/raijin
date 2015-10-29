@@ -18,7 +18,7 @@ alias IgnoreFirstArg = Flag!"ignoreFirstArg";
 alias RequiredArg = Flag!"requiredArg";
 alias AllowInvalidArgs = Flag!"allowInvalidArgs";
 
-enum CommandLineArgTypes { VALID_ARGS, INVALID_ARG, INVALID_ARG_PAIR, NO_ARGS, HELP_ARG }
+enum CommandLineArgTypes { VALID_ARGS, INVALID_ARG, INVALID_ARG_PAIR, INVALID_FLAG_VALUE, NO_ARGS, HELP_ARG }
 alias ProcessReturnCodes = Tuple!(CommandLineArgTypes, "type", string, "command");
 
 struct ArgValues
@@ -377,10 +377,29 @@ class CommandLineArgs
 					{
 						if(contains(key)) // Key value argument -key=value
 						{
-							values_[key].value = value;
-							values_[key].required = false;
+							if(isFlag(key)) // FIXME: Check value for true or a false value also.
+							{
+								string currentValue = values_[key].value;
 
-							onValidArg(key);
+								if((currentValue == "true" || currentValue == "false") && (value == "true" || value == "false"))
+								{
+									values_[key].value = value;
+									values_[key].required = false;
+
+									onValidArg(key);
+								}
+								else
+								{
+									return ProcessReturnCodes(CommandLineArgTypes.INVALID_FLAG_VALUE, element);
+								}
+							}
+							else
+							{
+								values_[key].value = value;
+								values_[key].required = false;
+
+								onValidArg(key);
+							}
 						}
 						else
 						{
