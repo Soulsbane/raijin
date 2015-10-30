@@ -6,4 +6,5 @@ public
 	import raijin.configpath;
 	import raijin.keyvalueconfig;
 	import raijin.stringutils;
+	import raijin.typeutils;
 }
