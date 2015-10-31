@@ -4,37 +4,22 @@ import std.typecons : Flag;
 
 alias AllowNumericBooleanValues = Flag!"allowNumericBooleanValues";
 
-bool isBooleanString(immutable string value) @trusted
+bool isStringABool(immutable string value) @trusted
 {
-    if(value == "true" || value == "false")
-    {
-        return true;
-    }
-
-    return false;
+    return(value == "true" || value == "false");
 }
 
-bool isBooleanNumber(immutable string value)
+bool isNumberABool(immutable string value) @trusted
 {
-    if(value == "1" || value == "0")
-    {
-        return true;
-    }
-
-    return false;
+    return(value == "1" || value == "0");
 }
 
-bool isBooleanValue(immutable string value, AllowNumericBooleanValues allowNumeric = AllowNumericBooleanValues.yes) @trusted
+bool isNumberABool(immutable int value) @trusted
 {
-    if(value == "true" || value == "false")
-    {
-        return true;
-    }
+    return(value == 1 || value == 0);
+}
 
-    if(allowNumeric && (value == "1" || value == "0"))
-    {
-        return true;
-    }
-
-    return false;
+bool isBoolean(immutable string value)
+{
+    return (isStringABool(value) || isNumberABool(value));
 }
