@@ -384,7 +384,10 @@ class CommandLineArgs
 								}
 								else
 								{
-									return ProcessReturnCodes(CommandLineArgTypes.INVALID_FLAG_VALUE, element);
+									if(allowInvalidArgs == false)
+									{
+										return ProcessReturnCodes(CommandLineArgTypes.INVALID_FLAG_VALUE, element);
+									}
 								}
 							}
 							else
