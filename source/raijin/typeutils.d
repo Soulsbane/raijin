@@ -1,3 +1,7 @@
+/**
+*   Various functions to determine types at runtime.
+*/
+
 module raijin.typeutils;
 
 import std.typecons : Flag;
