@@ -181,7 +181,7 @@ class CommandLineArgs
 	*	Returns:
 	*		The value of the command line argument at index or defaultValue otherwise.
 	*/
-	final T safeGet(T = string)(size_t index, string defaultValue = string.init)
+	final T safeGet(T = string)(immutable size_t index, string defaultValue = string.init) @safe
 	{
 		string value;
 
@@ -359,11 +359,9 @@ class CommandLineArgs
 			foreach(element; elements)
 			{
 				auto keyValuePair = element.findSplit("=");
-	            string key = keyValuePair[0].stripRight;
+	            immutable string key = keyValuePair[0].stripRight.removeLeadingChars('-');
 	            immutable string separator = keyValuePair[1];
 	            immutable string value = keyValuePair[2].stripLeft();
-
-				key = key.removeLeadingChars('-');
 
 				if(!firstArgProcessed && (element.indexOf("-") == -1))
 				{
