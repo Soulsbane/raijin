@@ -18,7 +18,7 @@ alias IgnoreFirstArg = Flag!"ignoreFirstArg";
 alias RequiredArg = Flag!"requiredArg";
 alias AllowInvalidArgs = Flag!"allowInvalidArgs";
 
-enum CommandLineArgTypes { INVALID_ARG, INVALID_ARG_PAIR, INVALID_FLAG_VALUE, VALID_ARGS, NO_ARGS, HELP_ARG }
+enum CommandLineArgTypes { NO_VALUE, INVALID_ARG, INVALID_ARG_PAIR, INVALID_FLAG_VALUE, VALID_ARGS, NO_ARGS, HELP_ARG }
 alias ProcessReturnCodes = Tuple!(CommandLineArgTypes, "type", string, "command");
 
 struct ArgValues
@@ -315,7 +315,10 @@ class CommandLineArgs
 					onNoArgs();
 					return true;
 				default:
-					onInvalidArgs(processed.type, processed.command);
+					if(allowInvalidArgs == false)
+					{
+						onInvalidArgs(processed.type, processed.command);
+					}
 					return false;
 			}
 		}
@@ -339,6 +342,7 @@ class CommandLineArgs
 		AllowInvalidArgs allowInvalidArgs = AllowInvalidArgs.no) @safe
 	{
 		auto elements = arguments[1 .. $]; // INFO: Remove program name.
+		ProcessReturnCodes returnCodes;
 
 		programName_ = arguments[0];
 		rawArguments_ = elements;
@@ -384,10 +388,8 @@ class CommandLineArgs
 								}
 								else
 								{
-									if(allowInvalidArgs == false)
-									{
-										return ProcessReturnCodes(CommandLineArgTypes.INVALID_FLAG_VALUE, element);
-									}
+									returnCodes = ProcessReturnCodes(CommandLineArgTypes.INVALID_FLAG_VALUE, element);
+									break;
 								}
 							}
 							else
@@ -400,20 +402,16 @@ class CommandLineArgs
 						}
 						else
 						{
-							if(allowInvalidArgs == false)
-							{
-								return ProcessReturnCodes(CommandLineArgTypes.INVALID_ARG, element);
-							}
+							returnCodes = ProcessReturnCodes(CommandLineArgTypes.INVALID_ARG, element);
+							break;
 						}
 					}
 					else
 					{
 						if(separator.length) // Broken argument in form of -key=
 						{
-							if(allowInvalidArgs == false)
-							{
-								return ProcessReturnCodes(CommandLineArgTypes.INVALID_ARG_PAIR, element);
-							}
+							returnCodes = ProcessReturnCodes(CommandLineArgTypes.INVALID_ARG_PAIR, element);
+							break;
 						}
 						else
 						{
@@ -428,20 +426,26 @@ class CommandLineArgs
 							{
 								if(key == "help")
 								{
-									return ProcessReturnCodes(CommandLineArgTypes.HELP_ARG, "-help");
+									returnCodes = ProcessReturnCodes(CommandLineArgTypes.HELP_ARG, "-help");
+									break;
 								}
 
-								if(allowInvalidArgs == false)
-								{
-									return ProcessReturnCodes(CommandLineArgTypes.INVALID_ARG, element);
-								}
+								returnCodes = ProcessReturnCodes(CommandLineArgTypes.INVALID_ARG, element);
+								break;
 							}
 						}
 					}
 				}
 			}
 
-			return ProcessReturnCodes(CommandLineArgTypes.VALID_ARGS, "");
+			if(returnCodes.type == CommandLineArgTypes.NO_VALUE)
+			{
+				return ProcessReturnCodes(CommandLineArgTypes.VALID_ARGS, "");
+			}
+			else
+			{
+				return returnCodes;
+			}
 		}
 		else
 		{
