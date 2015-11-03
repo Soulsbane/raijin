@@ -274,11 +274,6 @@ public:
 		{
 		    return get!T(key, defaultValue);
 		}
-
-	/*	auto groupValues = getGroup(group);
-		auto groupValue = groupValues.get(key, defaultValue);
-
-		return to!T(groupValue);*/
 	}
 
 	/**
@@ -300,7 +295,7 @@ public:
 	*	Retrieves an associative array containing every group
 	*
 	*	Returns:
-	*		An associative array containing every group.	
+	*		An associative array containing every group.
 	*/
 	GroupData getGroups()
 	{
