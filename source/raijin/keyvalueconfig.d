@@ -297,6 +297,17 @@ public:
 	}
 
 	/**
+	*	Retrieves an associative array containing every group
+	*
+	*	Returns:
+	*		An associative array containing every group.	
+	*/
+	GroupData getGroups()
+	{
+		return values_;
+	}
+
+	/**
 	*	Sets a config value.
 	*
 	*	Params:
