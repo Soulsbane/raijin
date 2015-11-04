@@ -104,23 +104,24 @@ template RangeTuple(size_t N)
 /// (equivalent of `list(x, , y)` in PHP).
 auto list(Args...)(auto ref Args args)
 {
-import std.typecons;
-import std.format;
+    import std.typecons;
+    import std.format;
 
-struct List
-{
-    auto dummy() { return args[0]; }
-
-    void opAssign(T)(auto ref T t)
+    struct List
     {
-        assert(t.length == args.length,
-            "Assigning %d elements to list with %d elements"
-            .format(t.length, args.length));
+        auto dummy() { return args[0]; }
 
-        foreach (i; RangeTuple!(Args.length))
-            static if (!is(Args[i] == typeof(null)))
-                args[i] = t[i];
+        void opAssign(T)(auto ref T t)
+        {
+            assert(t.length == args.length,
+                "Assigning %d elements to list with %d elements"
+                .format(t.length, args.length));
+
+            foreach (i; RangeTuple!(Args.length))
+                static if (!is(Args[i] == typeof(null)))
+                    args[i] = t[i];
+        }
     }
-    }
+    
     return List();
 }
