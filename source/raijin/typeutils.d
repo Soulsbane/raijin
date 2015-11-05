@@ -104,8 +104,7 @@ template RangeTuple(size_t N)
 /// (equivalent of `list(x, , y)` in PHP).
 auto list(Args...)(auto ref Args args)
 {
-    import std.typecons;
-    import std.format;
+    import std.format : format;
 
     struct List
     {
@@ -122,6 +121,6 @@ auto list(Args...)(auto ref Args args)
                     args[i] = t[i];
         }
     }
-    
+
     return List();
 }
