@@ -1,5 +1,7 @@
 /**
-*	This module contains a simple class that processes command line arguments.
+*	This module contains a simple class that processes command line arguments and stores
+*	them in a hashtable. The hash table is static so this class object can be created multiple
+*	times without having to reinitialize it when the arguments from main.
 *
 *	Author: Paul Crane
 */
