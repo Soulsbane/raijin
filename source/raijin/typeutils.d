@@ -18,7 +18,7 @@ alias AllowNumericBooleanValues = Flag!"allowNumericBooleanValues";
 *       true if the value is a boolean false otherwise.
 */
 
-bool isStringABool(immutable string value) @trusted
+bool isBooleanString(immutable string value) @trusted
 {
     return(value == "true" || value == "false");
 }
@@ -32,7 +32,7 @@ bool isStringABool(immutable string value) @trusted
 *   Returns:
 *       true if the value is a boolean false otherwise.
 */
-bool isNumberABool(immutable string value) @trusted
+bool isBooleanNumber(immutable string value) @trusted
 {
     return(value == "1" || value == "0");
 }
@@ -46,7 +46,7 @@ bool isNumberABool(immutable string value) @trusted
 *   Returns:
 *       true if the value is a boolean false otherwise.
 */
-bool isNumberABool(immutable int value) @trusted
+bool isBooleanNumber(immutable int value) @trusted
 {
     return(value == 1 || value == 0);
 }
@@ -123,4 +123,9 @@ auto list(Args...)(auto ref Args args)
     }
 
     return List();
+}
+
+unittest
+{
+    assert("true".isBoolean);
 }
