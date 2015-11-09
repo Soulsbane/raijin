@@ -44,3 +44,13 @@ private:
     string applicationName_;
     string configDirPath_;
 }
+
+unittest
+{
+    auto path = new ConfigPath("DlangUnitOrg", "MyUnitTestApp");
+
+    import std.stdio;
+    writeln("Testing ConfigPath class...");
+    writeln(path.getConfigDir("tests"));
+    writeln();
+}
