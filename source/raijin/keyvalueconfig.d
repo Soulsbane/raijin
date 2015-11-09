@@ -110,7 +110,7 @@ public:
 			auto configfile = File(fileName_, "w+");
 			auto defaultGroup = getGroup(defaultGroupName_);
 
-			foreach(key, value; defaultGroup) // INFO: Print the default group values first.
+			foreach(key, value; defaultGroup) // INFO: Write the default group values first.
 			{
 				configfile.writeln(key, separator_, value);
 			}
@@ -119,19 +119,12 @@ public:
 			{
 				if(groupName != defaultGroupName_)
 				{
-					if(groupName != defaultGroupName_)
-					{
-						configfile.writeln("[", groupName, "]");
-					}
+					configfile.writeln("[", groupName, "]");
 
 					foreach(key, value; data)
 					{
 						configfile.writeln(key, separator_, value);
 					}
-				}
-				else
-				{
-					continue;
 				}
 			}
 		}
