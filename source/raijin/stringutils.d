@@ -74,7 +74,7 @@ string pluralize(string text, immutable uint count)
 *		charToRemove = The character to remove.
 
 *	Returns:
-*		The modified string with all characters to be removed removed.		
+*		The modified string with all characters to be removed are removed.
 */
 string removeLeadingChars(string str, dchar charToRemove) @trusted
 {
@@ -91,4 +91,17 @@ string removeLeadingChars(string str, dchar charToRemove) @trusted
         str.popFront();
     }
     return str;
+}
+
+unittest
+{
+	assert("--help".removeLeadingChars('-') == "help");
+	assert("--help-me".removeLeadingChars('-') == "help-me");
+	assert("fly".pluralize(10) == "flies");
+	assert("fly".pluralize(1) == "fly");
+	assert("book".pluralize(10) == "books");
+	assert("book".pluralize(1) == "book");
+	assert("Hello World".find("Hello") == true);
+	assert("Hello World".find("hello") == true);
+	assert("Hello World".find("hello", CaseSensitive.yes) == false);
 }
