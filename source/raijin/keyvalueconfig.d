@@ -482,10 +482,10 @@ public:
 		return get!T(key);
 	}
 
-	alias getInt = getT!int;
 	alias getLong = getT!long;
-	alias getBool = getT!bool;
+	alias getLong = getT!ulong;
 	alias getDouble = getT!double;
+	alias getBool = getT!bool;
 
 private:
 	immutable char separator_ = '=';
