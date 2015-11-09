@@ -62,7 +62,7 @@ bool isBooleanNumber(immutable int value) @trusted
 */
 bool isBoolean(immutable string value)
 {
-    return (isStringABool(value) || isNumberABool(value));
+    return (isBooleanString(value) || isBooleanNumber(value));
 }
 
 /**
@@ -127,5 +127,17 @@ auto list(Args...)(auto ref Args args)
 
 unittest
 {
-    assert("true".isBoolean);
+    assert("true".isBoolean == true);
+    assert("trues".isBoolean == false);
+    assert("0".isBooleanString == false);
+    assert("true".isBooleanString == true);
+    assert(0.isBooleanNumber == true);
+    assert(2.isBooleanNumber == false);
+    assert("0".isBooleanNumber == true);
+    assert("2".isBooleanNumber == false);
+
+    import std.algorithm : findSplit;
+	string name, value;
+	list(name, null, value) = "key=value".findSplit("=");
+    assert(name == "key" && value == "value");
 }
