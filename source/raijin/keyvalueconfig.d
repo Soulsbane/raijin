@@ -519,4 +519,13 @@ unittest
 	assert(config.containsGroup("section"));
 	config.removeGroup("section");
 	assert(config.containsGroup("section") == false);
+
+	assert(config.contains("time"));
+
+	assert(config.get!bool("aBool"));
+	assert(config.get("another.world") == "hello");
+
+	assert(config.contains("number"));
+	config.remove("number");
+	assert(config.contains("number") == false);
 }
