@@ -482,10 +482,10 @@ public:
 		return get!T(key);
 	}
 
-	alias getLong = getT!long;
-	alias getLong = getT!ulong;
-	alias getDouble = getT!double;
-	alias getBool = getT!bool;
+	alias integer = getT!long;
+	alias uinteger = getT!ulong;
+	alias floating = getT!double;
+	alias boolean = getT!bool;
 
 private:
 	immutable char separator_ = '=';
@@ -523,9 +523,21 @@ unittest
 	assert(config.contains("time"));
 
 	assert(config.get!bool("aBool"));
+	assert(config.boolean("aBool")); // Syntactic sugar
 	assert(config.get("another.world") == "hello");
 
 	assert(config.contains("number"));
 	config.remove("number");
 	assert(config.contains("number") == false);
+
+	writeln("KeyValueConfig: Testing getGroup...");
+
+	auto group = config.getGroup("another");
+
+	foreach(key, value; group)
+	{
+		writeln(key, " => ", value);
+	}
+
+	writeln();
 }
