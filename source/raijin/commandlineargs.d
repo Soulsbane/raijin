@@ -98,7 +98,8 @@ class CommandLineArgs
 	*		defaultValue = The default value to use if no value is supplied.
 	*		description = The description of what the command line argument does.
 	*/
-	final void addCommand(immutable string key, immutable string defaultValue, immutable string description, RequiredArg required = RequiredArg.no) @safe
+	final void addCommand(immutable string key, immutable string defaultValue, immutable string description,
+		RequiredArg required = RequiredArg.no) @safe
 	{
 		ArgValues values;
 
@@ -250,35 +251,17 @@ class CommandLineArgs
 	/**
 	*	Called when an valid argument is passed on the command line.
 	*/
-	void onValidArgs() @trusted
-	{
-		debug
-		{
-			writeln("VALID_ARGS");
-		}
-	}
+	void onValidArgs() @trusted {}
 
 	/**
 	*	called each time a valid argument is passed.
 	*/
-	void onValidArg(immutable string argument) @trusted
-	{
-		debug
-		{
-			writeln("onValidArg: ", argument);
-		}
-	}
+	void onValidArg(immutable string argument) @trusted {}
 
 	/**
 	*	Called when an valid argument is passed on the command line.
 	*/
-	void onNoArgs() @trusted
-	{
-		debug
-		{
-			writeln("No arguments were passed!");
-		}
-	}
+	void onNoArgs() @trusted {}
 
 	/**
 	*	Handles the registration of command line arguments passed to the program.
@@ -379,7 +362,8 @@ class CommandLineArgs
 							{
 								string currentValue = values_[key].value;
 
-								if((currentValue == "true" || currentValue == "false") && (value == "true" || value == "false"))
+								if((currentValue == "true" || currentValue == "false") &&
+									(value == "true" || value == "false"))
 								{
 									values_[key].value = value;
 									values_[key].required = false;
@@ -462,7 +446,8 @@ private:
 		{
 			if(value.required)
 			{
-				writeln("Error: -", key, " is a required argument and must be supplied. Please supply ", "-", key, "or use -help for more information.");
+				writeln("Error: -", key, " is a required argument and must be supplied. Please supply ",
+					"-", key, "or use -help for more information.");
 				requiredArgsNotProcessed = true;
 				break; // If there is one required argument missing the others don't matter so bail out.
 			}
