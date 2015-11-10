@@ -476,3 +476,16 @@ private:
 	static string[] rawArguments_;
 	static string programName_;
 }
+
+unittest
+{
+	auto arguments = ["--flag", "value=this is a test"];
+	auto args = new CommandLineArgs;
+
+	args.addCommand("flag", "true", "A test flag");
+	args.addCommand("value", "the default value", "Sets value");
+	args.processArgs(arguments);
+
+	assert(args.get!bool("flag") == true);
+	assert(args.get("value") == "this is a test");
+}
