@@ -76,7 +76,7 @@ class CommandLineArgs
 	*		defaultValue = Allow the assignment of a default value if key does not exist.
 	*
 	*	Returns:
-	*		The value of value of the command line argument to getcommand line argument to get
+	*		The value of value of the command line argument to get
 	*
 	*/
 	final T get(T = string)(immutable string key, string defaultValue) @safe
@@ -123,11 +123,25 @@ class CommandLineArgs
 		values_[key] = values;
 	}
 
+	/**
+	*	Retrieves the value of key where key is the name of the command line argument.
+	*	T is the the type that returned value should be converted to.
+	*
+	*	Params:
+	*		key = Name of the command line argument to get.
+	*
+	*	Returns:
+	*		The value of value of the command line argument to get
+	*
+	*/
 	final string opIndex(immutable string key) @safe
 	{
 		return get(key);
 	}
 
+	/**
+	*	Assigns a value to a commandline argument stored internally.
+	*/
 	final void opIndexAssign(string value, immutable string key) @safe
 	{
 		ArgValues values;
@@ -136,6 +150,9 @@ class CommandLineArgs
 		values_[key] = values;
 	}
 
+	/**
+	*	Assigns a value to a commandline argument stored internally but uses ArgValues as the value.
+	*/
 	final void opIndexAssign(ArgValues values, immutable string key) @safe
 	{
 		values_[key] = values;
