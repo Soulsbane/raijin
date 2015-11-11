@@ -466,11 +466,27 @@ public:
 		return values_.remove(key);
 	}
 
+	/**
+	*	Allows config values to be accessed as you would with an associative array.
+	*
+	*	Params:
+	*		key = Name of the value to retrieve
+	*
+	*	Returns:
+	*		The value associated with the key.
+	*/
 	string opIndex(string key) pure @safe
 	{
 		return get(key);
 	}
 
+	/**
+	*	Allows config values to be assigned as you would with an associative array.
+	*
+	*	Params:
+	*		key = Name of the key to assign the value to.
+	*		value = The value in which key should be assigned to.
+	*/
 	void opIndexAssign(T = string)(T value, string key) pure @safe
 	{
 		set(key, value);
