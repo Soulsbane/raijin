@@ -281,7 +281,7 @@ class CommandLineArgs
 	*/
 	void onInvalidArgs(CommandLineArgTypes error, string command) @trusted
 	{
-		writeln("Invalid option, ", command, "! For help use -help", error);
+		writeln("Invalid option ", command, "! ", ArgTypesToString(error), ". Use -help for a list of available commands.");
 	}
 
 	/**
