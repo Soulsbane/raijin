@@ -265,7 +265,7 @@ class CommandLineArgs
 	*/
 	void onInvalidArgs(CommandLineArgTypes error, string command) @trusted
 	{
-		writeln("Invalid option, ", command, "! For help use -help");
+		writeln("Invalid option, ", command, "! For help use -help", error);
 	}
 
 	/**
@@ -294,7 +294,7 @@ class CommandLineArgs
 	final bool processArgs(string[] arguments, IgnoreFirstArg ignoreFirstArg = IgnoreFirstArg.no,
 		AllowInvalidArgs allowInvalidArgs = AllowInvalidArgs.no) @safe
 	{
-		immutable auto processed = process(arguments, ignoreFirstArg, allowInvalidArgs);
+		immutable auto processed = process(arguments, ignoreFirstArg);
 		bool requiredArgsNotProcessed;
 
 		if(processed.type == CommandLineArgTypes.HELP_ARG)
@@ -343,8 +343,7 @@ class CommandLineArgs
 	*		ignoreFirstArg = Ignore the first argument passed and continue processing the remaining arguments
 	*		allowInvalidArgs = Any invalid arguments will be ignored and onInvalidArgs won't be called.
 	*/
-	final auto process(string[] arguments, IgnoreFirstArg ignoreFirstArg = IgnoreFirstArg.no,
-		AllowInvalidArgs allowInvalidArgs = AllowInvalidArgs.no) @safe
+	final auto process(string[] arguments, IgnoreFirstArg ignoreFirstArg = IgnoreFirstArg.no) @safe
 	{
 		auto elements = arguments[1 .. $]; // INFO: Remove program name.
 		ProcessReturnCodes returnCodes;
