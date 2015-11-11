@@ -23,12 +23,15 @@ alias AllowInvalidArgs = Flag!"allowInvalidArgs";
 enum CommandLineArgTypes { NO_VALUE, INVALID_ARG, INVALID_ARG_PAIR, INVALID_FLAG_VALUE, VALID_ARGS, NO_ARGS, HELP_ARG }
 alias ProcessReturnCodes = Tuple!(CommandLineArgTypes, "type", string, "command");
 
+/**
+	The type in which each command line argument is stored in.
+*/
 struct ArgValues
 {
-	string defaultValue;
-	string value;
-	string description;
-	bool required;
+	string defaultValue; /// Initial value a command line argument has if it isn't supplied.
+	string value; // The Value set via the command line.
+	string description; /// The description of the command line argument.
+	bool required; /// true if the command line argument is required false otherwise.
 }
 
 /**
