@@ -377,7 +377,7 @@ class CommandLineArgs
 						{
 							if(isFlag(key)) // FIXME: Check value for true or a false value also.
 							{
-								string currentValue = values_[key].value;
+								immutable string currentValue = values_[key].value;
 
 								if((currentValue == "true" || currentValue == "false") &&
 									(value == "true" || value == "false"))
