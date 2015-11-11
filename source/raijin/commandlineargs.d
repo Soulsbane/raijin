@@ -34,6 +34,22 @@ struct ArgValues
 	bool required; /// true if the command line argument is required false otherwise.
 }
 
+private string ArgTypesToString(CommandLineArgTypes type)
+{
+	string[CommandLineArgTypes] typeTable =
+	[
+		CommandLineArgTypes.NO_VALUE:"Argument has no value",
+		CommandLineArgTypes.INVALID_ARG:"Invalid argument was passed",
+		CommandLineArgTypes.INVALID_ARG_PAIR:"Argument requires a value",
+		CommandLineArgTypes.INVALID_FLAG_VALUE:"Argument must not contain a value",
+		CommandLineArgTypes.VALID_ARGS:"",
+		CommandLineArgTypes.NO_ARGS:"",
+		CommandLineArgTypes.HELP_ARG:""
+	];
+
+	return typeTable[type];
+}
+
 /**
 *	Handles the processing of command line arguments.
 */
