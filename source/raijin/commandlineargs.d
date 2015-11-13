@@ -357,7 +357,6 @@ class CommandLineArgs
 	*	Params:
 	*		arguments = The arguments that are sent from main()
 	*		ignoreFirstArg = Ignore the first argument passed and continue processing the remaining arguments
-	*		allowInvalidArgs = Any invalid arguments will be ignored and onInvalidArgs won't be called.
 	*/
 	final auto process(string[] arguments, IgnoreFirstArg ignoreFirstArg = IgnoreFirstArg.no) @safe
 	{
