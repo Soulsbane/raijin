@@ -34,7 +34,7 @@ struct ArgValues
 	bool required; /// true if the command line argument is required false otherwise.
 }
 
-private string ArgTypesToString(CommandLineArgTypes type)
+private string argTypesToString(CommandLineArgTypes type)
 {
 	string[CommandLineArgTypes] typeTable =
 	[
@@ -281,7 +281,7 @@ class CommandLineArgs
 	*/
 	void onInvalidArgs(CommandLineArgTypes error, string command) @trusted
 	{
-		writeln("Invalid option ", command, "! ", ArgTypesToString(error), ". Use -help for a list of available commands.");
+		writeln("Invalid option ", command, "! ", argTypesToString(error), ". Use -help for a list of available commands.");
 	}
 
 	/**
