@@ -79,22 +79,22 @@ bool isBoolean(immutable string value)
  // NOTE: The following functions can be found in CyberShadows ae lib https://github.com/CyberShadow/ae/
 template ValueTuple(T...)
 {
-    alias T ValueTuple;
+    alias ValueTuple = T;
 }
 
 template RangeTupleImpl(size_t N, R...)
 {
     static if (N==R.length)
-        alias R RangeTupleImpl;
+        alias RangeTupleImpl = R;
     else
-        alias RangeTupleImpl!(N, ValueTuple!(R, R.length)) RangeTupleImpl;
+        alias RangeTupleImpl = RangeTupleImpl!(N, ValueTuple!(R, R.length));
 }
 
 /// Generate a tuple containing integers from 0 to N-1.
 /// Useful for static loop unrolling. (staticIota)
 template RangeTuple(size_t N)
 {
-    alias RangeTupleImpl!(N, ValueTuple!()) RangeTuple;
+    alias RangeTuple = RangeTupleImpl!(N, ValueTuple!());
 }
 
 /// Equivalent of PHP's `list` language construct:
