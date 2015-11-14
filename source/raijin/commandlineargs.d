@@ -34,10 +34,14 @@ struct ArgValues
 	bool required; /// true if the command line argument is required false otherwise.
 }
 
-/// NOTE: This mixin inserts a condition for checking whether or not to allowInvalidArgs should be allow in process()
+/// NOTE: This mixin inserts a condition for checking whether or not to allowInvalidArgs in process()
 private string breakOnInvalidArg(immutable string type)
 {
-	return "if(allowInvalidArgs == false){return ProcessReturnCodes(CommandLineArgTypes." ~ type ~ "" ~ ", element);}";
+	return "
+		if(allowInvalidArgs == false)
+		{
+			return ProcessReturnCodes(CommandLineArgTypes." ~ type ~ ", element);
+		}";
 }
 
 private string argTypesToString(CommandLineArgTypes type)
