@@ -364,7 +364,6 @@ class CommandLineArgs
 	final auto process(string[] arguments, IgnoreFirstArg ignoreFirstArg = IgnoreFirstArg.no,
 		AllowInvalidArgs allowInvalidArgs = AllowInvalidArgs.no) @safe
 	{
-		//FIXME: We shouldn't break out of the loop if allowInvalidArgs is set to yes.
 		auto elements = arguments[1 .. $]; // INFO: Remove program name.
 
 		programName_ = arguments[0];
@@ -396,7 +395,7 @@ class CommandLineArgs
 					{
 						if(contains(key)) // Key value argument -key=value
 						{
-							if(isFlag(key)) // FIXME: Check value for true or a false value also.
+							if(isFlag(key))
 							{
 								immutable string currentValue = values_[key].value;
 
