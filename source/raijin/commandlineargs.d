@@ -34,6 +34,12 @@ struct ArgValues
 	bool required; /// true if the command line argument is required false otherwise.
 }
 
+/// NOTE: This mixin inserts a condition for checking whether or not to allowInvalidArgs should be allow in process()
+private string breakOnInvalidArg(immutable string type)
+{
+	return "if(allowInvalidArgs == false){return ProcessReturnCodes(CommandLineArgTypes." ~ type ~ "" ~ ", element);}";
+}
+
 private string argTypesToString(CommandLineArgTypes type)
 {
 	string[CommandLineArgTypes] typeTable =
@@ -310,7 +316,7 @@ class CommandLineArgs
 	final bool processArgs(string[] arguments, IgnoreFirstArg ignoreFirstArg = IgnoreFirstArg.no,
 		AllowInvalidArgs allowInvalidArgs = AllowInvalidArgs.no) @safe
 	{
-		immutable auto processed = process(arguments, ignoreFirstArg);
+		immutable auto processed = process(arguments, ignoreFirstArg, allowInvalidArgs);
 		bool requiredArgsNotProcessed;
 
 		if(processed.type == CommandLineArgTypes.HELP_ARG)
@@ -336,10 +342,7 @@ class CommandLineArgs
 					onNoArgs();
 					return true;
 				default:
-					if(allowInvalidArgs == false)
-					{
-						onInvalidArgs(processed.type, processed.command);
-					}
+					onInvalidArgs(processed.type, processed.command);
 					return false;
 			}
 		}
@@ -358,10 +361,11 @@ class CommandLineArgs
 	*		arguments = The arguments that are sent from main()
 	*		ignoreFirstArg = Ignore the first argument passed and continue processing the remaining arguments
 	*/
-	final auto process(string[] arguments, IgnoreFirstArg ignoreFirstArg = IgnoreFirstArg.no) @safe
+	final auto process(string[] arguments, IgnoreFirstArg ignoreFirstArg = IgnoreFirstArg.no,
+		AllowInvalidArgs allowInvalidArgs = AllowInvalidArgs.no) @safe
 	{
+		//FIXME: We shouldn't break out of the loop if allowInvalidArgs is set to yes.
 		auto elements = arguments[1 .. $]; // INFO: Remove program name.
-		ProcessReturnCodes returnCodes;
 
 		programName_ = arguments[0];
 		rawArguments_ = elements;
@@ -406,8 +410,7 @@ class CommandLineArgs
 								}
 								else
 								{
-									returnCodes = ProcessReturnCodes(CommandLineArgTypes.INVALID_FLAG_VALUE, element);
-									break;
+									mixin(breakOnInvalidArg("INVALID_FLAG_VALUE"));
 								}
 							}
 							else
@@ -420,16 +423,14 @@ class CommandLineArgs
 						}
 						else
 						{
-							returnCodes = ProcessReturnCodes(CommandLineArgTypes.INVALID_ARG, element);
-							break;
+							mixin(breakOnInvalidArg("INVALID_ARG"));
 						}
 					}
 					else
 					{
 						if(separator.length) // Broken argument in form of -key=
 						{
-							returnCodes = ProcessReturnCodes(CommandLineArgTypes.INVALID_ARG_PAIR, element);
-							break;
+							mixin(breakOnInvalidArg("INVALID_ARG_PAIR"));
 						}
 						else
 						{
@@ -444,26 +445,17 @@ class CommandLineArgs
 							{
 								if(key == "help")
 								{
-									returnCodes = ProcessReturnCodes(CommandLineArgTypes.HELP_ARG, "-help");
-									break;
+									return ProcessReturnCodes(CommandLineArgTypes.HELP_ARG, "-help");
 								}
 
-								returnCodes = ProcessReturnCodes(CommandLineArgTypes.INVALID_ARG, element);
-								break;
+								mixin(breakOnInvalidArg("INVALID_ARG"));
 							}
 						}
 					}
 				}
 			}
 
-			if(returnCodes.type == CommandLineArgTypes.NO_VALUE)
-			{
-				return ProcessReturnCodes(CommandLineArgTypes.VALID_ARGS, "");
-			}
-			else
-			{
-				return returnCodes;
-			}
+			return ProcessReturnCodes(CommandLineArgTypes.VALID_ARGS, "");
 		}
 		else
 		{
