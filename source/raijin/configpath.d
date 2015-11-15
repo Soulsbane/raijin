@@ -13,7 +13,7 @@ class ConfigPath
         configDirPath_ = writablePath(StandardPath.Config);
     }
 
-    this(immutable string organizationName, immutable string applicationName)
+    this(const string organizationName, immutable string applicationName)
     {
         organizationName_ = organizationName;
         applicationName_ = applicationName;
@@ -29,7 +29,7 @@ class ConfigPath
         return buildNormalizedPath(configDirPath_, organizationName_, applicationName_, name);
     }
 
-    void createConfigDir(immutable string name = string.init)
+    void createConfigDir(const string name = string.init)
     {
     	string normalPath = buildNormalizedPath(getConfigDir(name));
 

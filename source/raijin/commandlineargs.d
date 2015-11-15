@@ -35,7 +35,7 @@ struct ArgValues
 }
 
 /// NOTE: This mixin inserts a condition for checking whether or not to allowInvalidArgs in process()
-private string breakOnInvalidArg(immutable string type)
+private string breakOnInvalidArg(const string type)
 {
 	return "
 		if(allowInvalidArgs == false)
@@ -76,7 +76,7 @@ class CommandLineArgs
 	*		The value of value of the command line argument to getcommand line argument to get
 	*
 	*/
-	final T get(T = string)(immutable string key) @safe
+	final T get(T = string)(const string key) @safe
 	{
 		ArgValues defaultValues;
 
@@ -108,7 +108,7 @@ class CommandLineArgs
 	*		The value of value of the command line argument to get
 	*
 	*/
-	final T get(T = string)(immutable string key, string defaultValue) @safe
+	final T get(T = string)(const string key, string defaultValue) @safe
 	{
 		ArgValues defaultValues;
 
@@ -127,7 +127,7 @@ class CommandLineArgs
 	*		defaultValue = The default value to use if no value is supplied.
 	*		description = The description of what the command line argument does.
 	*/
-	final void addCommand(immutable string key, immutable string defaultValue, immutable string description,
+	final void addCommand(const string key, immutable string defaultValue, immutable string description,
 		RequiredArg required = RequiredArg.no) @safe
 	{
 		ArgValues values;
@@ -147,7 +147,7 @@ class CommandLineArgs
 	*		key = Name of the command line argument to register.
 	*		values = ArgValues struct.
 	*/
-	final void addCommand(immutable string key, immutable ArgValues values) @safe
+	final void addCommand(const string key, immutable ArgValues values) @safe
 	{
 		values_[key] = values;
 	}
@@ -163,7 +163,7 @@ class CommandLineArgs
 	*		The value of value of the command line argument to get
 	*
 	*/
-	final string opIndex(immutable string key) @safe
+	final string opIndex(const string key) @safe
 	{
 		return get(key);
 	}
@@ -196,7 +196,7 @@ class CommandLineArgs
 	*	Returns:
 	*		true if the command line argument exists, false otherwise.
 	*/
-	final bool contains(immutable string key) @safe
+	final bool contains(const string key) @safe
 	{
 		return cast(bool)(key in values_);
 	}
@@ -210,7 +210,7 @@ class CommandLineArgs
 	*	Returns:
 	*		True if the command line argument is a flag and false otherwise.
 	*/
-	bool isFlag(immutable string key) @safe
+	bool isFlag(const string key) @safe
 	{
 		if(contains(key))
 		{
@@ -230,7 +230,7 @@ class CommandLineArgs
 	*	Returns:
 	*		The value of the command line argument at index or defaultValue otherwise.
 	*/
-	final T safeGet(T = string)(immutable size_t index, string defaultValue = string.init) @safe
+	final T safeGet(T = string)(const size_t index, string defaultValue = string.init) @safe
 	{
 		string value;
 
@@ -302,7 +302,7 @@ class CommandLineArgs
 	/**
 	*	called each time a valid argument is passed.
 	*/
-	void onValidArg(immutable string argument) @trusted {}
+	void onValidArg(const string argument) @trusted {}
 
 	/**
 	*	Called when an valid argument is passed on the command line.

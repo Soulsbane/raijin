@@ -25,7 +25,7 @@ struct KeyValueConfig
 	alias GroupData = KeyValueData[string];
 
 private:
-	void processText(immutable string text) @safe
+	void processText(const string text) @safe
 	{
 		if(defaultGroupName_ == string.init) // If default group name wasn't changed generate a random string for it.
 		{
@@ -62,7 +62,7 @@ private:
 		}
 	}
 
-	bool isGroupString(immutable string value) pure @safe
+	bool isGroupString(const string value) pure @safe
 	{
 		if(value.indexOf(".") == -1)
 		{
@@ -71,7 +71,7 @@ private:
 		return true;
 	}
 
-	auto getGroupAndKeyFromString(immutable string value) pure @safe
+	auto getGroupAndKeyFromString(const string value) pure @safe
 	{
 		auto groupAndKey = value.findSplit(".");
 		auto group = groupAndKey[0].strip();
@@ -162,7 +162,7 @@ public:
 	*	Returns:
 	*		Returns true on a successful load false otherwise.
 	*/
-	bool loadString(immutable string text, string fileName = string.init) @safe
+	bool loadString(const string text, string fileName = string.init) @safe
 	{
 		if(text.length > 0)
 		{
@@ -191,7 +191,7 @@ public:
 	*		The value of value of the key/value pair.
 	*
 	*/
-	T get(T = string)(immutable string key) pure @safe
+	T get(T = string)(const string key) pure @safe
 	{
 		string defaultValue;
 
@@ -228,7 +228,7 @@ public:
 	*		The value of value of the key/value pair.
 	*
 	*/
-	T get(T = string)(immutable string key, string defaultValue) pure @safe
+	T get(T = string)(const string key, string defaultValue) pure @safe
 	{
 		if(isGroupString(key))
 		{
@@ -254,7 +254,7 @@ public:
 	*		The value of value of the key/value pair.
 	*
 	*/
-	T get(T = string)(immutable string group, immutable string key, string defaultValue) pure @safe
+	T get(T = string)(const string group, immutable string key, string defaultValue) pure @safe
 	{
 		if(containsGroup(group))
 		{
@@ -279,7 +279,7 @@ public:
 	*		Retruns an associative array of key/value pairs for the group.
 	*
 	*/
-	KeyValueData getGroup(immutable string group) pure @safe
+	KeyValueData getGroup(const string group) pure @safe
 	{
 		return values_[group];
 	}
@@ -302,7 +302,7 @@ public:
 	*		key = Name of the key to set.
 	*		value = The value to be set to.
 	*/
-	void set(T)(immutable string key, T value) pure @safe
+	void set(T)(const string key, T value) pure @safe
 	{
 		string convValue;
 
@@ -334,7 +334,7 @@ public:
 	*	Params:
 	*		name = The name of the default section should be called.
 	*/
-	void setDefaultGroupName(immutable string name) pure @safe
+	void setDefaultGroupName(const string name) pure @safe
 	{
 		defaultGroupName_ = name;
 	}
@@ -360,7 +360,7 @@ public:
 	*	Returns:
 	*		true if the config contains the key false otherwise.
 	*/
-	bool contains(immutable string key) pure @safe
+	bool contains(const string key) pure @safe
 	{
 		if(isGroupString(key))
 		{
@@ -383,7 +383,7 @@ public:
 	*	Returns:
 	*		true if the config contains the key false otherwise.
 	*/
-	bool contains(immutable string group, immutable string key) pure @safe
+	bool contains(const string group, immutable string key) pure @safe
 	{
 		if(containsGroup(group))
 		{
@@ -406,7 +406,7 @@ public:
 	*	Returns:
 	*		true if the group exists false otherwise.
 	*/
-	bool containsGroup(immutable string key) pure @safe
+	bool containsGroup(const string key) pure @safe
 	{
 		return cast(bool)(key in values_);
 	}
@@ -421,7 +421,7 @@ public:
 	*	Returns:
 	*		true if it was successfully removed false otherwise.
 	*/
-	bool remove(immutable string key) pure @safe
+	bool remove(const string key) pure @safe
 	{
 		if(isGroupString(key))
 		{
@@ -446,7 +446,7 @@ public:
 	*	Returns:
 	*		true if it was successfully removed false otherwise.
 	*/
-	bool remove(immutable string group, immutable string key) pure @safe
+	bool remove(const string group, immutable string key) pure @safe
 	{
 		auto groupValues = getGroup(group);
 		return groupValues.remove(key);
@@ -461,7 +461,7 @@ public:
 	*	Returns:
 	*		true if group was successfully removed false otherwise.
 	*/
-	bool removeGroup(immutable string key) pure @safe
+	bool removeGroup(const string key) pure @safe
 	{
 		return values_.remove(key);
 	}
@@ -493,7 +493,7 @@ public:
 	}
 
 	// FIXME: Surely there is a better way to do this but at the moment dmd can't decern which overloaded function to use.
-	private T getT(T)(immutable string key) pure @safe
+	private T getT(T)(const string key) pure @safe
 	{
 		return get!T(key);
 	}
