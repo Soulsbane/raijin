@@ -316,6 +316,8 @@ class CommandLineArgs
 	*		arguments = The arguments that are sent from main()
 	*		ignoreFirstArg = Ignore the first argument passed and continue processing the remaining arguments
 	*		allowInvalidArgs = Any invalid arguments will be ignored and onInvalidArgs won't be called.
+	*	Note:
+	*		Setting allowInvalidArgs.yes will also cause onInvalidArgs to not be fired. Resulting in invalid data in a command.
 	*/
 	final bool processArgs(string[] arguments, IgnoreFirstArg ignoreFirstArg = IgnoreFirstArg.no,
 		AllowInvalidArgs allowInvalidArgs = AllowInvalidArgs.no) @safe
@@ -364,6 +366,9 @@ class CommandLineArgs
 	*	Params:
 	*		arguments = The arguments that are sent from main()
 	*		ignoreFirstArg = Ignore the first argument passed and continue processing the remaining arguments
+	*		allowInvalidArgs = Any invalid arguments will be ignored and onInvalidArgs won't be called.
+	*	Note:
+	*		Setting allowInvalidArgs.yes will also cause onInvalidArgs to not be fired. Resulting in invalid data in a command.
 	*/
 	final auto process(string[] arguments, IgnoreFirstArg ignoreFirstArg = IgnoreFirstArg.no,
 		AllowInvalidArgs allowInvalidArgs = AllowInvalidArgs.no) @safe
