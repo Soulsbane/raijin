@@ -13,6 +13,7 @@ import std.traits : isNumeric, isBoolean;
 import std.algorithm : findSplit;
 import std.stdio : writeln;
 import std.typecons : Flag, Tuple;
+import std.path : baseName;
 
 import raijin.stringutils : removeLeadingChars;
 
@@ -20,7 +21,7 @@ alias IgnoreFirstArg = Flag!"ignoreFirstArg";
 alias RequiredArg = Flag!"requiredArg";
 alias AllowInvalidArgs = Flag!"allowInvalidArgs";
 
-enum CommandLineArgTypes { NO_VALUE, INVALID_ARG, INVALID_ARG_PAIR, INVALID_FLAG_VALUE, VALID_ARGS, NO_ARGS, HELP_ARG }
+enum CommandLineArgTypes{ INVALID_ARG, INVALID_ARG_PAIR, INVALID_FLAG_VALUE, VALID_ARGS, NO_ARGS, HELP_ARG, VERSION_ARG }
 alias ProcessReturnCodes = Tuple!(CommandLineArgTypes, "type", string, "command");
 
 /**
@@ -48,13 +49,13 @@ private string argTypesToString(CommandLineArgTypes type)
 {
 	string[CommandLineArgTypes] typeTable =
 	[
-		CommandLineArgTypes.NO_VALUE:"Argument has no value",
 		CommandLineArgTypes.INVALID_ARG:"Invalid argument was passed",
 		CommandLineArgTypes.INVALID_ARG_PAIR:"Argument requires a value",
 		CommandLineArgTypes.INVALID_FLAG_VALUE:"Argument must not contain a value",
 		CommandLineArgTypes.VALID_ARGS:"",
 		CommandLineArgTypes.NO_ARGS:"",
-		CommandLineArgTypes.HELP_ARG:""
+		CommandLineArgTypes.HELP_ARG:"",
+		CommandLineArgTypes.VERSION_ARG:""
 	];
 
 	return typeTable[type];
@@ -271,6 +272,17 @@ class CommandLineArgs
 	}
 
 	/**
+	*	Sets the programs version string to be used with -version argument.
+	*
+	*	Params:
+	*		programVersion = Text used when -version argument is called.
+	*/
+	void setProgramVersion(const string programVersion)
+	{
+		programVersion_ = programVersion;
+	}
+
+	/**
 	*	Default print method for printing registered command line options.
 	*/
 	void onPrintHelp() @trusted
@@ -287,6 +299,21 @@ class CommandLineArgs
 	}
 
 	/**
+	*	Prints the program version string when -version argument is passed.
+	*/
+	void onPrintVersion() @trusted
+	{
+		if(programVersion_ == programVersion_.init)
+		{
+			writeln(programName_.baseName, " ", "1.0.0");
+		}
+		else
+		{
+			writeln(programVersion_);
+		}
+	}
+
+	/**
 	*	Called when an invalid argument is passed on the command line.
 	*/
 	void onInvalidArgs(CommandLineArgTypes error, string command) @trusted
@@ -300,7 +327,7 @@ class CommandLineArgs
 	void onValidArgs() @trusted {}
 
 	/**
-	*	called each time a valid argument is passed.
+	*	Called each time a valid argument is passed.
 	*/
 	void onValidArg(const string argument) @trusted {}
 
@@ -325,7 +352,7 @@ class CommandLineArgs
 		immutable auto processed = process(arguments, ignoreFirstArg, allowInvalidArgs);
 		bool requiredArgsNotProcessed;
 
-		if(processed.type == CommandLineArgTypes.HELP_ARG)
+		if(processed.type == CommandLineArgTypes.HELP_ARG || processed.type == CommandLineArgTypes.VERSION_ARG)
 		{
 			requiredArgsNotProcessed = false;
 		}
@@ -343,6 +370,9 @@ class CommandLineArgs
 					return true;
 				case HELP_ARG:
 					onPrintHelp();
+					return true;
+				case VERSION_ARG:
+					onPrintVersion();
 					return true;
 				case NO_ARGS:
 					onNoArgs();
@@ -456,6 +486,11 @@ class CommandLineArgs
 									return ProcessReturnCodes(CommandLineArgTypes.HELP_ARG, "-help");
 								}
 
+								if(key == "version")
+								{
+									return ProcessReturnCodes(CommandLineArgTypes.VERSION_ARG, "-version");
+								}
+
 								mixin(breakOnInvalidArg("INVALID_ARG"));
 							}
 						}
@@ -494,6 +529,7 @@ private:
 	static ArgValues[string] values_;
 	static string[] rawArguments_;
 	static string programName_;
+	static string programVersion_;
 }
 
 unittest
