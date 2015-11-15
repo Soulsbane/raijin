@@ -21,7 +21,7 @@ import std.range.primitives : empty, popFront, front;
 *	Returns:
 *		True if the toFindValue is found false otherwise.
 */
-bool find(immutable string value, immutable string toFindValue, CaseSensitive cs = CaseSensitive.no) pure @safe
+bool find(const string value, immutable string toFindValue, CaseSensitive cs = CaseSensitive.no) pure @safe
 {
 	if(value.indexOf(toFindValue, cs) == -1)
 	{

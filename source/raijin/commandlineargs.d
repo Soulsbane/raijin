@@ -13,6 +13,7 @@ import std.traits : isNumeric, isBoolean;
 import std.algorithm : findSplit;
 import std.stdio : writeln;
 import std.typecons : Flag, Tuple;
+import std.path : baseName;
 
 import raijin.stringutils : removeLeadingChars;
 
@@ -20,7 +21,7 @@ alias IgnoreFirstArg = Flag!"ignoreFirstArg";
 alias RequiredArg = Flag!"requiredArg";
 alias AllowInvalidArgs = Flag!"allowInvalidArgs";
 
-enum CommandLineArgTypes { NO_VALUE, INVALID_ARG, INVALID_ARG_PAIR, INVALID_FLAG_VALUE, VALID_ARGS, NO_ARGS, HELP_ARG }
+enum CommandLineArgTypes{ INVALID_ARG, INVALID_ARG_PAIR, INVALID_FLAG_VALUE, VALID_ARGS, NO_ARGS, HELP_ARG, VERSION_ARG }
 alias ProcessReturnCodes = Tuple!(CommandLineArgTypes, "type", string, "command");
 
 /**
@@ -35,7 +36,7 @@ struct ArgValues
 }
 
 /// NOTE: This mixin inserts a condition for checking whether or not to allowInvalidArgs in process()
-private string breakOnInvalidArg(immutable string type)
+private string breakOnInvalidArg(const string type)
 {
 	return "
 		if(allowInvalidArgs == false)
@@ -48,13 +49,13 @@ private string argTypesToString(CommandLineArgTypes type)
 {
 	string[CommandLineArgTypes] typeTable =
 	[
-		CommandLineArgTypes.NO_VALUE:"Argument has no value",
 		CommandLineArgTypes.INVALID_ARG:"Invalid argument was passed",
 		CommandLineArgTypes.INVALID_ARG_PAIR:"Argument requires a value",
 		CommandLineArgTypes.INVALID_FLAG_VALUE:"Argument must not contain a value",
 		CommandLineArgTypes.VALID_ARGS:"",
 		CommandLineArgTypes.NO_ARGS:"",
-		CommandLineArgTypes.HELP_ARG:""
+		CommandLineArgTypes.HELP_ARG:"",
+		CommandLineArgTypes.VERSION_ARG:""
 	];
 
 	return typeTable[type];
@@ -76,7 +77,7 @@ class CommandLineArgs
 	*		The value of value of the command line argument to getcommand line argument to get
 	*
 	*/
-	final T get(T = string)(immutable string key) @safe
+	final T get(T = string)(const string key) @safe
 	{
 		ArgValues defaultValues;
 
@@ -108,7 +109,7 @@ class CommandLineArgs
 	*		The value of value of the command line argument to get
 	*
 	*/
-	final T get(T = string)(immutable string key, string defaultValue) @safe
+	final T get(T = string)(const string key, string defaultValue) @safe
 	{
 		ArgValues defaultValues;
 
@@ -127,7 +128,7 @@ class CommandLineArgs
 	*		defaultValue = The default value to use if no value is supplied.
 	*		description = The description of what the command line argument does.
 	*/
-	final void addCommand(immutable string key, immutable string defaultValue, immutable string description,
+	final void addCommand(const string key, immutable string defaultValue, immutable string description,
 		RequiredArg required = RequiredArg.no) @safe
 	{
 		ArgValues values;
@@ -147,7 +148,7 @@ class CommandLineArgs
 	*		key = Name of the command line argument to register.
 	*		values = ArgValues struct.
 	*/
-	final void addCommand(immutable string key, immutable ArgValues values) @safe
+	final void addCommand(const string key, immutable ArgValues values) @safe
 	{
 		values_[key] = values;
 	}
@@ -163,7 +164,7 @@ class CommandLineArgs
 	*		The value of value of the command line argument to get
 	*
 	*/
-	final string opIndex(immutable string key) @safe
+	final string opIndex(const string key) @safe
 	{
 		return get(key);
 	}
@@ -196,7 +197,7 @@ class CommandLineArgs
 	*	Returns:
 	*		true if the command line argument exists, false otherwise.
 	*/
-	final bool contains(immutable string key) @safe
+	final bool contains(const string key) @safe
 	{
 		return cast(bool)(key in values_);
 	}
@@ -210,7 +211,7 @@ class CommandLineArgs
 	*	Returns:
 	*		True if the command line argument is a flag and false otherwise.
 	*/
-	bool isFlag(immutable string key) @safe
+	bool isFlag(const string key) @safe
 	{
 		if(contains(key))
 		{
@@ -230,7 +231,7 @@ class CommandLineArgs
 	*	Returns:
 	*		The value of the command line argument at index or defaultValue otherwise.
 	*/
-	final T safeGet(T = string)(immutable size_t index, string defaultValue = string.init) @safe
+	final T safeGet(T = string)(const size_t index, string defaultValue = string.init) @safe
 	{
 		string value;
 
@@ -271,6 +272,17 @@ class CommandLineArgs
 	}
 
 	/**
+	*	Sets the programs version string to be used with -version argument.
+	*
+	*	Params:
+	*		programVersion = Text used when -version argument is called.
+	*/
+	void setProgramVersion(const string programVersion)
+	{
+		programVersion_ = programVersion;
+	}
+
+	/**
 	*	Default print method for printing registered command line options.
 	*/
 	void onPrintHelp() @trusted
@@ -287,6 +299,21 @@ class CommandLineArgs
 	}
 
 	/**
+	*	Prints the program version string when -version argument is passed.
+	*/
+	void onPrintVersion() @trusted
+	{
+		if(programVersion_ == programVersion_.init)
+		{
+			writeln(programName_.baseName, " ", "1.0.0");
+		}
+		else
+		{
+			writeln(programVersion_);
+		}
+	}
+
+	/**
 	*	Called when an invalid argument is passed on the command line.
 	*/
 	void onInvalidArgs(CommandLineArgTypes error, string command) @trusted
@@ -300,9 +327,9 @@ class CommandLineArgs
 	void onValidArgs() @trusted {}
 
 	/**
-	*	called each time a valid argument is passed.
+	*	Called each time a valid argument is passed.
 	*/
-	void onValidArg(immutable string argument) @trusted {}
+	void onValidArg(const string argument) @trusted {}
 
 	/**
 	*	Called when an valid argument is passed on the command line.
@@ -316,6 +343,8 @@ class CommandLineArgs
 	*		arguments = The arguments that are sent from main()
 	*		ignoreFirstArg = Ignore the first argument passed and continue processing the remaining arguments
 	*		allowInvalidArgs = Any invalid arguments will be ignored and onInvalidArgs won't be called.
+	*	Note:
+	*		Setting allowInvalidArgs.yes will also cause onInvalidArgs to not be fired. Resulting in invalid data in a command.
 	*/
 	final bool processArgs(string[] arguments, IgnoreFirstArg ignoreFirstArg = IgnoreFirstArg.no,
 		AllowInvalidArgs allowInvalidArgs = AllowInvalidArgs.no) @safe
@@ -323,7 +352,7 @@ class CommandLineArgs
 		immutable auto processed = process(arguments, ignoreFirstArg, allowInvalidArgs);
 		bool requiredArgsNotProcessed;
 
-		if(processed.type == CommandLineArgTypes.HELP_ARG)
+		if(processed.type == CommandLineArgTypes.HELP_ARG || processed.type == CommandLineArgTypes.VERSION_ARG)
 		{
 			requiredArgsNotProcessed = false;
 		}
@@ -341,6 +370,9 @@ class CommandLineArgs
 					return true;
 				case HELP_ARG:
 					onPrintHelp();
+					return true;
+				case VERSION_ARG:
+					onPrintVersion();
 					return true;
 				case NO_ARGS:
 					onNoArgs();
@@ -364,6 +396,9 @@ class CommandLineArgs
 	*	Params:
 	*		arguments = The arguments that are sent from main()
 	*		ignoreFirstArg = Ignore the first argument passed and continue processing the remaining arguments
+	*		allowInvalidArgs = Any invalid arguments will be ignored and onInvalidArgs won't be called.
+	*	Note:
+	*		Setting allowInvalidArgs.yes will also cause onInvalidArgs to not be fired. Resulting in invalid data in a command.
 	*/
 	final auto process(string[] arguments, IgnoreFirstArg ignoreFirstArg = IgnoreFirstArg.no,
 		AllowInvalidArgs allowInvalidArgs = AllowInvalidArgs.no) @safe
@@ -451,6 +486,11 @@ class CommandLineArgs
 									return ProcessReturnCodes(CommandLineArgTypes.HELP_ARG, "-help");
 								}
 
+								if(key == "version")
+								{
+									return ProcessReturnCodes(CommandLineArgTypes.VERSION_ARG, "-version");
+								}
+
 								mixin(breakOnInvalidArg("INVALID_ARG"));
 							}
 						}
@@ -489,6 +529,7 @@ private:
 	static ArgValues[string] values_;
 	static string[] rawArguments_;
 	static string programName_;
+	static string programVersion_;
 }
 
 unittest
