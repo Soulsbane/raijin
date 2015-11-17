@@ -540,6 +540,8 @@ unittest
 
 	assert(config.get!bool("aBool"));
 	assert(config.boolean("aBool")); // Syntactic sugar
+
+	assert(config.contains("another.world"));
 	assert(config.get("another.world") == "hello");
 
 	assert(config.contains("number"));
