@@ -266,7 +266,7 @@ class CommandLineArgs
 	*	Returns:
 	*		The name of the program.
 	*/
-	string getProgramName()
+	string getProgramName() @safe nothrow
 	{
 		return programName_;
 	}
@@ -277,7 +277,7 @@ class CommandLineArgs
 	*	Params:
 	*		programVersion = Text used when -version argument is called.
 	*/
-	void setProgramVersion(const string programVersion)
+	void setProgramVersion(const string programVersion) @safe nothrow
 	{
 		programVersion_ = programVersion;
 	}
