@@ -21,7 +21,7 @@ alias IgnoreFirstArg = Flag!"ignoreFirstArg";
 alias RequiredArg = Flag!"requiredArg";
 alias AllowInvalidArgs = Flag!"allowInvalidArgs";
 
-enum CommandLineArgTypes{ INVALID_ARG, INVALID_ARG_PAIR, INVALID_FLAG_VALUE, VALID_ARGS, NO_ARGS, HELP_ARG, VERSION_ARG }
+enum CommandLineArgTypes { INVALID_ARG, INVALID_ARG_PAIR, INVALID_FLAG_VALUE, VALID_ARGS, NO_ARGS, HELP_ARG, VERSION_ARG }
 alias ProcessReturnCodes = Tuple!(CommandLineArgTypes, "type", string, "command");
 
 /**
@@ -368,15 +368,19 @@ class CommandLineArgs
 				case VALID_ARGS:
 					onValidArgs();
 					return true;
+
 				case HELP_ARG:
 					onPrintHelp();
 					return true;
+
 				case VERSION_ARG:
 					onPrintVersion();
 					return true;
+
 				case NO_ARGS:
 					onNoArgs();
 					return true;
+					
 				default:
 					onInvalidArgs(processed.type, processed.command);
 					return false;
