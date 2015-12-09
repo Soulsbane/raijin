@@ -10,6 +10,7 @@ import raijin.configpath;
 class AppConfig
 {
 private:
+
     void loadConfigFile(const string defaultConfigFileData = string.init)
     {
         import std.file : exists;
@@ -17,25 +18,25 @@ private:
         string text;
         immutable string configFilePath = buildNormalizedPath(configPath_.getConfigDir("config"), "app.config");
 
-    	if(exists(configFilePath))
-    	{
-    		text = readText(configFilePath);
-    	}
-    	else
+        if(exists(configFilePath))
         {
-		    auto f = File(configFilePath , "w+"); // Create an empty config file and insert default data.
+            text = readText(configFilePath);
+        }
+        else
+        {
+            auto f = File(configFilePath , "w+"); // Create an empty config file and insert default data.
             f.writeln(defaultConfigFileData);
         }
 
-		immutable bool loaded = configFile_.loadFile(configFilePath);
+        immutable bool loaded = configFile_.loadFile(configFilePath);
 
-		if(!loaded)
-		{
+        if(!loaded)
+        {
             debug
             {
-			     writeln("FAILED to load configuration file!");
+                writeln("FAILED to load configuration file!");
             }
-		}
+        }
     }
 
 public:
@@ -44,7 +45,7 @@ public:
     {
         configPath_ = new ConfigPath;
 
-	    configPath_ .createConfigDir("config");
+        configPath_ .createConfigDir("config");
         loadConfigFile();
     }
 
@@ -52,7 +53,7 @@ public:
     {
         configPath_ = new ConfigPath(organizationName, applicationName);
 
-	    configPath_ .createConfigDir("config");
+        configPath_ .createConfigDir("config");
         loadConfigFile(defaultConfigFileData);
     }
 
