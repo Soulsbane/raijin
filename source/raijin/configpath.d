@@ -13,7 +13,7 @@ class ConfigPath
         configDirPath_ = writablePath(StandardPath.Config);
     }
 
-    this(const string organizationName, immutable string applicationName)
+    this(const string organizationName, const string applicationName)
     {
         organizationName_ = organizationName;
         applicationName_ = applicationName;
