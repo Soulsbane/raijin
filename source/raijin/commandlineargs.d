@@ -350,16 +350,7 @@ class CommandLineArgs
 		AllowInvalidArgs allowInvalidArgs = AllowInvalidArgs.no) @safe
 	{
 		immutable auto processed = process(arguments, ignoreFirstArg, allowInvalidArgs);
-		bool requiredArgsNotProcessed;
-
-		if(processed.type == CommandLineArgTypes.HELP_ARG || processed.type == CommandLineArgTypes.VERSION_ARG)
-		{
-			requiredArgsNotProcessed = false;
-		}
-		else
-		{
-			requiredArgsNotProcessed = checkRequiredArgs();
-		}
+		bool requiredArgsNotProcessed = checkRequiredArgs();
 
 		if(!requiredArgsNotProcessed)
 		{
