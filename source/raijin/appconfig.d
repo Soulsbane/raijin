@@ -45,7 +45,7 @@ public:
     {
         configPath_ = new ConfigPath;
 
-        configPath_ .createConfigDir("config");
+        configPath_.createConfigDir("config");
         loadConfigFile();
     }
 
@@ -53,7 +53,7 @@ public:
     {
         configPath_ = new ConfigPath(organizationName, applicationName);
 
-        configPath_ .createConfigDir("config");
+        configPath_.createConfigDir("config");
         loadConfigFile(defaultConfigFileData);
     }
 
