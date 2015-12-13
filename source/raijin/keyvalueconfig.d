@@ -381,7 +381,7 @@ public:
 
 		auto foundValue = values_.filter!(a => (a.group == group) && (a.key == key));
 
-		foundValue.front.value = value;
+		foundValue.front.value = convValue;
 		valuesModified_ = true;
 	}
 
@@ -523,7 +523,7 @@ public:
 	*		key = Name of the key to assign the value to.
 	*		value = The value in which key should be assigned to.
 	*/
-	void opIndexAssign(T = string)(T value, string key) pure @safe
+	void opIndexAssign(T)(T value, string key) pure @safe
 	{
 		set(key, value);
 	}
@@ -597,7 +597,7 @@ unittest
 
 	config.set("aBool", "false");
 	assert(config.get!bool("aBool") == false);
-	config["aBool"] = "true";
+	config["aBool"] = true;
 	assert(config.get!bool("aBool") == true);
 
 	debug config.save();
