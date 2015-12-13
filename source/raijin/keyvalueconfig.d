@@ -103,24 +103,7 @@ private:
 	}
 
 public:
-	/**
-	*	Workaround for a D bug where the destructor won't be called if your KeyValueConfig object is a global.
-	*	If you want KeyValueConfig to save automatically upon destruction and your object is a global then it must
-	*	be intialized as shown in the example.
-	*
-	*	Example:
-	*		KeyValueConfig config;
-	*		config = KeyValueConfig(); // Should be in main or another function.
-	*/
-
-	~this()
-	{
-		if(valuesModified_)
-		{
-			//save();
-		}
-	}
-
+	
 	/**
 	*	Saves config values to config file.
 	*
