@@ -105,7 +105,7 @@ private:
 public:
 
 	/**
-	*	Saves config values to config file.
+	*	Saves config values to the config file.
 	*/
 	void save() @trusted
 	{
@@ -188,13 +188,13 @@ public:
 	}
 
 	/**
-	*	Gets the value T of the key/value pair where T is the type the value should be converted to.
+	*	Retrieves the value T associated with key where T is the designated type to be converted to.
 	*
 	*	Params:
 	*		key = Name of the key to get.
 	*
 	*	Returns:
-	*		The value of value of the key/value pair.
+	*		The value associated with key.
 	*
 	*/
 	T get(T = string)(const string key) @safe
@@ -223,14 +223,14 @@ public:
 	}
 
 	/**
-	*	Gets the value T of the key/value pair where T is the type the value should be converted to.
+	*	Retrieves the value T associated with key where T is the designated type to be converted to.
 	*
 	*	Params:
 	*		key = Name of the key to get.
 	*		defaultValue = Allow the assignment of a default value if key does not exist.
 	*
 	*	Returns:
-	*		The value of value of the key/value pair.
+	*		The value associated with key.
 	*
 	*/
 	T get(T = string)(const string key, string defaultValue) @safe
@@ -247,7 +247,7 @@ public:
 	}
 
 	/**
-	*	Gets the value T of the key/value pair where T is the type the value should be converted to.
+	*	Retrieves the value T associated with key where T is the designated type to be converted to.
 	*
 	*	Params:
 	*		group = Name of the group to retrieve ie portion [groupName] of config file/string.
@@ -270,19 +270,30 @@ public:
 		}
 	}
 
+	/**
+	*	Gets the value associated with the group and key.
+	*
+	*	Params:
+	*		group = Name of the group the value is stored in.
+	*		key = Name of the key the value is stored in.
+	*
+	*	Returns:
+	*		The value associated with the group and key.
+	*/
 	string getGroupValue(const string group, const string key) @safe
 	{
 		auto value = values_.filter!(a => (a.group == group) && (a.key == key));//.take(1);
 		return to!string(value.front.value);
 	}
+
 	/**
-	*	Gets the group portion of a config file/string.
+	*	Retrieves key/values associated with the group portion of a config file/string.
 	*
 	*	Params:
 	*		group = Name of the the group to retrieve.
 	*
 	*	Returns:
-	*		Retruns an associative array of key/value pairs for the group.
+	*		Returns an array containing all the key/values associated with group.
 	*
 	*/
 	auto getGroup(const string group) pure @safe
@@ -291,10 +302,10 @@ public:
 	}
 
 	/**
-	*	Retrieves an associative array containing every group
+	*	Retrieves an array containing key/values of all groups in the configfile omitting groupless key/values.
 	*
 	*	Returns:
-	*		An associative array containing every group.
+	*		An array containing every group.
 	*/
 	auto getGroups()
 	{
@@ -365,13 +376,13 @@ public:
 
 	/**
 	*	Determines if the key is found in the config file.
-	*	The key can be either its name of in the format of groupName.keyName or just the keyName.
+	*	The key can be either its name of in the format of groupName.keyName or just the key name.
 	*
 	*	Params:
 	*		key = Name of the key to get the value of
 	*
 	*	Returns:
-	*		true if the config contains the key false otherwise.
+	*		true if the config file contains the key false otherwise.
 	*/
 	bool contains(const string key) pure @safe
 	{
@@ -394,7 +405,7 @@ public:
 	*		key = Name of the key to get the value from.
 	*
 	*	Returns:
-	*		true if the config contains the key false otherwise.
+	*		true if the config file contains the key false otherwise.
 	*/
 	bool contains(const string group, const string key) pure @safe
 	{
@@ -412,25 +423,25 @@ public:
 	}
 
 	/**
-	*	Determines if the given groupName Exists.
+	*	Determines if the given group exists.
 	*
 	*	Params:
-	*		key = Name of the group to check for.
+	*		group = Name of the group to check for.
 	*
 	*	Returns:
 	*		true if the group exists false otherwise.
 	*/
-	bool containsGroup(const string value) pure @safe
+	bool containsGroup(const string group) pure @safe
 	{
-		return values_.canFind!(a => a.group == value);
+		return values_.canFind!(a => a.group == group);
 	}
 
 	/**
-	*	Removes a key/value from config.
+	*	Removes a key/value from config file.
 	*	The key can be either its name of in the format of groupName.keyName or just the keyName.
 	*
 	*	Params:
-	*		key = Name of the key to remove.
+	*		key = Name of the key to remove. Can be in the group.name format.
 	*
 	*	Returns:
 	*		true if it was successfully removed false otherwise.
@@ -449,7 +460,7 @@ public:
 	}
 
 	/**
-	*	Removes a key/value from config.
+	*	Removes a key/value from config file.
 	*	The key can be either its name of in the format of group.keyor just the key.
 	*
 	*	Params:
@@ -466,7 +477,7 @@ public:
 	}
 
 	/**
-	*	Removes a group from config.
+	*	Removes a group from the config file.
 	*
 	*	Params:
 	*		key = Name of the group to remove.
@@ -487,7 +498,7 @@ public:
 	*		key = Name of the value to retrieve
 	*
 	*	Returns:
-	*		The value associated with the key.
+	*		The string value associated with the key.
 	*/
 	string opIndex(string key) @safe
 	{
