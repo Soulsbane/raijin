@@ -327,7 +327,7 @@ public:
 	*	Sets a config value.
 	*
 	*	Params:
-	*		key = Name of the key to set.
+	*		key = Name of the key to set. Can be in the group.key form.
 	*		value = The value to be set to.
 	*/
 	void set(T)(const string key, T value) pure @safe
@@ -347,18 +347,41 @@ public:
 		{
 			auto groupAndKey = getGroupAndKeyFromString(key);
 			auto group = groupAndKey.group;
-			auto foundValue = values_.filter!(a => (a.group == group) && (a.key == key));//.take(1);
 
-			foundValue.front.value = value;
+			set(group, key, value);
 		}
 		else
 		{
-			auto group = DEFAULT_GROUP_NAME;
-			auto foundValue = values_.filter!(a => (a.group == group) && (a.key == key));//.take(1);
-
-			foundValue.front.value = value;
+			set(DEFAULT_GROUP_NAME, key, value);
 		}
 
+		valuesModified_ = true;
+	}
+
+	/**
+	*	Sets a config value.
+	*
+	*	Params:
+	*		group = Name of the group key belongs to.
+	*		key = Name of the key to set.
+	*		value = The value to be set to.
+	*/
+	void set(T)(const string group, const string key, T value) pure @safe
+	{
+		string convValue;
+
+		static if(!is(T == string))
+		{
+			convValue = to!string(value);
+		}
+		else
+		{
+			convValue = value;
+		}
+
+		auto foundValue = values_.filter!(a => (a.group == group) && (a.key == key));
+
+		foundValue.front.value = value;
 		valuesModified_ = true;
 	}
 
