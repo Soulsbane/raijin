@@ -10,7 +10,7 @@ import std.conv : to;
 import std.string : lineSplitter, indexOf, strip, startsWith, endsWith, stripLeft, stripRight;
 import std.stdio : File, writeln;
 import std.file : exists, readText;
-import std.algorithm : sort, findSplit, filter, canFind, each, remove, moveEmplaceAll;
+import std.algorithm : sort, findSplit, filter, canFind, remove;
 import std.range : take;
 import std.traits : isNumeric, isBoolean;
 import std.array : empty, array;
@@ -21,7 +21,7 @@ import std.typecons : tuple;
 //import raijin.typeutils;
 //alias ValueType = Algebraic!(string, bool, long, real);
 
-private enum DEFAULT_GROUP_NAME = "Default";
+private enum DEFAULT_GROUP_NAME = null;
 
 struct KeyValueData
 {
@@ -586,6 +586,8 @@ unittest
 	assert(config.contains("number"));
 	config.remove("number");
 	assert(config.contains("number") == false);
+
+	assert(config["another.japan"] == "false");
 
 	writeln("KeyValueConfig: Testing getGroup...");
 
