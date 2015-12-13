@@ -577,8 +577,11 @@ unittest
 	assert(config.boolean("aBool")); // Syntactic sugar
 
 	assert(config.contains("time"));
+
 	assert(config.contains("another.world"));
 	assert(config.get("another.world") == "hello");
+	config.remove("another.world");
+	assert(config.contains("another.world") == false);
 
 	assert(config.contains("number"));
 	config.remove("number");
