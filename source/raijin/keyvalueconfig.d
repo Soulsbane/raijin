@@ -103,14 +103,9 @@ private:
 	}
 
 public:
-	
+
 	/**
 	*	Saves config values to config file.
-	*
-	*	Note:
-	*		Currently there is a bug in DMD where a global objects destructor will not be called when it goes out of scope.
-	*		Which in effect makes it so save is never called if your KeyValueConfig variable is a global variable. You must
-	*		Manually call save() in this case until the bug is fixed in DMD.
 	*/
 	void save() @trusted
 	{
