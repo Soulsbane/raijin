@@ -66,6 +66,48 @@ bool isBoolean(const string value)
 }
 
 /**
+*   Determines if a string is a decimal value
+*
+*   Params:
+*       value = string to use.
+*
+*   Returns:
+*       true if the value is a decimal false otherwise.
+*/
+bool isDecimalValue(string value)
+{
+	import std.string : isNumeric, countchars;
+
+	if(isNumeric(value) && value.countchars(".") == 1)
+	{
+		return true;
+	}
+
+	return false;
+}
+
+/**
+*   Determines if a string is an integer value.
+*
+*   Params:
+*       value = string to use.
+*
+*   Returns:
+*       true if the value is a integer false otherwise.
+*/
+bool isIntegerValue(string value)
+{
+	import std.string : isNumeric, countchars;
+
+	if(isNumeric(value) && value.countchars(".") == 0)
+	{
+		return true;
+	}
+
+	return false;
+}
+
+/**
  * Same as TypeTuple, but meant to be used with values.
  *
  * Example:

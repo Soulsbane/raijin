@@ -1,5 +1,5 @@
 /**
-*	This modules manages a config file format in the form of key=value. Much like an ini file but simpler.
+*	This module manages a config file format in the form of key=value. Much like an ini file but simpler.
 *
 *	Author: Paul Crane
 */
@@ -10,30 +10,42 @@ import std.conv : to;
 import std.string : lineSplitter, indexOf, strip, startsWith, endsWith, stripLeft, stripRight;
 import std.stdio : File, writeln;
 import std.file : exists, readText;
-import std.algorithm : sort, findSplit;
+import std.algorithm : sort, findSplit, filter, canFind, remove;
+import std.range : take;
 import std.traits : isNumeric, isBoolean;
-import std.array : empty;
+import std.array : empty, array;
 import std.typecons : tuple;
-import std.datetime : Clock;
 
-/**
-*	Manages a config file with the key=value format.
-*/
+// TODO: Possibly make values use ValueType instead of strings.
+//import std.variant;
+//import raijin.typeutils;
+//alias ValueType = Algebraic!(string, bool, long, real);
+
+private enum DEFAULT_GROUP_NAME = null;
+
+private struct KeyValueData
+{
+	string key;
+	string value;
+	string group;
+	string comment;
+}
+
 struct KeyValueConfig
 {
-	alias KeyValueData = string[string];
-	alias GroupData = KeyValueData[string];
-
 private:
+
+	/**
+	*	Processes the text found in config file into an array of KeyValueData structures.
+	*
+	*	Params:
+	*		text = The text to be processed.
+	*/
 	void processText(const string text) @safe
 	{
-		if(defaultGroupName_ == string.init) // If default group name wasn't changed generate a random string for it.
-		{
-			setDefaultGroupName(Clock.currTime().toString);
-		}
-
 		auto lines = text.lineSplitter();
-		string currentGroupName = defaultGroupName_;
+		string currentGroupName = DEFAULT_GROUP_NAME;
+		string currentComment;
 
 		foreach(line; lines)
 		{
@@ -43,9 +55,14 @@ private:
 			{
 				continue;
 			}
+			else if(line.startsWith("#"))
+			{
+				currentComment = line[1..$];
+			}
 			else if(line.startsWith("[") && line.endsWith("]"))
 			{
 				immutable string groupName = line[1..$-1];
+
 				currentGroupName = groupName;
 			}
 			else
@@ -54,14 +71,35 @@ private:
 	            auto key = groupAndKey[0].stripRight();
 	            immutable auto value = groupAndKey[2].stripLeft();
 
-	            if (groupAndKey[1].length)
+	            if(groupAndKey[1].length)
 	            {
-	            	values_[currentGroupName][key] = value;
+					KeyValueData data;
+
+					data.key = key;
+					data.value = value;
+					data.group = currentGroupName;
+
+					if(currentComment != "")
+					{
+						data.comment = currentComment;
+						currentComment = string.init;
+					}
+
+					values_ ~= data;
 	           	}
 			}
 		}
 	}
 
+	/**
+	*	Determines if the group string is in the form of group.key.
+	*
+	*	Params:
+	*		value = The string to test.
+	*
+	*	Returns:
+	*		true if the string is in the group.key form false otherwise.
+	*/
 	bool isGroupString(const string value) pure @safe
 	{
 		if(value.indexOf(".") == -1)
@@ -71,6 +109,15 @@ private:
 		return true;
 	}
 
+	/**
+	*	Retrieves the group and key from a string in the form of group.key.
+	*
+	*	Params:
+	*		value = The string to process.
+	*
+	*	Returns:
+	*		A tuple containing the group and key.
+	*/
 	auto getGroupAndKeyFromString(const string value) pure @safe
 	{
 		auto groupAndKey = value.findSplit(".");
@@ -81,55 +128,34 @@ private:
 	}
 
 public:
-	/**
-	*	Workaround for a D bug where the destructor won't be called if your KeyValueConfig object is a global.
-	*	If you want KeyValueConfig to save automatically upon destruction and your object is a global then it must
-	*	be intialized as shown in the example.
-	*
-	*	Example:
-	*		KeyValueConfig config;
-	*		config = KeyValueConfig(); // Should be in main or another function.
-	*/
-
-	~this()
-	{
-		if(valuesModified_)
-		{
-			save();
-		}
-	}
 
 	/**
-	*	Saves config values to config file.
-	*
-	*	Note:
-	*		Currently there is a bug in DMD where a global objects destructor will not be called when it goes out of scope.
-	*		Which in effect makes it so save is never called if your KeyValueConfig variable is a global variable. You must
-	*		Manually call save() in this case until the bug is fixed in DMD.
+	*	Saves config values to the config file.
 	*/
 	void save() @trusted
 	{
-		if(fileName_ != string.init && valuesModified_)
+		if(fileName_ != string.init)// && valuesModified_)
 		{
 			auto configfile = File(fileName_, "w+");
-			auto defaultGroup = getGroup(defaultGroupName_);
+			string curGroup;
 
-			foreach(key, value; defaultGroup) // INFO: Write the default group values first.
+			foreach(key, data; values_)
 			{
-				configfile.writeln(key, separator_, value);
-			}
-
-			foreach(groupName, data; values_)
-			{
-				if(groupName != defaultGroupName_)
+				if(curGroup != data.group)
 				{
-					configfile.writeln("[", groupName, "]");
-
-					foreach(key, value; data)
+					curGroup = data.group;
+					if(curGroup != DEFAULT_GROUP_NAME)
 					{
-						configfile.writeln(key, separator_, value);
+						configfile.writeln("[", curGroup, "]");
 					}
 				}
+
+				if(data.comment.length)
+				{
+					configfile.writeln("#", data.comment);
+				}
+
+				configfile.writeln(data.key, " = ", data.value);
 			}
 		}
 	}
@@ -166,7 +192,8 @@ public:
 	*	Returns:
 	*		Returns true on a successful load false otherwise.
 	*/
-	bool loadString(const string text, string fileName = string.init) @safe
+
+	bool loadString(const string text, string fileName = "app.config") @safe
 	{
 		if(text.length > 0)
 		{
@@ -186,16 +213,16 @@ public:
 	}
 
 	/**
-	*	Gets the value T of the key/value pair where T is the type the value should be converted to.
+	*	Retrieves the value T associated with key where T is the designated type to be converted to.
 	*
 	*	Params:
 	*		key = Name of the key to get.
 	*
 	*	Returns:
-	*		The value of value of the key/value pair.
+	*		The value associated with key.
 	*
 	*/
-	T get(T = string)(const string key) pure @safe
+	T get(T = string)(const string key) @safe
 	{
 		string defaultValue;
 
@@ -216,23 +243,22 @@ public:
 		}
 		else
 		{
-			auto groupValues = values_[defaultGroupName_];
-			return to!T(groupValues.get(key, defaultValue));
+			return get!T(DEFAULT_GROUP_NAME, key, defaultValue);
 		}
 	}
 
 	/**
-	*	Gets the value T of the key/value pair where T is the type the value should be converted to.
+	*	Retrieves the value T associated with key where T is the designated type to be converted to.
 	*
 	*	Params:
 	*		key = Name of the key to get.
 	*		defaultValue = Allow the assignment of a default value if key does not exist.
 	*
 	*	Returns:
-	*		The value of value of the key/value pair.
+	*		The value associated with key.
 	*
 	*/
-	T get(T = string)(const string key, string defaultValue) pure @safe
+	T get(T = string)(const string key, string defaultValue) @safe
 	{
 		if(isGroupString(key))
 		{
@@ -241,13 +267,12 @@ public:
 		}
 		else
 		{
-			auto groupValues = values_[defaultGroupName_];
-			return to!T(groupValues.get(key, defaultValue));
+			return get!T(DEFAULT_GROUP_NAME, key, defaultValue);
 		}
 	}
 
 	/**
-	*	Gets the value T of the key/value pair where T is the type the value should be converted to.
+	*	Retrieves the value T associated with key where T is the designated type to be converted to.
 	*
 	*	Params:
 	*		group = Name of the group to retrieve ie portion [groupName] of config file/string.
@@ -258,52 +283,65 @@ public:
 	*		The value of value of the key/value pair.
 	*
 	*/
-	T get(T = string)(const string group, immutable string key, string defaultValue) pure @safe
+	T get(T = string)(const string group, const string key, string defaultValue) @safe
 	{
 		if(containsGroup(group))
 		{
-			auto groupValues = getGroup(group);
-		    auto groupValue = groupValues.get(key, defaultValue);
-
-		    return to!T(groupValue);
+			return to!T(getGroupValue(group, key));
 		}
 		else
 		{
-		    return get!T(key, defaultValue);
+			return to!T(defaultValue);
 		}
 	}
 
 	/**
-	*	Gets the group portion of a config file/string.
+	*	Gets the value associated with the group and key.
+	*
+	*	Params:
+	*		group = Name of the group the value is stored in.
+	*		key = Name of the key the value is stored in.
+	*
+	*	Returns:
+	*		The value associated with the group and key.
+	*/
+	string getGroupValue(const string group, const string key) @safe
+	{
+		auto value = values_.filter!(a => (a.group == group) && (a.key == key));//.take(1);
+		return to!string(value.front.value);
+	}
+
+	/**
+	*	Retrieves key/values associated with the group portion of a config file/string.
 	*
 	*	Params:
 	*		group = Name of the the group to retrieve.
 	*
 	*	Returns:
-	*		Retruns an associative array of key/value pairs for the group.
+	*		Returns an array containing all the key/values associated with group.
 	*
 	*/
-	KeyValueData getGroup(const string group) pure @safe
+	auto getGroup(const string group) pure @safe
 	{
-		return values_[group];
+		return values_.filter!(a => a.group == group);
 	}
 
 	/**
-	*	Retrieves an associative array containing every group
+	*	Retrieves an array containing key/values of all groups in the configfile omitting groupless key/values.
 	*
 	*	Returns:
-	*		An associative array containing every group.
+	*		An array containing every group.
 	*/
-	GroupData getGroups()
+	auto getGroups()
 	{
-		return values_;
+		return values_.filter!(a => a.group != "");
 	}
 
 	/**
 	*	Sets a config value.
 	*
 	*	Params:
-	*		key = Name of the key to set.
+	*		key = Name of the key to set. Can be in the group.key form.
 	*		value = The value to be set to.
 	*/
 	void set(T)(const string key, T value) pure @safe
@@ -322,47 +360,54 @@ public:
 		if(isGroupString(key))
 		{
 			auto groupAndKey = getGroupAndKeyFromString(key);
-			values_[groupAndKey.group][groupAndKey.key] = convValue;
+			auto group = groupAndKey.group;
+
+			set(group, key, value);
 		}
 		else
 		{
-			values_[defaultGroupName_][key] = convValue;
+			set(DEFAULT_GROUP_NAME, key, value);
 		}
 
 		valuesModified_ = true;
 	}
 
 	/**
-	*	Sets the name used for the default section.
+	*	Sets a config value.
 	*
 	*	Params:
-	*		name = The name of the default section should be called.
+	*		group = Name of the group key belongs to.
+	*		key = Name of the key to set.
+	*		value = The value to be set to.
 	*/
-	void setDefaultGroupName(const string name) pure @safe
+	void set(T)(const string group, const string key, T value) pure @safe
 	{
-		defaultGroupName_ = name;
-	}
+		string convValue;
 
-	/**
-	*	Gets the name of the default section.
-	*
-	*	Returns:
-	*		The name of the default section.
-	*/
-	string getDefaultGroupName()
-	{
-		return defaultGroupName_;
+		static if(!is(T == string))
+		{
+			convValue = to!string(value);
+		}
+		else
+		{
+			convValue = value;
+		}
+
+		auto foundValue = values_.filter!(a => (a.group == group) && (a.key == key));
+
+		foundValue.front.value = convValue;
+		valuesModified_ = true;
 	}
 
 	/**
 	*	Determines if the key is found in the config file.
-	*	The key can be either its name of in the format of groupName.keyName or just the keyName.
+	*	The key can be either its name of in the format of groupName.keyName or just the key name.
 	*
 	*	Params:
 	*		key = Name of the key to get the value of
 	*
 	*	Returns:
-	*		true if the config contains the key false otherwise.
+	*		true if the config file contains the key false otherwise.
 	*/
 	bool contains(const string key) pure @safe
 	{
@@ -373,7 +418,7 @@ public:
 		}
 		else
 		{
-			return contains(defaultGroupName_, key);
+			return contains(DEFAULT_GROUP_NAME, key);
 		}
 	}
 
@@ -385,42 +430,43 @@ public:
 	*		key = Name of the key to get the value from.
 	*
 	*	Returns:
-	*		true if the config contains the key false otherwise.
+	*		true if the config file contains the key false otherwise.
 	*/
-	bool contains(const string group, immutable string key) pure @safe
+	bool contains(const string group, const string key) pure @safe
 	{
 		if(containsGroup(group))
 		{
 			auto groupValues = getGroup(group);
-			return cast(bool)(key in groupValues);
+			return groupValues.canFind!(a => a.key == key);
 		}
 		else
 		{
-			auto groupValues = getGroup(defaultGroupName_);
-			return cast(bool)(key in groupValues);
+			//FIXME: Really this should just return false?
+			auto groupValues = getGroup(DEFAULT_GROUP_NAME);
+			return groupValues.canFind!(a => a.key == key);
 		}
 	}
 
 	/**
-	*	Determines if the given groupName Exists.
+	*	Determines if the given group exists.
 	*
 	*	Params:
-	*		key = Name of the group to check for.
+	*		group = Name of the group to check for.
 	*
 	*	Returns:
 	*		true if the group exists false otherwise.
 	*/
-	bool containsGroup(const string key) pure @safe
+	bool containsGroup(const string group) pure @safe
 	{
-		return cast(bool)(key in values_);
+		return values_.canFind!(a => a.group == group);
 	}
 
 	/**
-	*	Removes a key/value from config.
+	*	Removes a key/value from config file.
 	*	The key can be either its name of in the format of groupName.keyName or just the keyName.
 	*
 	*	Params:
-	*		key = Name of the key to remove.
+	*		key = Name of the key to remove. Can be in the group.name format.
 	*
 	*	Returns:
 	*		true if it was successfully removed false otherwise.
@@ -434,13 +480,12 @@ public:
 		}
 		else
 		{
-			auto group = getGroup(defaultGroupName_);
-			return group.remove(key);
+			return remove(DEFAULT_GROUP_NAME, key);
 		}
 	}
 
 	/**
-	*	Removes a key/value from config.
+	*	Removes a key/value from config file.
 	*	The key can be either its name of in the format of group.keyor just the key.
 	*
 	*	Params:
@@ -450,14 +495,14 @@ public:
 	*	Returns:
 	*		true if it was successfully removed false otherwise.
 	*/
-	bool remove(const string group, immutable string key) pure @safe
+	bool remove(const string group, const string key) pure @safe
 	{
-		auto groupValues = getGroup(group);
-		return groupValues.remove(key);
+		values_ = values_.remove!(a => (a.group == group) && (a.key == key));
+		return contains(group, key);
 	}
 
 	/**
-	*	Removes a group from config.
+	*	Removes a group from the config file.
 	*
 	*	Params:
 	*		key = Name of the group to remove.
@@ -465,9 +510,10 @@ public:
 	*	Returns:
 	*		true if group was successfully removed false otherwise.
 	*/
-	bool removeGroup(const string key) pure @safe
+	bool removeGroup(const string group) pure @trusted
 	{
-		return values_.remove(key);
+		values_ = values_.remove!(a => a.group == group);
+		return containsGroup(group);
 	}
 
 	/**
@@ -477,9 +523,9 @@ public:
 	*		key = Name of the value to retrieve
 	*
 	*	Returns:
-	*		The value associated with the key.
+	*		The string value associated with the key.
 	*/
-	string opIndex(string key) pure @safe
+	string opIndex(string key) @safe
 	{
 		return get(key);
 	}
@@ -491,13 +537,13 @@ public:
 	*		key = Name of the key to assign the value to.
 	*		value = The value in which key should be assigned to.
 	*/
-	void opIndexAssign(T = string)(T value, string key) pure @safe
+	void opIndexAssign(T)(T value, string key) pure @safe
 	{
 		set(key, value);
 	}
 
 	// FIXME: Surely there is a better way to do this but at the moment dmd can't decern which overloaded function to use.
-	private T getT(T)(const string key) pure @safe
+	private T getT(T)(const string key) @safe
 	{
 		return get!T(key);
 	}
@@ -508,9 +554,7 @@ public:
 	alias boolean = getT!bool;
 
 private:
-	immutable char separator_ = '=';
-	GroupData values_;
-	string defaultGroupName_;
+	KeyValueData[] values_;
 	string fileName_;
 	bool valuesModified_;
 }
@@ -521,12 +565,15 @@ unittest
 		aBool=true
 		float = 3443.443
 		number=12071
+		#Here is a comment
 		sentence=This is a really long sentence to test for a really long value string!
 		time=12:04
 		[section]
 		groupSection=is really cool if this works!
 		japan=true
+		babymetal=the one
 		[another]
+		#And another comment!
 		world=hello
 		japan=false
 	";
@@ -540,26 +587,37 @@ unittest
 	config.removeGroup("section");
 	assert(config.containsGroup("section") == false);
 
-	assert(config.contains("time"));
-
-	assert(config.get!bool("aBool"));
+	assert(config.get!bool("aBool") == true);
 	assert(config.boolean("aBool")); // Syntactic sugar
+
+	assert(config.contains("time"));
 
 	assert(config.contains("another.world"));
 	assert(config.get("another.world") == "hello");
+	config.remove("another.world");
+	assert(config.contains("another.world") == false);
 
 	assert(config.contains("number"));
 	config.remove("number");
 	assert(config.contains("number") == false);
 
+	assert(config["another.japan"] == "false");
+
 	writeln("KeyValueConfig: Testing getGroup...");
 
 	auto group = config.getGroup("another");
 
-	foreach(key, value; group)
+	foreach(value; group)
 	{
-		writeln(key, " => ", value);
+		writeln(value);
 	}
 
 	writeln();
+
+	config.set("aBool", "false");
+	assert(config.get!bool("aBool") == false);
+	config["aBool"] = true;
+	assert(config.get!bool("aBool") == true);
+
+	debug config.save();
 }
