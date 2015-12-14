@@ -508,7 +508,7 @@ public:
 	*	Removes a group from the config file.
 	*
 	*	Params:
-	*		key = Name of the group to remove.
+	*		group = Name of the group to remove.
 	*
 	*	Returns:
 	*		true if group was successfully removed false otherwise.
