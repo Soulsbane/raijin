@@ -127,6 +127,7 @@ class CommandLineArgs
 	*		key = Name of the command line argument to register.
 	*		defaultValue = The default value to use if no value is supplied.
 	*		description = The description of what the command line argument does.
+	*		required = Whether the argument is required.
 	*/
 	final void addCommand(const string key, immutable string defaultValue, immutable string description,
 		RequiredArg required = RequiredArg.no) @safe
@@ -206,7 +207,7 @@ class CommandLineArgs
 	*	Determines if a registered command line argument is a flag.
 	*
 	*	Params:
-	*		key - Name of the command line argument to retrieve.
+	*		key = Name of the command line argument to retrieve.
 	*
 	*	Returns:
 	*		True if the command line argument is a flag and false otherwise.
@@ -371,7 +372,7 @@ class CommandLineArgs
 				case NO_ARGS:
 					onNoArgs();
 					return true;
-					
+
 				default:
 					onInvalidArgs(processed.type, processed.command);
 					return false;
