@@ -31,6 +31,9 @@ private struct KeyValueData
 	string comment;
 }
 
+/**
+*	Handles the processing of config files.
+*/
 struct KeyValueConfig
 {
 private:
