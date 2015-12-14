@@ -23,7 +23,7 @@ import std.typecons : tuple;
 
 private enum DEFAULT_GROUP_NAME = null;
 
-struct KeyValueData
+private struct KeyValueData
 {
 	string key;
 	string value;
@@ -34,6 +34,13 @@ struct KeyValueData
 struct KeyValueConfig
 {
 private:
+
+	/**
+	*	Processes the text found in config file into an array of KeyValueData structures.
+	*
+	*	Params:
+	*		text = The text to be processed.
+	*/
 	void processText(const string text) @safe
 	{
 		auto lines = text.lineSplitter();
@@ -84,6 +91,15 @@ private:
 		}
 	}
 
+	/**
+	*	Determines if the group string is in the form of group.key.
+	*
+	*	Params:
+	*		value = The string to test.
+	*
+	*	Returns:
+	*		true if the string is in the group.key form false otherwise.
+	*/
 	bool isGroupString(const string value) pure @safe
 	{
 		if(value.indexOf(".") == -1)
@@ -93,6 +109,15 @@ private:
 		return true;
 	}
 
+	/**
+	*	Retrieves the group and key from a string in the form of group.key.
+	*
+	*	Params:
+	*		value = The string to process.
+	*
+	*	Returns:
+	*		A tuple containing the group and key.
+	*/
 	auto getGroupAndKeyFromString(const string value) pure @safe
 	{
 		auto groupAndKey = value.findSplit(".");
