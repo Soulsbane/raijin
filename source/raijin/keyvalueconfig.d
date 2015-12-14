@@ -31,6 +31,9 @@ private struct KeyValueData
 	string comment;
 }
 
+/**
+*	Handles the processing of config files.
+*/
 struct KeyValueConfig
 {
 private:
@@ -134,7 +137,7 @@ public:
 	*/
 	void save() @trusted
 	{
-		if(fileName_ != string.init)// && valuesModified_)
+		if(fileName_ != string.init && valuesModified_)
 		{
 			auto configfile = File(fileName_, "w+");
 			string curGroup;
@@ -368,8 +371,6 @@ public:
 		{
 			set(DEFAULT_GROUP_NAME, key, value);
 		}
-
-		valuesModified_ = true;
 	}
 
 	/**
@@ -476,10 +477,13 @@ public:
 		if(isGroupString(key))
 		{
 			auto groupAndKey = getGroupAndKeyFromString(key);
+
+			valuesModified_ = true;
 			return remove(groupAndKey.group, groupAndKey.key);
 		}
 		else
 		{
+			valuesModified_ = true;
 			return remove(DEFAULT_GROUP_NAME, key);
 		}
 	}
@@ -498,6 +502,8 @@ public:
 	bool remove(const string group, const string key) pure @safe
 	{
 		values_ = values_.remove!(a => (a.group == group) && (a.key == key));
+		valuesModified_ = true;
+
 		return contains(group, key);
 	}
 
@@ -505,7 +511,7 @@ public:
 	*	Removes a group from the config file.
 	*
 	*	Params:
-	*		key = Name of the group to remove.
+	*		group = Name of the group to remove.
 	*
 	*	Returns:
 	*		true if group was successfully removed false otherwise.
@@ -513,6 +519,8 @@ public:
 	bool removeGroup(const string group) pure @trusted
 	{
 		values_ = values_.remove!(a => a.group == group);
+		valuesModified_ = true;
+
 		return containsGroup(group);
 	}
 
