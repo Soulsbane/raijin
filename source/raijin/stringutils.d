@@ -72,8 +72,6 @@ string pluralize(const string text, const uint count, const string pluralizeToWo
 
 		if(lastChar == 'y' && !isVowelChar(vowelChar))
 		{
-			pluralizedNumber = text[0 .. $ - 1]; // Not needwed
-
 			if(pluralizeToWord.empty)
 			{
 				pluralizedNumber = pluralizedNumber ~ "ies";
