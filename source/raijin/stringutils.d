@@ -9,6 +9,7 @@ module raijin.stringutils;
 import std.string : indexOf, CaseSensitive;
 import std.conv : to;
 import std.range.primitives : empty, popFront, front;
+import std.algorithm : canFind;
 
 /**
 *	Determines if a string has the value specified
@@ -21,13 +22,28 @@ import std.range.primitives : empty, popFront, front;
 *	Returns:
 *		True if the toFindValue is found false otherwise.
 */
-bool find(const string value, immutable string toFindValue, CaseSensitive cs = CaseSensitive.no) pure @safe
+bool find(const string value, const string toFindValue, CaseSensitive cs = CaseSensitive.no) pure @safe
 {
 	if(value.indexOf(toFindValue, cs) == -1)
 	{
 		return false;
 	}
 	return true;
+}
+
+/**
+*	Determines is a character is a vowel
+*
+*	Params:
+*		vowelChar = The character to check.
+*
+*	Returns:
+*		true if the character is a vowel false otherwise.
+*/
+bool isVowelChar(char vowelChar)
+{
+	string vowels = "aeiou";
+	return vowels.canFind!(a => a == vowelChar);
 }
 
 /**
@@ -40,7 +56,7 @@ bool find(const string value, immutable string toFindValue, CaseSensitive cs = C
 *	Returns:
 *		The pluralized string if more than one of type or singular form otherwise.
 */
-string pluralize(string text, immutable uint count)
+string pluralize(const string text, const uint count)
 {
 	string pluralizedNumber = text[0 .. $ - 1];
 
@@ -51,8 +67,9 @@ string pluralize(string text, immutable uint count)
 	else
 	{
 		immutable char lastChar = text[$ - 1];
+		immutable char vowelChar = text[$ - 2];
 
-		if(lastChar == 'y')
+		if(lastChar == 'y' && !isVowelChar(vowelChar))
 		{
 			pluralizedNumber = text[0 .. $ - 1];
 			pluralizedNumber = pluralizedNumber ~ "ies";
@@ -76,7 +93,7 @@ string pluralize(string text, immutable uint count)
 *	Returns:
 *		The modified string with all characters to be removed are removed.
 */
-string removeLeadingChars(string str, dchar charToRemove) @trusted
+string removeLeadingChars(string str, const dchar charToRemove) @trusted
 {
 	// INFO: Surely there is a phobos function to do this but I couldn't find it.
     while (!str.empty)
@@ -101,6 +118,9 @@ unittest
 	assert("fly".pluralize(1) == "fly");
 	assert("book".pluralize(10) == "books");
 	assert("book".pluralize(1) == "book");
+	assert("boy".pluralize(2) == "boys");
+	assert("key".pluralize(2) == "keys");
+
 	assert("Hello World".find("Hello") == true);
 	assert("Hello World".find("hello") == true);
 	assert("Hello World".find("hello", CaseSensitive.yes) == false);
