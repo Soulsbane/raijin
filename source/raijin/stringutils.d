@@ -47,16 +47,17 @@ bool isVowelChar(char vowelChar)
 }
 
 /**
-*	Pluralizes a string.
+*	Pluralizes a string if count is greater than one.
 *
 *	Params:
 *		text = The word to pluralize.
 *		count = The number of words.
+*		pluralizedWord = The word to use when a value needs to be pluralized
 *
 *	Returns:
 *		The pluralized string if more than one of type or singular form otherwise.
 */
-string pluralize(const string text, const uint count)
+string pluralize(const string text, const uint count, const string pluralizeToWord = string.init)
 {
 	string pluralizedNumber = text[0 .. $ - 1];
 
@@ -71,12 +72,27 @@ string pluralize(const string text, const uint count)
 
 		if(lastChar == 'y' && !isVowelChar(vowelChar))
 		{
-			pluralizedNumber = text[0 .. $ - 1];
-			pluralizedNumber = pluralizedNumber ~ "ies";
+			pluralizedNumber = text[0 .. $ - 1]; // Not needwed
+
+			if(pluralizeToWord.empty)
+			{
+				pluralizedNumber = pluralizedNumber ~ "ies";
+			}
+			else
+			{
+				pluralizedNumber = pluralizeToWord;
+			}
 		}
 		else
 		{
-			pluralizedNumber = text ~ "s";
+			if(pluralizeToWord.empty)
+			{
+				pluralizedNumber = text ~ "s";
+			}
+			else
+			{
+				pluralizedNumber = pluralizeToWord;
+			}
 		}
 	}
 
@@ -120,6 +136,8 @@ unittest
 	assert("book".pluralize(1) == "book");
 	assert("boy".pluralize(2) == "boys");
 	assert("key".pluralize(2) == "keys");
+	assert("key".pluralize(2, "keyz") == "keyz");
+	assert("key".pluralize(1, "keyz") == "key");
 
 	assert("Hello World".find("Hello") == true);
 	assert("Hello World".find("hello") == true);
