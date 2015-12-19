@@ -416,9 +416,9 @@ class CommandLineArgs
 			foreach(element; elements)
 			{
 				auto keyValuePair = element.findSplit("=");
-	            immutable string key = keyValuePair[0].stripRight.removeLeadingChars('-');
-	            immutable string separator = keyValuePair[1];
-	            immutable string value = keyValuePair[2].stripLeft();
+				immutable string key = keyValuePair[0].stripRight.removeLeadingChars('-');
+				immutable string separator = keyValuePair[1];
+				immutable string value = keyValuePair[2].stripLeft();
 
 				if(!firstArgProcessed && (element.indexOf("-") == -1))
 				{
