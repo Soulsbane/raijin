@@ -1,13 +1,15 @@
 /*
-    Various functions for dealing with path based manipulation and retrieval.
+*	Various functions for dealing with path based manipulation and retrieval.
 */
 
 module raijin.pathutils;
 
 import std.process : environment;
-import std.path : pathSeparator, buildPath;
-import std.file : exists;
+import std.path;
+import std.stdio;
+import std.file;
 import std.algorithm : splitter;
+import std.string;
 
 /**
 *   Determines if executableName is in the user's path.
@@ -20,24 +22,82 @@ import std.algorithm : splitter;
 */
 string isInPath(const string executableName)
 {
-    version(windows)
-    {
-        enum separator = ";";
-    }
-    else
-    {
-        enum separator = ":";
-    }
+	version(windows)
+	{
+		enum separator = ";";
+	}
+	else
+	{
+		enum separator = ":";
+	}
 
-    foreach(dir; splitter(environment["PATH"], separator))
-    {
-        auto path = buildPath(dir, executableName);
+	foreach(dir; splitter(environment["PATH"], separator))
+	{
+		auto path = dir.buildNormalizedPath(executableName);
 
-        if(exists(path))
-        {
-            return path;
-        }
-    }
+		if(path.exists)
+		{
+			return path;
+		}
+	}
 
-    return null;
+	return null;
 }
+
+/**
+*	Ensures a directory path exists by creating it if it does not already exist.
+*/
+bool ensurePathExists(const string path)
+{
+	if(!path.exists)
+	{
+		path.mkdirRecurse;
+	}
+
+	return path.exists;
+}
+
+bool ensurePathExists(T...)(T args)
+{
+	immutable string path = buildNormalizedPath(args);
+
+	if(!path.exists)
+	{
+		path.mkdirRecurse;
+	}
+
+	return path.exists;
+}
+
+bool removePathIfExists(const string path)
+{
+	if(path.exists)
+	{
+		path.rmdirRecurse;
+	}
+
+	return !path.exists;
+}
+
+bool removePathIfExists(T...)(T args)
+{
+	immutable string path = buildNormalizedPath(args);
+
+	if(path.exists)
+	{
+		path.rmdirRecurse;
+	}
+
+	return !path.exists;
+}
+
+
+unittest
+{
+	assert(ensurePathExists("my", "test", "dir"));
+	assert(removePathIfExists("my"));
+	assert(ensurePathExists("my/test/dir"));
+	assert(removePathIfExists("my"));
+
+}
+
