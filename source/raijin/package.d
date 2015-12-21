@@ -6,6 +6,7 @@ public
 	import raijin.commandlineargs;
 	import raijin.configpath;
 	import raijin.debugutils;
+	import raijin.fileutils;
 	import raijin.keyvalueconfig;
 	import raijin.pathutils;
 	import raijin.stringutils;

@@ -71,11 +71,11 @@ private:
 			else
 			{
 				auto groupAndKey = line.findSplit("=");
-	            auto key = groupAndKey[0].stripRight();
-	            immutable auto value = groupAndKey[2].stripLeft();
+				auto key = groupAndKey[0].stripRight();
+				immutable auto value = groupAndKey[2].stripLeft();
 
-	            if(groupAndKey[1].length)
-	            {
+				if(groupAndKey[1].length)
+				{
 					KeyValueData data;
 
 					data.key = key;
@@ -89,7 +89,7 @@ private:
 					}
 
 					values_ ~= data;
-	           	}
+				}
 			}
 		}
 	}

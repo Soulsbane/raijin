@@ -31,12 +31,12 @@ class ConfigPath
 
     void createConfigDir(const string name = string.init)
     {
-    	string normalPath = buildNormalizedPath(getConfigDir(name));
+        string normalPath = buildNormalizedPath(getConfigDir(name));
 
-    	if(!exists(normalPath))
-    	{
-    		mkdirRecurse(normalPath);
-    	}
+        if(!exists(normalPath))
+        {
+            mkdirRecurse(normalPath);
+        }
     }
 
 private:
