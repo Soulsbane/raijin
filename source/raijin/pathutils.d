@@ -12,13 +12,13 @@ import std.algorithm : splitter;
 import std.string;
 
 /**
-*   Determines if executableName is in the user's path.
+*	Determines if executableName is in the user's path.
 *
-*   Params:
-*       executableName = Name of the executable to look for.
+*	Params:
+*		executableName = Name of the executable to look for.
 *
-*   Returns:
-*       The path to the executable if found otherwise null.
+*	Returns:
+*		The path to the executable if found otherwise null.
 */
 string isInPath(const string executableName)
 {
@@ -46,6 +46,12 @@ string isInPath(const string executableName)
 
 /**
 *	Ensures a directory path exists by creating it if it does not already exist.
+*
+*	Params:
+*		path = string containing the path to create.
+*
+*	Returns:
+*		true if path was created false otherwise.
 */
 bool ensurePathExists(const string path)
 {
@@ -57,6 +63,15 @@ bool ensurePathExists(const string path)
 	return path.exists;
 }
 
+/**
+*	Ensures a directory path exists by creating it if it does not already exist.
+*
+*	Params:
+*		path = Variable number of argument strings containing the path to create.
+*
+*	Returns:
+*		true if path was created false otherwise.
+*/
 bool ensurePathExists(T...)(T args)
 {
 	immutable string path = buildNormalizedPath(args);
@@ -69,6 +84,12 @@ bool ensurePathExists(T...)(T args)
 	return path.exists;
 }
 
+/**
+*	Remove the path if it exists.
+*
+*	Params:
+*		T = Variable number of strings that compose the path.
+*/
 bool removePathIfExists(const string path)
 {
 	if(path.exists)
@@ -79,6 +100,12 @@ bool removePathIfExists(const string path)
 	return !path.exists;
 }
 
+/**
+*	Remove the path if it exists.
+*
+*	Params:
+*		T = Variable number of strings that compose the path.
+*/
 bool removePathIfExists(T...)(T args)
 {
 	immutable string path = buildNormalizedPath(args);
@@ -91,13 +118,11 @@ bool removePathIfExists(T...)(T args)
 	return !path.exists;
 }
 
-
 unittest
 {
 	assert(ensurePathExists("my", "test", "dir"));
 	assert(removePathIfExists("my"));
 	assert(ensurePathExists("my/test/dir"));
 	assert(removePathIfExists("my"));
-
 }
 

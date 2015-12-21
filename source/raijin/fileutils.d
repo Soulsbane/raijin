@@ -12,6 +12,16 @@ import std.typecons;
 
 alias AppendMode = Flag!"appendMode";
 
+/**
+*	Creates fileName if it dosn't exist or opens if it does exist.
+*
+*	Params:
+*		fileName = Name of the file to create or open.
+*		mode = Set to AppendMode.yes if the file should be opened in append mode.
+*
+*	Returns:
+*		The File handle to the open file.
+*/
 File ensureFileExists(const string fileName, AppendMode mode = AppendMode.no)
 {
 	if(fileName.exists)
@@ -34,6 +44,15 @@ File ensureFileExists(const string fileName, AppendMode mode = AppendMode.no)
 	}
 }
 
+/**
+*	Removes fileName if it exists.
+*
+* 	Params:
+* 		fileName = Name of the file to remove.
+*
+*	Returns:
+*		true if the fileName was removed false otherwise.
+*/
 bool removeFileIfExists(const string fileName)
 {
 	if(fileName.exists)
@@ -44,6 +63,15 @@ bool removeFileIfExists(const string fileName)
 	return !fileName.exists;
 }
 
+/**
+* 	Determines if fileName is hidden.
+*
+* 	Params:
+*		fileName = Name of the file to check for hidden status.
+*
+*	Returns:
+*		true if the fileName is hidden false otherwise.
+*/
 bool isFileHidden(const string fileName)
 {
 	if (fileName.baseName.startsWith("."))
