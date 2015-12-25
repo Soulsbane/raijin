@@ -10,64 +10,62 @@ import raijin.configpath;
 class AppConfig
 {
 private:
+	void loadConfigFile(const string defaultConfigFileData = string.init)
+	{
+		import std.file : exists;
 
-    void loadConfigFile(const string defaultConfigFileData = string.init)
-    {
-        import std.file : exists;
+		string text;
+		immutable string configFilePath = buildNormalizedPath(configPath_.getConfigDir("config"), "app.config");
 
-        string text;
-        immutable string configFilePath = buildNormalizedPath(configPath_.getConfigDir("config"), "app.config");
+		if(exists(configFilePath))
+		{
+			text = readText(configFilePath);
+		}
+		else
+		{
+			auto f = File(configFilePath , "w+"); // Create an empty config file and insert default data.
+			f.writeln(defaultConfigFileData);
+		}
 
-        if(exists(configFilePath))
-        {
-            text = readText(configFilePath);
-        }
-        else
-        {
-            auto f = File(configFilePath , "w+"); // Create an empty config file and insert default data.
-            f.writeln(defaultConfigFileData);
-        }
+		immutable bool loaded = configFile_.loadFile(configFilePath);
 
-        immutable bool loaded = configFile_.loadFile(configFilePath);
-
-        if(!loaded)
-        {
-            debug
-            {
-                writeln("FAILED to load configuration file!");
-            }
-        }
-    }
+		if(!loaded)
+		{
+			debug
+			{
+				writeln("FAILED to load configuration file!");
+			}
+		}
+	}
 
 public:
+	this()
+	{
+		configPath_ = new ConfigPath;
 
-    this()
-    {
-        configPath_ = new ConfigPath;
+		configPath_.createConfigDir("config");
+		loadConfigFile();
+	}
 
-        configPath_.createConfigDir("config");
-        loadConfigFile();
-    }
+	this(const string organizationName, const string applicationName, const string defaultConfigFileData = string.init)
+	{
+		configPath_ = new ConfigPath(organizationName, applicationName);
 
-    this(const string organizationName, const string applicationName, const string defaultConfigFileData = string.init)
-    {
-        configPath_ = new ConfigPath(organizationName, applicationName);
+		configPath_.createConfigDir("config");
+		loadConfigFile(defaultConfigFileData);
+	}
 
-        configPath_.createConfigDir("config");
-        loadConfigFile(defaultConfigFileData);
-    }
+	ConfigPath path() @property
+	{
+		return configPath_;
+	}
 
-    ConfigPath path() @property
-    {
-        return configPath_;
-    }
-
-    KeyValueConfig file() @property
-    {
-        return configFile_;
-    }
+	KeyValueConfig file() @property
+	{
+		return configFile_;
+	}
 
 private:
-    KeyValueConfig configFile_;
-    ConfigPath configPath_;
+	KeyValueConfig configFile_;
+	ConfigPath configPath_;
 }
