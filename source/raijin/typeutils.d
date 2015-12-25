@@ -20,7 +20,7 @@ alias AllowNumericBooleanValues = Flag!"allowNumericBooleanValues";
 
 bool isBooleanString(const string value) @trusted
 {
-    return(value == "true" || value == "false");
+	return(value == "true" || value == "false");
 }
 
 /**
@@ -34,7 +34,7 @@ bool isBooleanString(const string value) @trusted
 */
 bool isBooleanNumber(const string value) @trusted
 {
-    return(value == "1" || value == "0");
+	return(value == "1" || value == "0");
 }
 
 /**
@@ -48,7 +48,7 @@ bool isBooleanNumber(const string value) @trusted
 */
 bool isBooleanNumber(const int value) @trusted
 {
-    return(value == 1 || value == 0);
+	return(value == 1 || value == 0);
 }
 
 /**
@@ -62,7 +62,7 @@ bool isBooleanNumber(const int value) @trusted
 */
 bool isBoolean(const string value)
 {
-    return (isBooleanString(value) || isBooleanNumber(value));
+	return (isBooleanString(value) || isBooleanNumber(value));
 }
 
 /**
@@ -108,35 +108,35 @@ bool isIntegerValue(string value)
 }
 
 /**
- * Same as TypeTuple, but meant to be used with values.
- *
- * Example:
- *   foreach (char channel; ValueTuple!('r', 'g', 'b'))
- *   {
- *     // the loop is unrolled at compile-time
- *     // "channel" is a compile-time value, and can be used in string mixins
- *   }
- */
+* Same as TypeTuple, but meant to be used with values.
+*
+*	Example:
+*		foreach (char channel; ValueTuple!('r', 'g', 'b'))
+*		{
+*			the loop is unrolled at compile-time
+*			"channel" is a compile-time value, and can be used in string mixins
+*		}
+*/
 
- // NOTE: The following functions can be found in CyberShadows ae lib https://github.com/CyberShadow/ae/
+// NOTE: The following functions can be found in CyberShadows ae lib https://github.com/CyberShadow/ae/
 template ValueTuple(T...)
 {
-    alias ValueTuple = T;
+	alias ValueTuple = T;
 }
 
 template RangeTupleImpl(size_t N, R...)
 {
-    static if (N==R.length)
-        alias RangeTupleImpl = R;
-    else
-        alias RangeTupleImpl = RangeTupleImpl!(N, ValueTuple!(R, R.length));
+	static if (N==R.length)
+		alias RangeTupleImpl = R;
+	else
+		alias RangeTupleImpl = RangeTupleImpl!(N, ValueTuple!(R, R.length));
 }
 
 /// Generate a tuple containing integers from 0 to N-1.
 /// Useful for static loop unrolling. (staticIota)
 template RangeTuple(size_t N)
 {
-    alias RangeTuple = RangeTupleImpl!(N, ValueTuple!());
+	alias RangeTuple = RangeTupleImpl!(N, ValueTuple!());
 }
 
 /// Equivalent of PHP's `list` language construct:
@@ -146,40 +146,42 @@ template RangeTuple(size_t N)
 /// (equivalent of `list(x, , y)` in PHP).
 auto list(Args...)(auto ref Args args)
 {
-    import std.format : format;
+	import std.format : format;
 
-    struct List
-    {
-        auto dummy() { return args[0]; }
+	struct List
+	{
+		auto dummy() { return args[0]; }
 
-        void opAssign(T)(auto ref T t)
-        {
-            assert(t.length == args.length,
-                "Assigning %d elements to list with %d elements"
-                .format(t.length, args.length));
+		void opAssign(T)(auto ref T t)
+		{
+			assert(t.length == args.length,
+				"Assigning %d elements to list with %d elements"
+				.format(t.length, args.length));
 
-            foreach (i; RangeTuple!(Args.length))
-                static if (!is(Args[i] == typeof(null)))
-                    args[i] = t[i];
-        }
-    }
+				foreach (i; RangeTuple!(Args.length))
+					static if (!is(Args[i] == typeof(null)))
+						args[i] = t[i];
+		}
+	}
 
-    return List();
+	return List();
 }
 
 unittest
 {
-    assert("true".isBoolean == true);
-    assert("trues".isBoolean == false);
-    assert("0".isBooleanString == false);
-    assert("true".isBooleanString == true);
-    assert(0.isBooleanNumber == true);
-    assert(2.isBooleanNumber == false);
-    assert("0".isBooleanNumber == true);
-    assert("2".isBooleanNumber == false);
+	assert("true".isBoolean == true);
+	assert("trues".isBoolean == false);
+	assert("0".isBooleanString == false);
+	assert("true".isBooleanString == true);
+	assert(0.isBooleanNumber == true);
+	assert(2.isBooleanNumber == false);
+	assert("0".isBooleanNumber == true);
+	assert("2".isBooleanNumber == false);
 
-    import std.algorithm : findSplit;
+	import std.algorithm : findSplit;
+
 	string name, value;
 	list(name, null, value) = "key=value".findSplit("=");
-    assert(name == "key" && value == "value");
+
+	assert(name == "key" && value == "value");
 }

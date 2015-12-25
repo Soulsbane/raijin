@@ -7,50 +7,51 @@ import standardpaths : writablePath, StandardPath;
 
 class ConfigPath
 {
-    this()
-    {
-        applicationName_ = thisExePath.baseName.stripExtension;
-        configDirPath_ = writablePath(StandardPath.Config);
-    }
+	this()
+	{
+		applicationName_ = thisExePath.baseName.stripExtension;
+		configDirPath_ = writablePath(StandardPath.Config);
+	}
 
-    this(const string organizationName, const string applicationName)
-    {
-        organizationName_ = organizationName;
-        applicationName_ = applicationName;
-        configDirPath_ = writablePath(StandardPath.Config);
-    }
+	this(const string organizationName, const string applicationName)
+	{
+		organizationName_ = organizationName;
+		applicationName_ = applicationName;
+		configDirPath_ = writablePath(StandardPath.Config);
+	}
 
-    string getConfigDir(string name = string.init)
-    {
-        if(name == string.init)
-        {
-            return buildNormalizedPath(configDirPath_, organizationName_, applicationName_);
-        }
-        return buildNormalizedPath(configDirPath_, organizationName_, applicationName_, name);
-    }
+	string getConfigDir(string name = string.init)
+	{
+		if(name == string.init)
+		{
+			return buildNormalizedPath(configDirPath_, organizationName_, applicationName_);
+		}
 
-    void createConfigDir(const string name = string.init)
-    {
-        string normalPath = buildNormalizedPath(getConfigDir(name));
+		return buildNormalizedPath(configDirPath_, organizationName_, applicationName_, name);
+	}
 
-        if(!exists(normalPath))
-        {
-            mkdirRecurse(normalPath);
-        }
-    }
+	void createConfigDir(const string name = string.init)
+	{
+		string normalPath = buildNormalizedPath(getConfigDir(name));
 
-private:
-    string organizationName_;
-    string applicationName_;
-    string configDirPath_;
+		if(!exists(normalPath))
+		{
+			mkdirRecurse(normalPath);
+		}
+	}
+
+	private:
+	string organizationName_;
+	string applicationName_;
+	string configDirPath_;
 }
 
 unittest
 {
-    auto path = new ConfigPath("DlangUnitOrg", "MyUnitTestApp");
+	auto path = new ConfigPath("DlangUnitOrg", "MyUnitTestApp");
 
-    import std.stdio;
-    writeln("Testing ConfigPath class...");
-    writeln(path.getConfigDir("tests"));
-    writeln();
+	import std.stdio;
+	writeln("Testing ConfigPath class...");
+	writeln(path.getConfigDir("tests"));
+	writeln();
 }

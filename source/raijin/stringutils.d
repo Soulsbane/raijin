@@ -110,18 +110,19 @@ string pluralize(const string text, const uint count, const string pluralizeToWo
 string removeLeadingChars(string str, const dchar charToRemove) @trusted
 {
 	// INFO: Surely there is a phobos function to do this but I couldn't find it.
-    while (!str.empty)
-    {
-        auto c = str.front;
+	while (!str.empty)
+	{
+		auto c = str.front;
 
-        if (c != charToRemove)
+		if (c != charToRemove)
 		{
-            break;
+			break;
 		}
 
-        str.popFront();
-    }
-    return str;
+		str.popFront();
+	}
+	
+	return str;
 }
 
 unittest
