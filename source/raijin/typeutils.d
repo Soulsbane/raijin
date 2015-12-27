@@ -74,16 +74,10 @@ bool isBoolean(const string value)
 *   Returns:
 *       true if the value is a decimal false otherwise.
 */
-bool isDecimalValue(string value)
+bool isDecimalValue(const string value)
 {
 	import std.string : isNumeric, countchars;
-
-	if(isNumeric(value) && value.countchars(".") == 1)
-	{
-		return true;
-	}
-
-	return false;
+	return (isNumeric(value) && value.countchars(".") == 1) ? true : false;
 }
 
 /**
@@ -95,16 +89,10 @@ bool isDecimalValue(string value)
 *   Returns:
 *       true if the value is a integer false otherwise.
 */
-bool isIntegerValue(string value)
+bool isIntegerValue(const string value)
 {
 	import std.string : isNumeric, countchars;
-
-	if(isNumeric(value) && value.countchars(".") == 0)
-	{
-		return true;
-	}
-
-	return false;
+	return (isNumeric(value) && value.countchars(".") == 0) ? true : false;
 }
 
 /**
@@ -171,12 +159,23 @@ unittest
 {
 	assert("true".isBoolean == true);
 	assert("trues".isBoolean == false);
+
 	assert("0".isBooleanString == false);
 	assert("true".isBooleanString == true);
+
 	assert(0.isBooleanNumber == true);
 	assert(2.isBooleanNumber == false);
+
 	assert("0".isBooleanNumber == true);
 	assert("2".isBooleanNumber == false);
+
+	assert("13".isIntegerValue == true);
+	assert("13.333333".isIntegerValue == false);
+	assert("zzzz".isIntegerValue == false);
+
+	assert("13".isDecimalValue == false);
+	assert("13.333333".isDecimalValue == true);
+	assert("zzzz".isDecimalValue == false);
 
 	import std.algorithm : findSplit;
 
