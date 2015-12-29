@@ -9,6 +9,15 @@ import std.traits;
 
 alias AllowNumericBooleanValues = Flag!"allowNumericBooleanValues";
 
+/**
+*   Determines if value is a true value
+*
+*   Params:
+*       value = The value to check for a true value
+*
+*   Returns:
+*       true if the value is true false otherwise.
+*/
 bool isTrue(T)(const T value)
 {
 	static if(isIntegral!T)
@@ -21,9 +30,17 @@ bool isTrue(T)(const T value)
 	}
 }
 
+/**
+*   Determines if value is a false value
+*
+*   Params:
+*       value = The value to check for a false value
+*
+*   Returns:
+*       true if the value is false false otherwise.
+*/
 bool isFalse(T)(const T value)
 {
-
 	static if(isIntegral!T)
 	{
 		return(value == 0);
@@ -35,10 +52,10 @@ bool isFalse(T)(const T value)
 }
 
 /**
-*   Determines if a string is a boolean value using 0, 1, true and false as qualifiers.
+*   Determines if a value is of type boolean using 0, 1, true and false as qualifiers.
 *
 *   Params:
-*       value = number or boolean string to use.
+*       value = number or boolean string to use. Valid values of 0, 1, "0", "1", "true", "false"
 *
 *   Returns:
 *       true if the value is a boolean false otherwise.
@@ -47,6 +64,7 @@ bool isBoolean(T)(const T value)
 {
 	return(isTrue(value) || isFalse(value));
 }
+
 /**
 *   Determines if a string is a decimal value
 *
