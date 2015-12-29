@@ -20,3 +20,22 @@ void debugLog(const string msg, const int lineNumber = __LINE__, const string fi
 {
 	debug writefln("%s - %s[%s](%d): %s", Clock.currTime, fileName.baseName, funcName.findSplitAfter(".")[1], lineNumber, msg);
 }
+
+struct Log
+{
+	static void info(const string msg, const int lineNumber = __LINE__, const string fileName = __FILE__,
+		const string funcName = __FUNCTION__) @trusted
+	{
+		debug writefln("[INFO] %s - %s[%s](%d): %s", Clock.currTime, fileName.baseName, funcName.findSplitAfter(".")[1], lineNumber, msg);
+	}
+	static void warn(const string msg, const int lineNumber = __LINE__, const string fileName = __FILE__,
+		const string funcName = __FUNCTION__) @trusted
+	{
+		debug writefln("[WARN] %s - %s[%s](%d): %s", Clock.currTime, fileName.baseName, funcName.findSplitAfter(".")[1], lineNumber, msg);
+	}
+	static void error(const string msg, const int lineNumber = __LINE__, const string fileName = __FILE__,
+		const string funcName = __FUNCTION__) @trusted
+	{
+		debug writefln("[ERROR] %s - %s[%s](%d): %s", Clock.currTime, fileName.baseName, funcName.findSplitAfter(".")[1], lineNumber, msg);
+	}
+}

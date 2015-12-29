@@ -4,67 +4,49 @@
 
 module raijin.typeutils;
 
-import std.typecons : Flag;
+import std.typecons;
+import std.traits;
 
 alias AllowNumericBooleanValues = Flag!"allowNumericBooleanValues";
 
+bool isTrue(T)(const T value)
+{
+	static if(isIntegral!T)
+	{
+		return(value == 1);
+	}
+	else
+	{
+		return(value == "1" || value == "true");
+	}
+}
+
+bool isFalse(T)(const T value)
+{
+
+	static if(isIntegral!T)
+	{
+		return(value == 0);
+	}
+	else
+	{
+		return(value == "0" || value == "false");
+	}
+}
+
 /**
-*   Determines if a string is a boolean value using true and false as qualifiers.
+*   Determines if a string is a boolean value using 0, 1, true and false as qualifiers.
 *
 *   Params:
-*       value = string to use.
+*       value = number or boolean string to use.
 *
 *   Returns:
 *       true if the value is a boolean false otherwise.
 */
-
-bool isBooleanString(const string value) @trusted
+bool isBoolean(T)(const T value)
 {
-	return(value == "true" || value == "false");
+	return(isTrue(value) || isFalse(value));
 }
-
-/**
-*   Determines if a string is a boolean value using "1" and "0" as qualifiers.
-*
-*   Params:
-*       value = number string to use.
-*
-*   Returns:
-*       true if the value is a boolean false otherwise.
-*/
-bool isBooleanNumber(const string value) @trusted
-{
-	return(value == "1" || value == "0");
-}
-
-/**
-*   Determines if a string is a boolean value using 1 and 0 as qualifiers.
-*
-*   Params:
-*       value = number to use.
-*
-*   Returns:
-*       true if the value is a boolean false otherwise.
-*/
-bool isBooleanNumber(const int value) @trusted
-{
-	return(value == 1 || value == 0);
-}
-
-/**
-*   Determines if a string is a boolean value using isStringABool and isNumberABool as qualifiers.
-*
-*   Params:
-*       value = string to use.
-*
-*   Returns:
-*       true if the value is a boolean false otherwise.
-*/
-bool isBoolean(const string value)
-{
-	return (isBooleanString(value) || isBooleanNumber(value));
-}
-
 /**
 *   Determines if a string is a decimal value
 *
@@ -74,7 +56,7 @@ bool isBoolean(const string value)
 *   Returns:
 *       true if the value is a decimal false otherwise.
 */
-bool isDecimalValue(const string value)
+bool isDecimal(const string value)
 {
 	import std.string : isNumeric, countchars;
 	return (isNumeric(value) && value.countchars(".") == 1) ? true : false;
@@ -89,7 +71,7 @@ bool isDecimalValue(const string value)
 *   Returns:
 *       true if the value is a integer false otherwise.
 */
-bool isIntegerValue(const string value)
+bool isInteger(const string value)
 {
 	import std.string : isNumeric, countchars;
 	return (isNumeric(value) && value.countchars(".") == 0) ? true : false;
@@ -157,25 +139,41 @@ auto list(Args...)(auto ref Args args)
 
 unittest
 {
+	import std.stdio : writeln;
+
+	assert("0".isBoolean == true);
+	assert("1".isBoolean == true);
+	assert("2".isBoolean == false);
+
 	assert("true".isBoolean == true);
+	assert("false".isBoolean == true);
 	assert("trues".isBoolean == false);
 
-	assert("0".isBooleanString == false);
-	assert("true".isBooleanString == true);
+	assert(0.isBoolean == true);
+	assert(1.isBoolean == true);
+	assert(2.isBoolean == false);
 
-	assert(0.isBooleanNumber == true);
-	assert(2.isBooleanNumber == false);
+	assert("13".isInteger == true);
+	assert("13.333333".isInteger == false);
+	assert("zzzz".isInteger == false);
 
-	assert("0".isBooleanNumber == true);
-	assert("2".isBooleanNumber == false);
+	assert("13".isDecimal == false);
+	assert("13.333333".isDecimal == true);
+	assert("zzzz".isDecimal == false);
 
-	assert("13".isIntegerValue == true);
-	assert("13.333333".isIntegerValue == false);
-	assert("zzzz".isIntegerValue == false);
+	assert(isTrue("true") == true);
+	assert(isTrue("false") == false);
+	assert(isTrue("1") == true);
+	assert(isTrue("0") == false);
+	assert(isTrue("12345") == false);
+	assert(isTrue("trues") == false);
 
-	assert("13".isDecimalValue == false);
-	assert("13.333333".isDecimalValue == true);
-	assert("zzzz".isDecimalValue == false);
+	assert(isFalse("false") == true);
+	assert(isFalse("true") == false);
+	assert(isFalse("1") == false);
+	assert(isFalse("0") == true);
+	assert(isFalse("12345") == false);
+	assert(isFalse("trues") == false);
 
 	import std.algorithm : findSplit;
 
