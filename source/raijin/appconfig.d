@@ -60,7 +60,7 @@ public:
 		return configPath_;
 	}
 
-	KeyValueConfig file() @property
+	KeyValueConfig config() @property
 	{
 		return configFile_;
 	}
