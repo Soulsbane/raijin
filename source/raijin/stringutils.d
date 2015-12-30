@@ -52,7 +52,7 @@ bool isVowelChar(char vowelChar)
 *	Params:
 *		text = The word to pluralize.
 *		count = The number of words.
-*		pluralizedWord = The word to use when a value needs to be pluralized
+*		pluralizeToWord = The word to use when a value needs to be pluralized
 *
 *	Returns:
 *		The pluralized string if more than one of type or singular form otherwise.
@@ -121,7 +121,7 @@ string removeLeadingChars(string str, const dchar charToRemove) @trusted
 
 		str.popFront();
 	}
-	
+
 	return str;
 }
 

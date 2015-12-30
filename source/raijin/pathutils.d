@@ -67,7 +67,7 @@ bool ensurePathExists(const string path)
 *	Ensures a directory path exists by creating it if it does not already exist.
 *
 *	Params:
-*		path = Variable number of argument strings containing the path to create.
+*		args = Variable number of argument strings containing the path to create.
 *
 *	Returns:
 *		true if path was created false otherwise.
@@ -88,7 +88,7 @@ bool ensurePathExists(T...)(T args)
 *	Remove the path if it exists.
 *
 *	Params:
-*		T = Variable number of strings that compose the path.
+*		path = path to create.
 */
 bool removePathIfExists(const string path)
 {
@@ -104,7 +104,7 @@ bool removePathIfExists(const string path)
 *	Remove the path if it exists.
 *
 *	Params:
-*		T = Variable number of strings that compose the path.
+*		args = Variable number of strings that compose the path.
 */
 bool removePathIfExists(T...)(T args)
 {

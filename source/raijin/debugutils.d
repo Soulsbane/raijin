@@ -14,6 +14,9 @@ import std.datetime;
 *
 *   Params:
 *       msg = The message to be print to stdout.
+*		lineNumber = __LINE__
+*		fileName = __FILE__
+*		funcName = __FUNCTION__
 */
 void debugLog(const string msg, const int lineNumber = __LINE__, const string fileName = __FILE__,
 	const string funcName = __FUNCTION__) @trusted
