@@ -15,18 +15,14 @@ import std.range : take;
 import std.traits : isNumeric, isBoolean;
 import std.array : empty, array;
 import std.typecons : tuple;
-
-// TODO: Possibly make values use ValueType instead of strings.
-//import std.variant;
-//import raijin.typeutils;
-//alias ValueType = Algebraic!(string, bool, long, real);
+import std.variant;
 
 private enum DEFAULT_GROUP_NAME = null;
 
 private struct KeyValueData
 {
 	string key;
-	string value;
+	Variant value;
 	string group;
 	string comment;
 }
@@ -44,7 +40,7 @@ private:
 	*	Params:
 	*		text = The text to be processed.
 	*/
-	void processText(const string text) @safe
+	void processText(const string text) @trusted
 	{
 		auto lines = text.lineSplitter();
 		string currentGroupName = DEFAULT_GROUP_NAME;
@@ -79,7 +75,7 @@ private:
 					KeyValueData data;
 
 					data.key = key;
-					data.value = value;
+					data.value = value; // TODO: Convert read in string value to it's proper type to store in variant object.
 					data.group = currentGroupName;
 
 					if(currentComment != "")
@@ -225,28 +221,18 @@ public:
 	*		The value associated with key.
 	*
 	*/
-	T get(T = string)(const string key) @safe
+	Variant get(const string key) @safe
 	{
 		string defaultValue;
-
-		if(isBoolean!T)
-		{
-			defaultValue = "false";
-		}
-
-		if(isNumeric!T)
-		{
-			defaultValue = "0";
-		}
 
 		if(isGroupString(key))
 		{
 			auto groupAndKey = getGroupAndKeyFromString(key);
-			return get!T(groupAndKey.group, groupAndKey.key, defaultValue);
+			return get(groupAndKey.group, groupAndKey.key, defaultValue);
 		}
 		else
 		{
-			return get!T(DEFAULT_GROUP_NAME, key, defaultValue);
+			return get(DEFAULT_GROUP_NAME, key, defaultValue);
 		}
 	}
 
@@ -261,16 +247,16 @@ public:
 	*		The value associated with key.
 	*
 	*/
-	T get(T = string)(const string key, string defaultValue) @safe
+	Variant get(const string key, string defaultValue) @safe
 	{
 		if(isGroupString(key))
 		{
 			auto groupAndKey = getGroupAndKeyFromString(key);
-			return get!T(groupAndKey.group, groupAndKey.key, defaultValue);
+			return get(groupAndKey.group, groupAndKey.key, defaultValue);
 		}
 		else
 		{
-			return get!T(DEFAULT_GROUP_NAME, key, defaultValue);
+			return get(DEFAULT_GROUP_NAME, key, defaultValue);
 		}
 	}
 
@@ -286,15 +272,15 @@ public:
 	*		The value of value of the key/value pair.
 	*
 	*/
-	T get(T = string)(const string group, const string key, string defaultValue) @safe
+	Variant get(const string group, const string key, string defaultValue) @trusted
 	{
 		if(containsGroup(group))
 		{
-			return to!T(getGroupValue(group, key));
+			return getGroupValue(group, key);
 		}
 		else
 		{
-			return to!T(defaultValue);
+			return Variant(defaultValue);
 		}
 	}
 
@@ -308,10 +294,10 @@ public:
 	*	Returns:
 	*		The value associated with the group and key.
 	*/
-	string getGroupValue(const string group, const string key) @safe
+	Variant getGroupValue(const string group, const string key) @trusted
 	{
 		auto value = values_.filter!(a => (a.group == group) && (a.key == key));//.take(1);
-		return to!string(value.front.value);
+		return value.front.value;
 	}
 
 	/**
@@ -324,7 +310,7 @@ public:
 	*		Returns an array containing all the key/values associated with group.
 	*
 	*/
-	auto getGroup(const string group) pure @safe
+	auto getGroup(const string group) @trusted
 	{
 		return values_.filter!(a => a.group == group);
 	}
@@ -347,7 +333,7 @@ public:
 	*		key = Name of the key to set. Can be in the group.key form.
 	*		value = The value to be set to.
 	*/
-	void set(T)(const string key, T value) pure @safe
+	void set(T)(const string key, T value) @trusted
 	{
 		string convValue;
 
@@ -381,7 +367,7 @@ public:
 	*		key = Name of the key to set.
 	*		value = The value to be set to.
 	*/
-	void set(T)(const string group, const string key, T value) pure @safe
+	void set(T)(const string group, const string key, T value) @trusted
 	{
 		string convValue;
 
@@ -410,7 +396,7 @@ public:
 	*	Returns:
 	*		true if the config file contains the key false otherwise.
 	*/
-	bool contains(const string key) pure @safe
+	bool contains(const string key) @trusted
 	{
 		if(isGroupString(key))
 		{
@@ -433,7 +419,7 @@ public:
 	*	Returns:
 	*		true if the config file contains the key false otherwise.
 	*/
-	bool contains(const string group, const string key) pure @safe
+	bool contains(const string group, const string key) @trusted
 	{
 		if(containsGroup(group))
 		{
@@ -457,7 +443,7 @@ public:
 	*	Returns:
 	*		true if the group exists false otherwise.
 	*/
-	bool containsGroup(const string group) pure @safe
+	bool containsGroup(const string group) @trusted
 	{
 		return values_.canFind!(a => a.group == group);
 	}
@@ -472,7 +458,7 @@ public:
 	*	Returns:
 	*		true if it was successfully removed false otherwise.
 	*/
-	bool remove(const string key) pure @safe
+	bool remove(const string key) @trusted
 	{
 		if(isGroupString(key))
 		{
@@ -499,7 +485,7 @@ public:
 	*	Returns:
 	*		true if it was successfully removed false otherwise.
 	*/
-	bool remove(const string group, const string key) pure @safe
+	bool remove(const string group, const string key) @trusted
 	{
 		values_ = values_.remove!(a => (a.group == group) && (a.key == key));
 		valuesModified_ = true;
@@ -516,7 +502,7 @@ public:
 	*	Returns:
 	*		true if group was successfully removed false otherwise.
 	*/
-	bool removeGroup(const string group) pure @trusted
+	bool removeGroup(const string group) @trusted
 	{
 		values_ = values_.remove!(a => a.group == group);
 		valuesModified_ = true;
@@ -533,7 +519,7 @@ public:
 	*	Returns:
 	*		The string value associated with the key.
 	*/
-	string opIndex(string key) @safe
+	Variant opIndex(string key) @trusted
 	{
 		return get(key);
 	}
@@ -545,21 +531,19 @@ public:
 	*		key = Name of the key to assign the value to.
 	*		value = The value in which key should be assigned to.
 	*/
-	void opIndexAssign(T)(T value, string key) pure @safe
+	void opIndexAssign(T)(T value, string key) @trusted
 	{
 		set(key, value);
 	}
 
 	// FIXME: Surely there is a better way to do this but at the moment dmd can't decern which overloaded function to use.
-	private T getT(T)(const string key) @safe
+	private T getT(T)(const string key) @trusted
 	{
-		return get!T(key);
+		Variant value = get(key);
+		return value.coerce!T;
 	}
 
-	alias integer = getT!long;
-	alias uinteger = getT!ulong;
-	alias floating = getT!double;
-	alias boolean = getT!bool;
+	alias toBool = getT!bool;
 
 private:
 	KeyValueData[] values_;
@@ -595,8 +579,8 @@ unittest
 	config.removeGroup("section");
 	assert(config.containsGroup("section") == false);
 
-	assert(config.get!bool("aBool") == true);
-	assert(config.boolean("aBool")); // Syntactic sugar
+	assert(config.get("aBool").coerce!bool == true);
+	assert(config.toBool("aBool")); // Syntactic sugar
 
 	assert(config.contains("time"));
 
@@ -623,9 +607,10 @@ unittest
 	writeln();
 
 	config.set("aBool", "false");
-	assert(config.get!bool("aBool") == false);
+	assert(config["aBool"].coerce!bool == false);
 	config["aBool"] = true;
-	assert(config.get!bool("aBool") == true);
+	assert(config["aBool"].coerce!bool == true);
+	assert(config["aBool"].toString == "true");
 
 	debug config.save();
 }
