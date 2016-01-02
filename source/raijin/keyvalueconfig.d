@@ -12,7 +12,6 @@ import std.stdio : File, writeln;
 import std.file : exists, readText;
 import std.algorithm : sort, findSplit, filter, canFind, remove;
 import std.range : take;
-//import std.traits : isNumeric, isBoolean;
 import std.array : empty, array;
 import std.typecons : tuple;
 import std.variant;
@@ -562,15 +561,21 @@ public:
 		return value.coerce!T;
 	}
 
-	alias getBool = getT!bool;
-	alias getInt = getT!int;
-	alias getFloat = getT!float;
-	alias getReal = getT!real;
-	alias getLong = getT!long;
-	alias getByte = getT!byte;
-	alias getShort = getT!short;
-	alias getDouble = getT!double;
-	alias getString = getT!string;
+	T coerce(T)(const string key) @trusted
+	{
+		Variant value = get(key);
+		return value.coerce!T;
+	}
+
+	alias getBool = coerce!bool;
+	alias getInt = coerce!int;
+	alias getFloat = coerce!float;
+	alias getReal = coerce!real;
+	alias getLong = coerce!long;
+	alias getByte = coerce!byte;
+	alias getShort = coerce!short;
+	alias getDouble = coerce!double;
+	alias getString = coerce!string;
 
 private:
 	KeyValueData[] values_;
@@ -608,7 +613,8 @@ unittest
 
 	assert(config.get("aBool").coerce!bool == true);
 	assert(config.getBool("aBool")); // Syntactic sugar
-	assert(config["aBool"].coerce!bool == true); // Also works
+	assert(config["aBool"].coerce!bool == true); // Also works but rather awkward
+	assert(config.coerce!bool("aBool") == true); // Also works and more natural
 
 	assert(config.contains("time"));
 
