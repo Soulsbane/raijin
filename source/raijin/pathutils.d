@@ -118,6 +118,25 @@ bool removePathIfExists(T...)(T args)
 	return !path.exists;
 }
 
+/**
+*	Retrieves the complete path where the application resides.
+*/
+string getAppPath() @safe
+{
+	return dirName(thisExePath());
+}
+
+/**
+*	Retrieves the complete path where the application resides with the provided path appended.
+*
+*	Params:
+*		path = The path to append to the application path.
+*/
+string getAppPath(string[] path...) @safe
+{
+	return buildNormalizedPath(dirName(thisExePath()) ~ path);
+}
+
 unittest
 {
 	assert(ensurePathExists("my", "test", "dir"));
