@@ -13,6 +13,7 @@ alias AllowNumericBooleanValues = Flag!"allowNumericBooleanValues";
 *
 *   Params:
 *       value = The value to check for a true value
+*		allowInteger = Set to allowNumericBooleanValues.yes if a true value can be a numeric 1
 *
 *   Returns:
 *       true if the value is true false otherwise.
@@ -39,6 +40,7 @@ bool isTrue(T)(const T value, const AllowNumericBooleanValues allowInteger = All
 *
 *   Params:
 *       value = The value to check for a false value
+*		allowInteger = Set to allowNumericBooleanValues.yes if a false value can be a numeric 0
 *
 *   Returns:
 *       true if the value is false false otherwise.
@@ -65,6 +67,7 @@ bool isFalse(T)(const T value, const AllowNumericBooleanValues allowInteger = Al
 *
 *   Params:
 *       value = number or boolean string to use. Valid values of 0, 1, "0", "1", "true", "false"
+*		allowInteger = Set to allowNumericBooleanValues.yes if a true/false value can be a numeric 0 or 1
 *
 *   Returns:
 *       true if the value is a boolean false otherwise.
