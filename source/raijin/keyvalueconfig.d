@@ -554,13 +554,15 @@ public:
 		set(key, value);
 	}
 
-	// FIXME: Surely there is a better way to do this but at the moment dmd can't decern which overloaded function to use.
-	private T getT(T)(const string key) @trusted
-	{
-		Variant value = get(key);
-		return value.coerce!T;
-	}
-
+	/**
+	*	Converts the value of key to type of T. Works the same as std.variant's coerce.
+	*
+	*	Params:
+	*		key = Name of the key to retrieve.
+	*
+	*	Returns:
+	*		T = The converted value.
+	*/
 	T coerce(T)(const string key) @trusted
 	{
 		Variant value = get(key);
