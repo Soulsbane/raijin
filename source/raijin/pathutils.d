@@ -139,6 +139,10 @@ string getAppPath(string[] path...) @safe
 
 unittest
 {
+	immutable string notFound =  isInPath("fakeprogram");
+	immutable string found =  isInPath("ls");
+
+	assert(found.length);
 	assert(ensurePathExists("my", "test", "dir"));
 	assert(removePathIfExists("my"));
 	assert(ensurePathExists("my/test/dir"));

@@ -137,6 +137,7 @@ unittest
 	assert("key".pluralize(2) == "keys");
 	assert("key".pluralize(2, "keyz") == "keyz");
 	assert("key".pluralize(1, "keyz") == "key");
+	assert("bank".pluralize(2, "banksys") == "banksys");
 
 	assert("Hello World".find("Hello") == true);
 	assert("Hello World".find("hello") == true);
