@@ -543,7 +543,15 @@ public:
 		return value.coerce!T;
 	}
 
-	alias toBool = getT!bool;
+	alias getBool = getT!bool;
+	alias getInt = getT!int;
+	alias getFloat = getT!float;
+	alias getReal = getT!real;
+	alias getLong = getT!long;
+	alias getByte = getT!byte;
+	alias getShort = getT!short;
+	alias getDouble = getT!double;
+	alias getString = getT!string;
 
 private:
 	KeyValueData[] values_;
@@ -580,12 +588,14 @@ unittest
 	assert(config.containsGroup("section") == false);
 
 	assert(config.get("aBool").coerce!bool == true);
-	assert(config.toBool("aBool")); // Syntactic sugar
+	assert(config.getBool("aBool")); // Syntactic sugar
 
 	assert(config.contains("time"));
 
+	//assert(config["number"] == 12071); // TODO: when parsing make the variant a number etc.
+
 	assert(config.contains("another.world"));
-	assert(config.get("another.world") == "hello");
+	assert(config["another.world"] == "hello");
 	config.remove("another.world");
 	assert(config.contains("another.world") == false);
 
