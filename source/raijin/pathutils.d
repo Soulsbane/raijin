@@ -143,6 +143,7 @@ unittest
 	immutable string found =  isInPath("ls");
 
 	assert(found.length);
+	assert(notFound == null);
 	assert(ensurePathExists("my", "test", "dir"));
 	assert(removePathIfExists("my"));
 	assert(ensurePathExists("my/test/dir"));
