@@ -17,6 +17,8 @@ import std.array : empty, array;
 import std.typecons : tuple;
 import std.variant;
 
+import raijin.typeutils;
+
 private enum DEFAULT_GROUP_NAME = null;
 
 private struct KeyValueData

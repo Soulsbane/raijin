@@ -8,7 +8,6 @@ import std.typecons;
 import std.traits;
 
 alias AllowNumericBooleanValues = Flag!"allowNumericBooleanValues";
-
 /**
 *   Determines if value is a true value
 *
@@ -18,7 +17,7 @@ alias AllowNumericBooleanValues = Flag!"allowNumericBooleanValues";
 *   Returns:
 *       true if the value is true false otherwise.
 */
-bool isTrue(T)(const T value)
+bool isTrue(T)(const T value, const AllowNumericBooleanValues allowInteger = AllowNumericBooleanValues.yes)
 {
 	static if(isIntegral!T)
 	{
@@ -26,7 +25,12 @@ bool isTrue(T)(const T value)
 	}
 	else
 	{
-		return(value == "1" || value == "true");
+		if(allowInteger)
+		{
+			return(value == "1" || value == "true");
+		}
+
+		return (value == "true");
 	}
 }
 
@@ -39,7 +43,7 @@ bool isTrue(T)(const T value)
 *   Returns:
 *       true if the value is false false otherwise.
 */
-bool isFalse(T)(const T value)
+bool isFalse(T)(const T value, const AllowNumericBooleanValues allowInteger = AllowNumericBooleanValues.yes)
 {
 	static if(isIntegral!T)
 	{
@@ -47,7 +51,12 @@ bool isFalse(T)(const T value)
 	}
 	else
 	{
-		return(value == "0" || value == "false");
+		if(allowInteger)
+		{
+			return(value == "0" || value == "false");
+		}
+
+		return (value == "false");
 	}
 }
 
@@ -60,9 +69,9 @@ bool isFalse(T)(const T value)
 *   Returns:
 *       true if the value is a boolean false otherwise.
 */
-bool isBoolean(T)(const T value)
+bool isBoolean(T)(const T value, const AllowNumericBooleanValues allowInteger = AllowNumericBooleanValues.yes)
 {
-	return(isTrue(value) || isFalse(value));
+	return(isTrue(value, allowInteger) || isFalse(value, allowInteger));
 }
 
 /**
@@ -167,6 +176,9 @@ unittest
 	assert("false".isBoolean == true);
 	assert("trues".isBoolean == false);
 
+	assert("0".isBoolean(AllowNumericBooleanValues.no) == false);
+	assert("1".isBoolean(AllowNumericBooleanValues.no) == false);
+
 	assert(0.isBoolean == true);
 	assert(1.isBoolean == true);
 	assert(2.isBoolean == false);
@@ -186,12 +198,16 @@ unittest
 	assert(isTrue("12345") == false);
 	assert(isTrue("trues") == false);
 
+	assert("1".isTrue(AllowNumericBooleanValues.no) == false);
+
 	assert(isFalse("false") == true);
 	assert(isFalse("true") == false);
 	assert(isFalse("1") == false);
 	assert(isFalse("0") == true);
 	assert(isFalse("12345") == false);
 	assert(isFalse("trues") == false);
+
+	assert("0".isFalse(AllowNumericBooleanValues.no) == false);
 
 	import std.algorithm : findSplit;
 
