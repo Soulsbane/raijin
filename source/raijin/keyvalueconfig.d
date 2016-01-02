@@ -625,7 +625,7 @@ unittest
 	assert(config["another.world"] == "hello");
 	config.remove("another.world");
 	assert(config.contains("another.world") == false);
-	assert(config.contains("another", "world") == false);
+	assert(config.contains("anothers", "world") == false);
 
 	assert(config.contains("number"));
 	config.remove("number");
