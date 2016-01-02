@@ -446,9 +446,7 @@ public:
 		}
 		else
 		{
-			//FIXME: Really this should just return false?
-			auto groupValues = getGroup(DEFAULT_GROUP_NAME);
-			return groupValues.canFind!(a => a.key == key);
+			return false; // The group wasn't found so no point in checking for a group and value.
 		}
 	}
 
@@ -627,6 +625,7 @@ unittest
 	assert(config["another.world"] == "hello");
 	config.remove("another.world");
 	assert(config.contains("another.world") == false);
+	assert(config.contains("another", "world") == false);
 
 	assert(config.contains("number"));
 	config.remove("number");
