@@ -12,13 +12,14 @@ import std.stdio : File, writeln;
 import std.file : exists, readText;
 import std.algorithm : sort, findSplit, filter, canFind, remove;
 import std.range : take;
-import std.traits : isNumeric, isBoolean;
+//import std.traits : isNumeric, isBoolean;
 import std.array : empty, array;
 import std.typecons : tuple;
 import std.variant;
 
-import raijin.typeutils;
 
+
+import raijin.typeutils;
 private enum DEFAULT_GROUP_NAME = null;
 
 private struct KeyValueData
@@ -77,8 +78,24 @@ private:
 					KeyValueData data;
 
 					data.key = key;
-					data.value = value; // TODO: Convert read in string value to it's proper type to store in variant object.
 					data.group = currentGroupName;
+
+					if(value.isInteger)
+					{
+						data.value = to!long(value);
+					}
+					else if(value.isDecimal)
+					{
+						data.value = to!double(value);
+					}
+					else if(isBoolean(value, AllowNumericBooleanValues.no))
+					{
+						data.value = to!bool(value);
+					}
+					else
+					{
+						data.value = value;
+					}
 
 					if(currentComment != "")
 					{
@@ -565,7 +582,7 @@ unittest
 {
 	string text = "
 		aBool=true
-		float = 3443.443
+		decimal = 3443.443
 		number=12071
 		#Here is a comment
 		sentence=This is a really long sentence to test for a really long value string!
@@ -591,10 +608,12 @@ unittest
 
 	assert(config.get("aBool").coerce!bool == true);
 	assert(config.getBool("aBool")); // Syntactic sugar
+	assert(config["aBool"].coerce!bool == true); // Also works
 
 	assert(config.contains("time"));
 
-	//assert(config["number"] == 12071); // TODO: when parsing make the variant a number etc.
+	assert(config["number"] == 12071);
+	assert(config["decimal"] == 3443.443);
 
 	assert(config.contains("another.world"));
 	assert(config["another.world"] == "hello");
@@ -605,7 +624,7 @@ unittest
 	config.remove("number");
 	assert(config.contains("number") == false);
 
-	assert(config["another.japan"] == "false");
+	assert(config["another.japan"] == false);
 
 	writeln("KeyValueConfig: Testing getGroup...");
 
