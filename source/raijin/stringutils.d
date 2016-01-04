@@ -47,6 +47,21 @@ bool isVowelChar(char vowelChar)
 }
 
 /**
+*	Pluralizes a string.
+*
+*	Params:
+*		text = The word to pluralize.
+*		pluralizeToWord = The word to use when a value needs to be pluralized
+*
+*	Returns:
+*		The pluralized string.
+*/
+string pluralize(const string text, const string pluralizeToWord = string.init)
+{
+	return pluralize(text, 2, pluralizeToWord);
+}
+
+/**
 *	Pluralizes a string if count is greater than one.
 *
 *	Params:
@@ -57,7 +72,7 @@ bool isVowelChar(char vowelChar)
 *	Returns:
 *		The pluralized string if more than one of type or singular form otherwise.
 */
-string pluralize(const string text, const uint count, const string pluralizeToWord = string.init)
+string pluralize(const string text, const size_t count, const string pluralizeToWord = string.init)
 {
 	string pluralizedNumber = text[0 .. $ - 1];
 
@@ -110,11 +125,11 @@ string pluralize(const string text, const uint count, const string pluralizeToWo
 string removeLeadingChars(string str, const dchar charToRemove) @trusted
 {
 	// INFO: Surely there is a phobos function to do this but I couldn't find it.
-	while (!str.empty)
+	while(!str.empty)
 	{
 		auto c = str.front;
 
-		if (c != charToRemove)
+		if(c != charToRemove)
 		{
 			break;
 		}
@@ -138,6 +153,8 @@ unittest
 	assert("key".pluralize(2, "keyz") == "keyz");
 	assert("key".pluralize(1, "keyz") == "key");
 	assert("fly".pluralize(2, "fliez") == "fliez");
+	assert("cat".pluralize == "cats");
+	assert("cat".pluralize("catz") == "catz");
 
 	assert("Hello World".find("Hello") == true);
 	assert("Hello World".find("hello") == true);
