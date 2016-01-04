@@ -16,9 +16,8 @@ import std.array : empty, array;
 import std.typecons : tuple;
 import std.variant;
 
-
-
 import raijin.typeutils;
+
 private enum DEFAULT_GROUP_NAME = null;
 
 private struct KeyValueData
@@ -63,7 +62,6 @@ private:
 			else if(line.startsWith("[") && line.endsWith("]"))
 			{
 				immutable string groupName = line[1..$-1];
-
 				currentGroupName = groupName;
 			}
 			else
@@ -618,7 +616,9 @@ unittest
 
 	assert(config.contains("time"));
 
-	assert(config["number"] == 12071);
+	auto number = config["number"];
+
+	assert(number == 12071);
 	assert(config["decimal"] == 3443.443);
 
 	assert(config.contains("another.world"));
