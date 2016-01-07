@@ -7,6 +7,9 @@ module raijin.appconfig;
 import raijin.keyvalueconfig;
 import raijin.configpath;
 
+/**
+*	This class combines the functionality of keyvalueconfig and configpath into one class.
+*/
 class AppConfig
 {
 private:
