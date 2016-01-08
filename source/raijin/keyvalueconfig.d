@@ -512,7 +512,7 @@ public:
 	*	Returns:
 	*		The string value associated with the key.
 	*/
-	Variant opIndex(string key) @trusted
+	Variant opIndex(const string key) @trusted
 	{
 		return get(key);
 	}
@@ -524,7 +524,7 @@ public:
 	*		key = Name of the key to assign the value to.
 	*		value = The value in which key should be assigned to.
 	*/
-	void opIndexAssign(T)(T value, string key) @trusted
+	void opIndexAssign(T)(T value, const string key) @trusted
 	{
 		set(key, value);
 	}
