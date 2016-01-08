@@ -88,9 +88,11 @@ private:
 unittest
 {
 	auto path = new ConfigPath("DlangUnitOrg", "MyUnitTestApp");
+	auto pathNoOrganization = new ConfigPath;
 
 	import std.stdio;
 	writeln("Testing ConfigPath class...");
 	writeln(path.getConfigDir("tests"));
+	writeln(pathNoOrganization.getConfigDir("tests"));
 	writeln();
 }
