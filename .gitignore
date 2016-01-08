@@ -8,3 +8,5 @@ __dummy.html
 /docs*
 .dub.selections.json
 __test__library__
+
+custom-config-format.dat

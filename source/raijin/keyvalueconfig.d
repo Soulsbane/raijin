@@ -19,6 +19,7 @@ import std.variant;
 import raijin.typeutils;
 
 private enum DEFAULT_GROUP_NAME = null;
+private enum DEFAULT_CONFIG_FILE_NAME = "app.config";
 
 private struct KeyValueData
 {
@@ -146,12 +147,15 @@ public:
 
 	/**
 	*	Saves config values to the config file.
+	*
+	*	Params:
+	*		fileName = Name of the file which values will be stored. "app.config" by default.
 	*/
-	void save() @trusted
+	void save(string fileName = DEFAULT_CONFIG_FILE_NAME) @trusted
 	{
-		if(fileName_ != string.init && valuesModified_)
+		if(fileName != string.init && valuesModified_)
 		{
-			auto configfile = File(fileName_, "w+");
+			auto configfile = File(fileName, "w+");
 			string curGroup;
 
 			foreach(key, data; values_)
@@ -183,13 +187,11 @@ public:
 	*	Returns:
 	*		Returns true on a successful load false otherwise.
 	*/
-	bool loadFile(string fileName = "app.config") @safe
+	bool loadFile(string fileName = DEFAULT_CONFIG_FILE_NAME) @safe
 	{
 		if(exists(fileName))
 		{
 			processText(readText(fileName));
-			fileName_ = fileName;
-
 			return true;
 		}
 		else
@@ -203,22 +205,15 @@ public:
 	*
 	*	Params:
 	*		text = The string to process.
-	*		fileName = The name of the file to save processed strings key/values. If no fileName is provided values will NOT BE SAVED!
 	*	Returns:
 	*		Returns true on a successful load false otherwise.
 	*/
 
-	bool loadString(const string text, string fileName = "app.config") @safe
+	bool loadString(const string text) @safe
 	{
-		if(text.length > 0)
+		if(text.length)
 		{
 			processText(text);
-
-			if(fileName != string.init)
-			{
-				fileName_ = fileName;
-			}
-
 			return true;
 		}
 		else
@@ -556,7 +551,6 @@ public:
 
 private:
 	KeyValueData[] values_;
-	string fileName_;
 	bool valuesModified_;
 }
 
@@ -630,4 +624,5 @@ unittest
 	assert(config["aBool"].toString == "true");
 
 	debug config.save();
+	debug config.save("custom-config-format.dat");
 }
