@@ -4,7 +4,7 @@
 module raijin.configpath;
 
 import std.path : buildNormalizedPath, baseName, stripExtension;
-import std.file : exists, mkdirRecurse, thisExePath;
+import std.file : exists, mkdirRecurse, rmdirRecurse, thisExePath;
 
 import standardpaths : writablePath, StandardPath;
 
@@ -76,6 +76,12 @@ class ConfigPath
 	*/
 	void removeConfigDir(const string name)
 	{
+		string normalPath = buildNormalizedPath(getConfigDir(name));
+
+		if(exists(normalPath))
+		{
+			rmdirRecurse(normalPath);
+		}
 	}
 
 private:
