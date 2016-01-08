@@ -17,14 +17,9 @@ private:
 	{
 		import std.file : exists;
 
-		string text;
 		immutable string configFilePath = buildNormalizedPath(configPath_.getConfigDir("config"), "app.config");
 
-		if(exists(configFilePath))
-		{
-			text = readText(configFilePath);
-		}
-		else
+		if(!configFilePath.exists)
 		{
 			auto f = File(configFilePath , "w+"); // Create an empty config file and insert default data.
 			f.writeln(defaultConfigFileData);
