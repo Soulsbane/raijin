@@ -349,19 +349,8 @@ public:
 	*		key = Name of the key to set. Can be in the group.key form.
 	*		value = The value to be set to.
 	*/
-	void set(T)(const string key, T value) @trusted
+	void set(T)(const string key, const T value) @trusted
 	{
-		string convValue;
-
-		static if(!is(T == string))
-		{
-			convValue = to!string(value);
-		}
-		else
-		{
-			convValue = value;
-		}
-
 		if(isGroupString(key))
 		{
 			auto groupAndKey = getGroupAndKeyFromString(key);
@@ -383,22 +372,12 @@ public:
 	*		key = Name of the key to set.
 	*		value = The value to be set to.
 	*/
-	void set(T)(const string group, const string key, T value) @trusted
+	void set(T = string)(const string group, const string key, const T value) @trusted
 	{
-		string convValue;
-
-		static if(!is(T == string))
-		{
-			convValue = to!string(value);
-		}
-		else
-		{
-			convValue = value;
-		}
-
+		//writeln("Key: ", key, /*"type: ", typeof(T).stringof, */" valuetype: ", typeof(value).stringof, " acutual value: ", value);
 		auto foundValue = values_.filter!(a => (a.group == group) && (a.key == key));
 
-		foundValue.front.value = convValue;
+		foundValue.front.value = value.to!T;
 		valuesModified_ = true;
 	}
 
@@ -644,7 +623,7 @@ unittest
 
 	writeln();
 
-	config.set("aBool", "false");
+	config.set("aBool", false);
 	assert(config["aBool"].coerce!bool == false);
 	config["aBool"] = true;
 	assert(config["aBool"].coerce!bool == true);
