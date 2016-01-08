@@ -13,7 +13,7 @@ import raijin.configpath;
 class AppConfig
 {
 private:
-	void loadConfigFile(const string defaultConfigFileData = string.init)
+	bool loadConfigFile(const string defaultConfigFileData = string.init)
 	{
 		import std.file : exists;
 
@@ -25,15 +25,7 @@ private:
 			f.writeln(defaultConfigFileData);
 		}
 
-		immutable bool loaded = configFile_.loadFile(configFilePath);
-
-		if(!loaded)
-		{
-			debug
-			{
-				writeln("FAILED to load configuration file!");
-			}
-		}
+		return configFile_.loadFile(configFilePath);
 	}
 
 public:
