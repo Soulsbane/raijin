@@ -13,6 +13,16 @@ import raijin.configpath;
 class AppConfig
 {
 private:
+
+	/**
+	*	Loads app.config file and populates it with defaultConfigFileData if app.config isn't found.
+	*
+	*	Params:
+	*		defaultConfigFileData = The data app.config should be populated with if app.config isn't found.
+	*
+	*	Returns:
+	*		true of the config file was successfully loaded false otherwise.
+	*/
 	bool loadConfigFile(const string defaultConfigFileData = string.init) @safe
 	{
 		import std.file : exists;
@@ -29,6 +39,9 @@ private:
 	}
 
 public:
+	/**
+	*	Used for creating directories in users config directory and setting up the config file app.config.
+	*/
 	this()
 	{
 		configPath_ = new ConfigPath;
@@ -37,6 +50,15 @@ public:
 		loadConfigFile();
 	}
 
+	/**
+	*	Overload that allows setting of organizationName, applicationName and defaultConfigFileData to be used
+	*	when creating directories in users config directory and setting up the config file app.config.
+	*
+	*	Params:
+	*		organizationName = Name of the organization/company.
+	*		applicationName = Name of the application.
+	*		defaultConfigFileData = The data app.config should be populated with if app.config isn't found.
+	*/
 	this(const string organizationName, const string applicationName,
 		const string defaultConfigFileData = string.init) @safe
 	{
@@ -46,11 +68,23 @@ public:
 		loadConfigFile(defaultConfigFileData);
 	}
 
+	/**
+	*	Helper property for accessing ConfigPath methods.
+	*
+	*	Returns:
+	*		A ConfigPath object.
+	*/
 	ConfigPath path() @property
 	{
 		return configPath_;
 	}
 
+	/**
+	*	Helper property for accessing KeyValueConfig methods.
+	*
+	*	Returns:
+	*		A KeyValueConfig object.
+	*/
 	KeyValueConfig config() @property
 	{
 		return configFile_;
