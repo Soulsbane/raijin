@@ -12,6 +12,7 @@ import std.typecons;
 
 alias AppendMode = Flag!"appendMode";
 
+@trusted:
 /**
 *	Creates fileName if it dosn't exist or opens if it does exist.
 *

@@ -16,7 +16,7 @@ class ConfigPath
 	/**
 	*	Intializes the application name to executables name and setups up config directory.
 	*/
-	this()
+	this() @safe
 	{
 		applicationName_ = thisExePath.baseName.stripExtension;
 		configDirPath_ = writablePath(StandardPath.Config);
@@ -29,7 +29,7 @@ class ConfigPath
 	*		organizationName = Name of your organization.
 	*		applicationName = Name of your application.
 	*/
-	this(const string organizationName, const string applicationName)
+	this(const string organizationName, const string applicationName) @safe
 	{
 		organizationName_ = organizationName;
 		applicationName_ = applicationName;
@@ -42,7 +42,7 @@ class ConfigPath
 	*	Params:
 	*		name = Name of the directory to retrieve.
 	*/
-	string getConfigDir(const string name = string.init)
+	string getConfigDir(const string name = string.init) pure nothrow @safe const
 	{
 		if(name == string.init)
 		{
@@ -58,9 +58,9 @@ class ConfigPath
 	*	Params:
 	*		name = Name of the directory to create.
 	*/
-	void createConfigDir(const string name = string.init)
+	void createConfigDir(const string name = string.init) @trusted
 	{
-		string normalPath = buildNormalizedPath(getConfigDir(name));
+		immutable string normalPath = buildNormalizedPath(getConfigDir(name));
 
 		if(!exists(normalPath))
 		{
@@ -74,9 +74,9 @@ class ConfigPath
 	*	Params:
 	*		name = Name of the directory to remove.
 	*/
-	void removeConfigDir(const string name)
+	void removeConfigDir(const string name) @trusted
 	{
-		string normalPath = buildNormalizedPath(getConfigDir(name));
+		immutable string normalPath = buildNormalizedPath(getConfigDir(name));
 
 		if(exists(normalPath))
 		{
@@ -100,5 +100,6 @@ unittest
 	writeln("Testing ConfigPath class...");
 	writeln(path.getConfigDir("tests"));
 	writeln(pathNoOrganization.getConfigDir("tests"));
+
 	writeln();
 }

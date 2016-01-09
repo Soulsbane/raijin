@@ -18,7 +18,7 @@ alias AllowNumericBooleanValues = Flag!"allowNumericBooleanValues";
 *   Returns:
 *       true if the value is true false otherwise.
 */
-bool isTrue(T)(const T value, const AllowNumericBooleanValues allowInteger = AllowNumericBooleanValues.yes)
+bool isTrue(T)(const T value, const AllowNumericBooleanValues allowInteger = AllowNumericBooleanValues.yes) pure nothrow @safe
 {
 	static if(isIntegral!T)
 	{
@@ -45,7 +45,7 @@ bool isTrue(T)(const T value, const AllowNumericBooleanValues allowInteger = All
 *   Returns:
 *       true if the value is false false otherwise.
 */
-bool isFalse(T)(const T value, const AllowNumericBooleanValues allowInteger = AllowNumericBooleanValues.yes)
+bool isFalse(T)(const T value, const AllowNumericBooleanValues allowInteger = AllowNumericBooleanValues.yes) pure nothrow @safe
 {
 	static if(isIntegral!T)
 	{
@@ -72,7 +72,7 @@ bool isFalse(T)(const T value, const AllowNumericBooleanValues allowInteger = Al
 *   Returns:
 *       true if the value is a boolean false otherwise.
 */
-bool isBoolean(T)(const T value, const AllowNumericBooleanValues allowInteger = AllowNumericBooleanValues.yes)
+bool isBoolean(T)(const T value, const AllowNumericBooleanValues allowInteger = AllowNumericBooleanValues.yes) pure nothrow @safe
 {
 	return(isTrue(value, allowInteger) || isFalse(value, allowInteger));
 }
@@ -86,7 +86,7 @@ bool isBoolean(T)(const T value, const AllowNumericBooleanValues allowInteger = 
 *   Returns:
 *       true if the value is a decimal false otherwise.
 */
-bool isDecimal(const string value)
+bool isDecimal(const string value) pure @safe
 {
 	import std.string : isNumeric, countchars;
 	return (isNumeric(value) && value.countchars(".") == 1) ? true : false;
@@ -101,7 +101,7 @@ bool isDecimal(const string value)
 *   Returns:
 *       true if the value is a integer false otherwise.
 */
-bool isInteger(const string value)
+bool isInteger(const string value) pure @safe
 {
 	import std.string : isNumeric, countchars;
 	return (isNumeric(value) && value.countchars(".") == 0) ? true : false;

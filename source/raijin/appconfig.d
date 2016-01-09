@@ -13,7 +13,7 @@ import raijin.configpath;
 class AppConfig
 {
 private:
-	bool loadConfigFile(const string defaultConfigFileData = string.init)
+	bool loadConfigFile(const string defaultConfigFileData = string.init) @safe
 	{
 		import std.file : exists;
 
@@ -37,7 +37,8 @@ public:
 		loadConfigFile();
 	}
 
-	this(const string organizationName, const string applicationName, const string defaultConfigFileData = string.init)
+	this(const string organizationName, const string applicationName,
+		const string defaultConfigFileData = string.init) @safe
 	{
 		configPath_ = new ConfigPath(organizationName, applicationName);
 

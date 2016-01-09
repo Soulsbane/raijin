@@ -40,7 +40,7 @@ bool find(const string value, const string toFindValue, CaseSensitive cs = CaseS
 *	Returns:
 *		true if the character is a vowel false otherwise.
 */
-bool isVowelChar(char vowelChar)
+bool isVowelChar(char vowelChar) pure @safe
 {
 	string vowels = "aeiou";
 	return vowels.canFind!(a => a == vowelChar);
@@ -56,7 +56,7 @@ bool isVowelChar(char vowelChar)
 *	Returns:
 *		The pluralized string.
 */
-string pluralize(const string text, const string pluralizeToWord = string.init)
+string pluralize(const string text, const string pluralizeToWord = string.init) pure @safe
 {
 	return pluralize(text, 2, pluralizeToWord);
 }
@@ -72,7 +72,7 @@ string pluralize(const string text, const string pluralizeToWord = string.init)
 *	Returns:
 *		The pluralized string if more than one of type or singular form otherwise.
 */
-string pluralize(const string text, const size_t count, const string pluralizeToWord = string.init)
+string pluralize(const string text, const size_t count, const string pluralizeToWord = string.init) pure @safe
 {
 	string pluralizedNumber = text[0 .. $ - 1];
 
@@ -122,7 +122,7 @@ string pluralize(const string text, const size_t count, const string pluralizeTo
 *	Returns:
 *		The modified string with all characters to be removed are removed.
 */
-string removeLeadingChars(string str, const dchar charToRemove) @trusted
+string removeLeadingChars(string str, const dchar charToRemove) pure @safe
 {
 	// INFO: Surely there is a phobos function to do this but I couldn't find it.
 	while(!str.empty)

@@ -20,7 +20,7 @@ import std.string;
 *	Returns:
 *		The path to the executable if found otherwise null.
 */
-string isInPath(const string executableName)
+string isInPath(const string executableName) @safe
 {
 	version(windows)
 	{
@@ -53,7 +53,7 @@ string isInPath(const string executableName)
 *	Returns:
 *		true if path was created false otherwise.
 */
-bool ensurePathExists(const string path)
+bool ensurePathExists(const string path) @trusted
 {
 	if(!path.exists)
 	{
@@ -72,7 +72,7 @@ bool ensurePathExists(const string path)
 *	Returns:
 *		true if path was created false otherwise.
 */
-bool ensurePathExists(T...)(T args)
+bool ensurePathExists(T...)(T args) @trusted
 {
 	immutable string path = buildNormalizedPath(args);
 
@@ -90,7 +90,7 @@ bool ensurePathExists(T...)(T args)
 *	Params:
 *		path = path to create.
 */
-bool removePathIfExists(const string path)
+bool removePathIfExists(const string path) @trusted
 {
 	if(path.exists)
 	{
@@ -106,7 +106,7 @@ bool removePathIfExists(const string path)
 *	Params:
 *		args = Variable number of strings that compose the path.
 */
-bool removePathIfExists(T...)(T args)
+bool removePathIfExists(T...)(T args) pure nothrow @safe
 {
 	immutable string path = buildNormalizedPath(args);
 
