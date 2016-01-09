@@ -1,4 +1,4 @@
-/*
+/**
 *   This module combines the functionality of keyvalueconfig and configpath into one class.
 */
 

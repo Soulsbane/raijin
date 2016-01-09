@@ -1,4 +1,4 @@
-/*
+/**
 *	Various functions for dealing with files.
 */
 
@@ -12,7 +12,7 @@ import std.typecons;
 
 alias AppendMode = Flag!"appendMode";
 
-@trusted:
+//@trusted:
 /**
 *	Creates fileName if it dosn't exist or opens if it does exist.
 *

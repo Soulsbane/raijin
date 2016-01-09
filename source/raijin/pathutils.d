@@ -1,4 +1,4 @@
-/*
+/**
 *	Various functions for dealing with path based manipulation and retrieval.
 */
 
