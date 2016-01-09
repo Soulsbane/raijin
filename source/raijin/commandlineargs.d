@@ -528,6 +528,7 @@ private:
 	static string programVersion_;
 }
 
+///
 unittest
 {
 	auto arguments = ["--flag", "value=this is a test"];

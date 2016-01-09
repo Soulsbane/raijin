@@ -31,6 +31,14 @@ bool find(const string value, const string toFindValue, CaseSensitive cs = CaseS
 	return true;
 }
 
+///
+unittest
+{
+	assert("Hello World".find("Hello") == true);
+	assert("Hello World".find("hello") == true);
+	assert("Hello World".find("hello", CaseSensitive.yes) == false);
+}
+
 /**
 *	Determines is a character is a vowel
 *
@@ -112,6 +120,21 @@ string pluralize(const string text, const size_t count, const string pluralizeTo
 	return pluralizedNumber;
 }
 
+///
+unittest
+{
+	assert("fly".pluralize(10) == "flies");
+	assert("fly".pluralize(1) == "fly");
+	assert("book".pluralize(10) == "books");
+	assert("book".pluralize(1) == "book");
+	assert("boy".pluralize(2) == "boys");
+	assert("key".pluralize(2) == "keys");
+	assert("key".pluralize(2, "keyz") == "keyz");
+	assert("key".pluralize(1, "keyz") == "key");
+	assert("fly".pluralize(2, "fliez") == "fliez");
+	assert("cat".pluralize == "cats");
+	assert("cat".pluralize("catz") == "catz");
+}
 /**
 *	Removes the charactor from the beginning of a string.
 *
@@ -140,23 +163,10 @@ string removeLeadingChars(string str, const dchar charToRemove) pure @safe
 	return str;
 }
 
+///
 unittest
 {
 	assert("--help".removeLeadingChars('-') == "help");
 	assert("--help-me".removeLeadingChars('-') == "help-me");
-	assert("fly".pluralize(10) == "flies");
-	assert("fly".pluralize(1) == "fly");
-	assert("book".pluralize(10) == "books");
-	assert("book".pluralize(1) == "book");
-	assert("boy".pluralize(2) == "boys");
-	assert("key".pluralize(2) == "keys");
-	assert("key".pluralize(2, "keyz") == "keyz");
-	assert("key".pluralize(1, "keyz") == "key");
-	assert("fly".pluralize(2, "fliez") == "fliez");
-	assert("cat".pluralize == "cats");
-	assert("cat".pluralize("catz") == "catz");
-
-	assert("Hello World".find("Hello") == true);
-	assert("Hello World".find("hello") == true);
-	assert("Hello World".find("hello", CaseSensitive.yes) == false);
 }
+

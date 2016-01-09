@@ -539,14 +539,31 @@ public:
 		return value.coerce!T;
 	}
 
+	/// Gets the value and converts it to a bool.
 	alias getBool = coerce!bool;
+
+	/// Gets the value and converts it to a int.
 	alias getInt = coerce!int;
+
+	/// Gets the value and converts it to a float.
 	alias getFloat = coerce!float;
+
+	/// Gets the value and converts it to a real.
 	alias getReal = coerce!real;
+
+	/// Gets the value and converts it to a long.
 	alias getLong = coerce!long;
+
+	/// Gets the value and converts it to a byte.
 	alias getByte = coerce!byte;
+
+	/// Gets the value and converts it to a short.
 	alias getShort = coerce!short;
+
+	/// Gets the value and converts it to a double.
 	alias getDouble = coerce!double;
+
+	/// Gets the value and converts it to a string.
 	alias getString = coerce!string;
 
 private:
@@ -554,6 +571,7 @@ private:
 	bool valuesModified_;
 }
 
+///
 unittest
 {
 	string text = "

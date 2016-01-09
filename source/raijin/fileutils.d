@@ -75,7 +75,7 @@ bool removeFileIfExists(const string fileName)
 */
 bool isFileHidden(const string fileName)
 {
-	if (fileName.baseName.startsWith("."))
+	if(fileName.baseName.startsWith("."))
 	{
 		return true;
 	}
@@ -91,6 +91,7 @@ bool isFileHidden(const string fileName)
 	return false;
 }
 
+///
 unittest
 {
 	immutable string fileName = "unittest-ensure-test.txt";

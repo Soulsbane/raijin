@@ -91,6 +91,7 @@ private:
 	string configDirPath_;
 }
 
+///
 unittest
 {
 	auto path = new ConfigPath("DlangUnitOrg", "MyUnitTestApp");

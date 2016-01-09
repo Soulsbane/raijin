@@ -137,6 +137,7 @@ string getAppPath(string[] path...) @safe
 	return buildNormalizedPath(dirName(thisExePath()) ~ path);
 }
 
+///
 unittest
 {
 	immutable string notFound =  isInPath("fakeprogram");

@@ -35,6 +35,19 @@ bool isTrue(T)(const T value, const AllowNumericBooleanValues allowInteger = All
 	}
 }
 
+///
+unittest
+{
+	assert(isTrue("true") == true);
+	assert(isTrue("false") == false);
+	assert(isTrue("1") == true);
+	assert(isTrue("0") == false);
+	assert(isTrue("12345") == false);
+	assert(isTrue("trues") == false);
+
+	assert("1".isTrue(AllowNumericBooleanValues.no) == false);
+}
+
 /**
 *   Determines if value is a false value
 *
@@ -62,6 +75,19 @@ bool isFalse(T)(const T value, const AllowNumericBooleanValues allowInteger = Al
 	}
 }
 
+///
+unittest
+{
+	assert(isFalse("false") == true);
+	assert(isFalse("true") == false);
+	assert(isFalse("1") == false);
+	assert(isFalse("0") == true);
+	assert(isFalse("12345") == false);
+	assert(isFalse("trues") == false);
+
+	assert("0".isFalse(AllowNumericBooleanValues.no) == false);
+}
+
 /**
 *   Determines if a value is of type boolean using 0, 1, true and false as qualifiers.
 *
@@ -75,6 +101,25 @@ bool isFalse(T)(const T value, const AllowNumericBooleanValues allowInteger = Al
 bool isBoolean(T)(const T value, const AllowNumericBooleanValues allowInteger = AllowNumericBooleanValues.yes) pure nothrow @safe
 {
 	return(isTrue(value, allowInteger) || isFalse(value, allowInteger));
+}
+
+///
+unittest
+{
+	assert("0".isBoolean == true);
+	assert("1".isBoolean == true);
+	assert("2".isBoolean == false);
+
+	assert("true".isBoolean == true);
+	assert("false".isBoolean == true);
+	assert("trues".isBoolean == false);
+
+	assert("0".isBoolean(AllowNumericBooleanValues.no) == false);
+	assert("1".isBoolean(AllowNumericBooleanValues.no) == false);
+
+	assert(0.isBoolean == true);
+	assert(1.isBoolean == true);
+	assert(2.isBoolean == false);
 }
 
 /**
@@ -92,6 +137,13 @@ bool isDecimal(const string value) pure @safe
 	return (isNumeric(value) && value.countchars(".") == 1) ? true : false;
 }
 
+///
+unittest
+{
+	assert("13".isDecimal == false);
+	assert("13.333333".isDecimal == true);
+	assert("zzzz".isDecimal == false);
+}
 /**
 *   Determines if a string is an integer value.
 *
@@ -105,6 +157,14 @@ bool isInteger(const string value) pure @safe
 {
 	import std.string : isNumeric, countchars;
 	return (isNumeric(value) && value.countchars(".") == 0) ? true : false;
+}
+
+///
+unittest
+{
+	assert("13".isInteger == true);
+	assert("13.333333".isInteger == false);
+	assert("zzzz".isInteger == false);
 }
 
 /**
@@ -167,51 +227,9 @@ auto list(Args...)(auto ref Args args)
 	return List();
 }
 
+///
 unittest
 {
-	import std.stdio : writeln;
-
-	assert("0".isBoolean == true);
-	assert("1".isBoolean == true);
-	assert("2".isBoolean == false);
-
-	assert("true".isBoolean == true);
-	assert("false".isBoolean == true);
-	assert("trues".isBoolean == false);
-
-	assert("0".isBoolean(AllowNumericBooleanValues.no) == false);
-	assert("1".isBoolean(AllowNumericBooleanValues.no) == false);
-
-	assert(0.isBoolean == true);
-	assert(1.isBoolean == true);
-	assert(2.isBoolean == false);
-
-	assert("13".isInteger == true);
-	assert("13.333333".isInteger == false);
-	assert("zzzz".isInteger == false);
-
-	assert("13".isDecimal == false);
-	assert("13.333333".isDecimal == true);
-	assert("zzzz".isDecimal == false);
-
-	assert(isTrue("true") == true);
-	assert(isTrue("false") == false);
-	assert(isTrue("1") == true);
-	assert(isTrue("0") == false);
-	assert(isTrue("12345") == false);
-	assert(isTrue("trues") == false);
-
-	assert("1".isTrue(AllowNumericBooleanValues.no) == false);
-
-	assert(isFalse("false") == true);
-	assert(isFalse("true") == false);
-	assert(isFalse("1") == false);
-	assert(isFalse("0") == true);
-	assert(isFalse("12345") == false);
-	assert(isFalse("trues") == false);
-
-	assert("0".isFalse(AllowNumericBooleanValues.no) == false);
-
 	import std.algorithm : findSplit;
 
 	string name, value;

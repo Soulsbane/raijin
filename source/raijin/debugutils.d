@@ -1,5 +1,5 @@
 /**
-*   At present only a function for outputing a debug string.
+*   Functions for outputing a debug string.
 */
 
 module raijin.debugutils;
@@ -9,6 +9,9 @@ import std.algorithm;
 import std.path;
 import std.datetime;
 
+/**
+*	Wrapper around info, warn and error functions that acts as a namespace.
+*/
 struct Log
 {
 	/**
@@ -57,6 +60,7 @@ struct Log
 	}
 }
 
+///
 unittest
 {
 	Log.info("This is a info test");
