@@ -18,7 +18,7 @@ alias AllowNumericBooleanValues = Flag!"allowNumericBooleanValues";
 *   Returns:
 *       true if the value is true false otherwise.
 */
-bool isTrue(T)(const T value, const AllowNumericBooleanValues allowInteger = AllowNumericBooleanValues.yes) pure nothrow @safe
+bool isTrue(T)(const T value, const AllowNumericBooleanValues allowInteger = AllowNumericBooleanValues.yes) @trusted
 {
 	static if(isIntegral!T)
 	{
@@ -58,7 +58,7 @@ unittest
 *   Returns:
 *       true if the value is false false otherwise.
 */
-bool isFalse(T)(const T value, const AllowNumericBooleanValues allowInteger = AllowNumericBooleanValues.yes) pure nothrow @safe
+bool isFalse(T)(const T value, const AllowNumericBooleanValues allowInteger = AllowNumericBooleanValues.yes) @trusted
 {
 	static if(isIntegral!T)
 	{
@@ -98,7 +98,7 @@ unittest
 *   Returns:
 *       true if the value is a boolean false otherwise.
 */
-bool isBoolean(T)(const T value, const AllowNumericBooleanValues allowInteger = AllowNumericBooleanValues.yes) pure nothrow @safe
+bool isBoolean(T)(const T value, const AllowNumericBooleanValues allowInteger = AllowNumericBooleanValues.yes) @trusted
 {
 	return(isTrue(value, allowInteger) || isFalse(value, allowInteger));
 }

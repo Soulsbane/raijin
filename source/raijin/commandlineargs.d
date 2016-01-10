@@ -9,7 +9,6 @@ module raijin.commandlineargs;
 
 import std.conv : to;
 import std.string : removechars, stripLeft, stripRight, indexOf;
-import std.traits : isNumeric, isBoolean;
 import std.algorithm : findSplit;
 import std.stdio : writeln;
 import std.typecons : Flag, Tuple;
@@ -17,6 +16,8 @@ import std.path : baseName;
 import std.variant;
 
 import raijin.stringutils : removeLeadingChars;
+import raijin.typeutils;
+
 
 alias IgnoreFirstArg = Flag!"ignoreFirstArg";
 alias RequiredArg = Flag!"requiredArg";
@@ -172,7 +173,7 @@ class CommandLineArgs
 	/**
 	*	Assigns a value to a commandline argument stored internally but uses ArgValues as the value.
 	*/
-	final void opIndexAssign(ArgValues values, immutable string key) @trusted
+	final void opIndexAssign(ArgValues values, const string key) @trusted
 	{
 		values_[key] = values;
 	}
@@ -205,7 +206,7 @@ class CommandLineArgs
 		if(contains(key))
 		{
 			immutable auto value = get(key);
-			return(value == "true" || value == "false");
+			return value.isBoolean(AllowNumericBooleanValues.no);
 		}
 
 		return false;
@@ -409,8 +410,6 @@ class CommandLineArgs
 				string initialValue = keyValuePair[2].stripLeft();
 				Variant value;
 
-				import raijin.typeutils;
-
 				if(initialValue.isInteger)
 				{
 					value = to!long(initialValue);
@@ -442,8 +441,8 @@ class CommandLineArgs
 							{
 								immutable Variant currentValue = values_[key].value;
 
-								if((currentValue == "true" || currentValue == "false") &&
-									(value == "true" || value == "false"))
+								if(currentValue.isBoolean(AllowNumericBooleanValues.no) &&
+									value.isBoolean(AllowNumericBooleanValues.no))
 								{
 									values_[key].required = false;
 									values_[key].value = value;
