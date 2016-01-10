@@ -14,6 +14,7 @@ import std.algorithm : findSplit;
 import std.stdio : writeln;
 import std.typecons : Flag, Tuple;
 import std.path : baseName;
+import std.variant;
 
 import raijin.stringutils : removeLeadingChars;
 
@@ -29,8 +30,8 @@ alias ProcessReturnCodes = Tuple!(CommandLineArgTypes, "type", string, "command"
 */
 struct ArgValues
 {
-	string defaultValue; /// Initial value a command line argument has if it isn't supplied.
-	string value; // The Value set via the command line.
+	Variant defaultValue; /// Initial value a command line argument has if it isn't supplied.
+	Variant value; // The Value set via the command line.
 	string description; /// The description of the command line argument.
 	bool required; /// true if the command line argument is required false otherwise.
 }
@@ -77,24 +78,12 @@ class CommandLineArgs
 	*		The value of value of the command line argument to getcommand line argument to get
 	*
 	*/
-	final T get(T = string)(const string key) @safe
+	final Variant get(const string key) @trusted
 	{
 		ArgValues defaultValues;
-
-		if(isBoolean!T)
-		{
-			defaultValues.defaultValue = "false";
-			defaultValues.value = "false";
-		}
-
-		if(isNumeric!T)
-		{
-			defaultValues.value = "0";
-		}
-
 		auto values = values_.get(key, defaultValues);
 
-		return to!T(values.value);
+		return values.value;
 	}
 
 	/**
@@ -109,15 +98,14 @@ class CommandLineArgs
 	*		The value of value of the command line argument to get
 	*
 	*/
-	final T get(T = string)(const string key, string defaultValue) @safe
+	final Variant get(const string key, Variant defaultValue) @trusted
 	{
 		ArgValues defaultValues;
-
 		defaultValues.defaultValue = defaultValue;
 		defaultValues.value = defaultValue;
-		auto values = values_.get(key, defaultValues);
 
-		return to!T(values.value);
+		auto values = values_.get(key, defaultValues);
+		return values.value;
 	}
 
 	/**
@@ -129,8 +117,8 @@ class CommandLineArgs
 	*		description = The description of what the command line argument does.
 	*		required = Whether the argument is required.
 	*/
-	final void addCommand(const string key, immutable string defaultValue, immutable string description,
-		RequiredArg required = RequiredArg.no) @safe
+	final void addCommand(T)(const string key, const T defaultValue, const string description,
+		RequiredArg required = RequiredArg.no) @trusted
 	{
 		ArgValues values;
 
@@ -149,7 +137,7 @@ class CommandLineArgs
 	*		key = Name of the command line argument to register.
 	*		values = ArgValues struct.
 	*/
-	final void addCommand(const string key, immutable ArgValues values) @safe
+	final void addCommand(const string key, const ArgValues values) @trusted
 	{
 		values_[key] = values;
 	}
@@ -165,7 +153,7 @@ class CommandLineArgs
 	*		The value of value of the command line argument to get
 	*
 	*/
-	final string opIndex(const string key) @safe
+	final Variant opIndex(const string key) @trusted
 	{
 		return get(key);
 	}
@@ -173,7 +161,7 @@ class CommandLineArgs
 	/**
 	*	Assigns a value to a commandline argument stored internally.
 	*/
-	final void opIndexAssign(string value, immutable string key) @safe
+	final void opIndexAssign(T)(T value, const string key) @trusted
 	{
 		ArgValues values;
 		values.value = value;
@@ -184,7 +172,7 @@ class CommandLineArgs
 	/**
 	*	Assigns a value to a commandline argument stored internally but uses ArgValues as the value.
 	*/
-	final void opIndexAssign(ArgValues values, immutable string key) @safe
+	final void opIndexAssign(ArgValues values, immutable string key) @trusted
 	{
 		values_[key] = values;
 	}
@@ -212,11 +200,11 @@ class CommandLineArgs
 	*	Returns:
 	*		True if the command line argument is a flag and false otherwise.
 	*/
-	bool isFlag(const string key) @safe
+	bool isFlag(const string key) @trusted
 	{
 		if(contains(key))
 		{
-			immutable string value = get(key);
+			immutable auto value = get(key);
 			return(value == "true" || value == "false");
 		}
 
@@ -397,7 +385,7 @@ class CommandLineArgs
 	*		Setting allowInvalidArgs.yes will also cause onInvalidArgs to not be fired. Resulting in invalid data in a command.
 	*/
 	final auto process(string[] arguments, IgnoreFirstArg ignoreFirstArg = IgnoreFirstArg.no,
-		AllowInvalidArgs allowInvalidArgs = AllowInvalidArgs.no) @safe
+		AllowInvalidArgs allowInvalidArgs = AllowInvalidArgs.no) @trusted
 	{
 		auto elements = arguments[1 .. $]; // INFO: Remove program name.
 
@@ -418,7 +406,27 @@ class CommandLineArgs
 				auto keyValuePair = element.findSplit("=");
 				immutable string key = keyValuePair[0].stripRight.removeLeadingChars('-');
 				immutable string separator = keyValuePair[1];
-				immutable string value = keyValuePair[2].stripLeft();
+				string initialValue = keyValuePair[2].stripLeft();
+				Variant value;
+
+				import raijin.typeutils;
+
+				if(initialValue.isInteger)
+				{
+					value = to!long(initialValue);
+				}
+				else if(initialValue.isDecimal)
+				{
+					value = to!double(initialValue);
+				}
+				else if(isBoolean(initialValue, AllowNumericBooleanValues.no))
+				{
+					value = to!bool(initialValue);
+				}
+				else
+				{
+					value = to!string(initialValue);
+				}
 
 				if(!firstArgProcessed && (element.indexOf("-") == -1))
 				{
@@ -432,13 +440,13 @@ class CommandLineArgs
 						{
 							if(isFlag(key))
 							{
-								immutable string currentValue = values_[key].value;
+								immutable Variant currentValue = values_[key].value;
 
 								if((currentValue == "true" || currentValue == "false") &&
 									(value == "true" || value == "false"))
 								{
-									values_[key].value = value;
 									values_[key].required = false;
+									values_[key].value = value;
 
 									onValidArg(key);
 								}
@@ -502,8 +510,50 @@ class CommandLineArgs
 		}
 	}
 
+	/**
+	*	Converts the value of key to type of T. Works the same as std.variant's coerce.
+	*
+	*	Params:
+	*		key = Name of the key to retrieve.
+	*
+	*	Returns:
+	*		T = The converted value.
+	*/
+	T coerce(T)(const string key) @trusted
+	{
+		Variant value = get(key);
+		return value.coerce!T;
+	}
+
+	/// Gets the value and converts it to a bool.
+	alias getBool = coerce!bool;
+
+	/// Gets the value and converts it to a int.
+	alias getInt = coerce!int;
+
+	/// Gets the value and converts it to a float.
+	alias getFloat = coerce!float;
+
+	/// Gets the value and converts it to a real.
+	alias getReal = coerce!real;
+
+	/// Gets the value and converts it to a long.
+	alias getLong = coerce!long;
+
+	/// Gets the value and converts it to a byte.
+	alias getByte = coerce!byte;
+
+	/// Gets the value and converts it to a short.
+	alias getShort = coerce!short;
+
+	/// Gets the value and converts it to a double.
+	alias getDouble = coerce!double;
+
+	/// Gets the value and converts it to a string.
+	alias getString = coerce!string;
+
 private:
-	bool checkRequiredArgs() @safe
+	bool checkRequiredArgs() @trusted
 	{
 		bool requiredArgsNotProcessed;
 
@@ -538,6 +588,6 @@ unittest
 	args.addCommand("value", "the default value", "Sets value");
 	args.processArgs(arguments);
 
-	assert(args.get!bool("flag") == true);
+	assert(args.getBool("flag") == true);
 	assert(args.get("value") == "this is a test");
 }
