@@ -53,7 +53,6 @@ private string determineTypeForValue()
 	return "
 		Variant value = values_[key].value;
 
-		writeln(\"Stored type: \", value.type);
 		if(initialValue.isInteger)
 		{
 			value = to!long(initialValue);
@@ -70,8 +69,6 @@ private string determineTypeForValue()
 		{
 			value = to!string(initialValue);
 		}
-
-		writeln(\"Value Changed to type: \", value.type);
 	";
 }
 
