@@ -607,11 +607,13 @@ unittest
 
 	writeln(args["aFloat"]);// Works
 	writeln(args.getFloat("aFloat")); // Works
+	float aFloat = args.getFloat("aFloat"); // Works
+	writeln(aFloat);
 	//assert(args.getDouble("aFloat") == 4.44);// Throws exception
 	//assert(args["aFloat"] == 4.44);// Throws exception
 	//assert(args.coerce!double("aFloat") == 4.44);// Throws exception
 
-	/*assert(args.contains("value") == true);
+	assert(args.contains("value") == true);
 	assert(args.contains("valuez") == false);
-	assert(args.get("value") == "this is a test");*/
+	assert(args.get("value") == "this is a test");
 }
