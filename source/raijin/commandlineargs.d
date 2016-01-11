@@ -17,6 +17,7 @@ import std.variant;
 
 import raijin.stringutils : removeLeadingChars;
 import raijin.typeutils;
+import raijin.debugutils;
 
 
 alias IgnoreFirstArg = Flag!"ignoreFirstArg";
@@ -45,6 +46,33 @@ private string breakOnInvalidArg(const string type)
 		{
 			return ProcessReturnCodes(CommandLineArgTypes." ~ type ~ ", element);
 		}";
+}
+
+private string determineTypeForValue()
+{
+	return "
+		Variant value = values_[key].value;
+
+		writeln(\"Stored type: \", value.type);
+		if(initialValue.isInteger)
+		{
+			value = to!long(initialValue);
+		}
+		else if(initialValue.isDecimal)
+		{
+			value = to!double(initialValue);
+		}
+		else if(isBoolean(initialValue, AllowNumericBooleanValues.no))
+		{
+			value = to!bool(initialValue);
+		}
+		else
+		{
+			value = to!string(initialValue);
+		}
+
+		writeln(\"Value Changed to type: \", value.type);
+	";
 }
 
 private string argTypesToString(CommandLineArgTypes type)
@@ -82,6 +110,7 @@ class CommandLineArgs
 	final Variant get(const string key) @trusted
 	{
 		ArgValues defaultValues;
+		//defaultValues.value = Variant();
 		auto values = values_.get(key, defaultValues);
 
 		return values.value;
@@ -118,9 +147,9 @@ class CommandLineArgs
 	*		description = The description of what the command line argument does.
 	*		required = Whether the argument is required.
 	*/
-	final void addCommand(T)(const string key, const T defaultValue, const string description,
+	final void addCommand(T)(const string key, T defaultValue, const string description,
 		RequiredArg required = RequiredArg.no) @trusted
-	{
+	{ //TODO: Add defaultvalue wrapped in variant
 		ArgValues values;
 
 		values.defaultValue = defaultValue;
@@ -408,24 +437,6 @@ class CommandLineArgs
 				immutable string key = keyValuePair[0].stripRight.removeLeadingChars('-');
 				immutable string separator = keyValuePair[1];
 				string initialValue = keyValuePair[2].stripLeft();
-				Variant value;
-
-				if(initialValue.isInteger)
-				{
-					value = to!long(initialValue);
-				}
-				else if(initialValue.isDecimal)
-				{
-					value = to!double(initialValue);
-				}
-				else if(isBoolean(initialValue, AllowNumericBooleanValues.no))
-				{
-					value = to!bool(initialValue);
-				}
-				else
-				{
-					value = to!string(initialValue);
-				}
 
 				if(!firstArgProcessed && (element.indexOf("-") == -1))
 				{
@@ -433,7 +444,7 @@ class CommandLineArgs
 				}
 				else
 				{
-					if(separator.length && value.length)
+					if(separator.length && initialValue.length)
 					{
 						if(contains(key)) // Key value argument -key=value
 						{
@@ -442,8 +453,10 @@ class CommandLineArgs
 								immutable Variant currentValue = values_[key].value;
 
 								if(currentValue.isBoolean(AllowNumericBooleanValues.no) &&
-									value.isBoolean(AllowNumericBooleanValues.no))
+									initialValue.isBoolean(AllowNumericBooleanValues.no))
 								{
+									mixin(determineTypeForValue());
+
 									values_[key].required = false;
 									values_[key].value = value;
 
@@ -456,6 +469,8 @@ class CommandLineArgs
 							}
 							else
 							{
+								mixin(determineTypeForValue());
+
 								values_[key].value = value;
 								values_[key].required = false;
 
@@ -477,7 +492,7 @@ class CommandLineArgs
 						{
 							if(contains(key)) // Flag argument -key
 							{
-								values_[key].value = "true";
+								values_[key].value = true;
 								values_[key].required = false;
 
 								onValidArg(key);
@@ -580,13 +595,24 @@ private:
 ///
 unittest
 {
-	auto arguments = ["--flag", "value=this is a test"];
+	auto arguments = ["--flag", "value=this is a test", "aFloat=4.44"];
 	auto args = new CommandLineArgs;
 
-	args.addCommand("flag", "true", "A test flag");
+	args.addCommand("flag", true, "A test flag");
+	args.addCommand!float("aFloat", 3.14, "A float value");
 	args.addCommand("value", "the default value", "Sets value");
 	args.processArgs(arguments);
 
 	assert(args.getBool("flag") == true);
+	assert(args["flag"] == true);
+	assert(args.coerce!bool("flag") == true);
+
+
+	assert(args.getDouble("aFloat") == 4.44);
+	assert(args["aFloat"] == 4.44);
+	assert(args.coerce!double("aFloat") == 4.44);
+
+	assert(args.contains("value") == true);
+	assert(args.contains("valuez") == false);
 	assert(args.get("value") == "this is a test");
 }
