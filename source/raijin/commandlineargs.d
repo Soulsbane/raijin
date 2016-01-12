@@ -51,10 +51,9 @@ private string breakOnInvalidArg(const string type)
 private string determineTypeForValue()
 {
 	return "
-		//Variant value = values_[key].value;
-		Variant value = initialValue;
+		Variant value = values_[key].value;
 
-		/*if(initialValue.isInteger)
+		if(initialValue.isInteger)
 		{
 			value = to!long(initialValue);
 		}
@@ -69,7 +68,7 @@ private string determineTypeForValue()
 		else
 		{
 			value = to!string(initialValue);
-		}*/
+		}
 	";
 }
 
@@ -436,6 +435,25 @@ class CommandLineArgs
 				immutable string separator = keyValuePair[1];
 				string initialValue = keyValuePair[2].stripLeft();
 
+				Variant value = values_[key].value;
+
+				if(initialValue.isInteger)
+				{
+					value = to!long(initialValue);
+				}
+				else if(initialValue.isDecimal)
+				{
+					value = to!double(initialValue);
+				}
+				else if(isBoolean(initialValue, AllowNumericBooleanValues.no))
+				{
+					value = to!bool(initialValue);
+				}
+				else
+				{
+					value = to!string(initialValue);
+				}
+
 				if(!firstArgProcessed && (element.indexOf("-") == -1))
 				{
 					firstArgProcessed = true;
@@ -453,8 +471,6 @@ class CommandLineArgs
 								if(currentValue.isBoolean(AllowNumericBooleanValues.no) &&
 									initialValue.isBoolean(AllowNumericBooleanValues.no))
 								{
-									mixin(determineTypeForValue());
-
 									values_[key].required = false;
 									values_[key].value = value;
 
@@ -467,8 +483,6 @@ class CommandLineArgs
 							}
 							else
 							{
-								mixin(determineTypeForValue());
-
 								values_[key].value = value;
 								values_[key].required = false;
 
@@ -597,7 +611,7 @@ unittest
 	auto args = new CommandLineArgs;
 
 	args.addCommand("flag", true, "A test flag");
-	args.addCommand!float("aFloat", 3.14, "A float value");
+	args.addCommand("aFloat", 3.14, "A float value");
 	args.addCommand("value", "the default value", "Sets value");
 	args.processArgs(arguments);
 
@@ -605,13 +619,16 @@ unittest
 	assert(args["flag"] == true);
 	assert(args.coerce!bool("flag") == true);
 
-	writeln(args["aFloat"]);// Works
-	writeln(args.getFloat("aFloat")); // Works
+	writeln(args["aFloat"]);
+	writeln(args.getFloat("aFloat"));
+	//assert(args.getFloat("aFloat") == 4.44); // Throws exception
+
 	float aFloat = args.getFloat("aFloat"); // Works
 	writeln(aFloat);
-	//assert(args.getDouble("aFloat") == 4.44);// Throws exception
-	//assert(args["aFloat"] == 4.44);// Throws exception
-	//assert(args.coerce!double("aFloat") == 4.44);// Throws exception
+
+	assert(args.getDouble("aFloat") == 4.44);
+	assert(args["aFloat"] == 4.44);
+	assert(args.coerce!double("aFloat") == 4.44);
 
 	assert(args.contains("value") == true);
 	assert(args.contains("valuez") == false);
