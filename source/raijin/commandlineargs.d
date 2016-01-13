@@ -225,14 +225,23 @@ public:
 	*		The value of value of the command line argument to get
 	*
 	*/
-	// Note that since we can't know the type before hand this will throw an exception if you are expecting anything but a string. You should use contains first.
+	// NOTE: that since we can't know the type before hand this will throw an exception if you are expecting anything but a string. You should use contains first.
+	// FIX: Really this should be remeved since it's so easy to screw up.
 	final Variant opIndex(const string key) @trusted
 	{
-		ArgValues defaultValues;
-		defaultValues.value = Variant("");
+		if(contains(key))
+		{
+			return values_[key].value;
+		}
+		else
+		{
+			//FIXME: We should probably throw an exception here.
+			ArgValues defaultValues;
+			defaultValues.value = Variant("");
 
-		auto values = values_.get(key, defaultValues);
-		return values.value;
+			auto values = values_.get(key, defaultValues);
+			return values.value;
+		}
 	}
 
 	/**
@@ -663,5 +672,4 @@ unittest
 
 	assert(args.contains("value") == true);
 	assert(args.contains("valuez") == false);
-	assert(args.get("value") == "this is a test");
 }
