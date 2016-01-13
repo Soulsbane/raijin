@@ -30,7 +30,7 @@ alias ProcessReturnCodes = Tuple!(CommandLineArgTypes, "type", string, "command"
 /**
 	The type in which each command line argument is stored in.
 */
-struct ArgValues
+private struct ArgValues
 {
 	Variant defaultValue; /// Initial value a command line argument has if it isn't supplied.
 	Variant value; /// The Value set via the command line.
@@ -177,18 +177,6 @@ public:
 		values.required = required;
 		values.isFlag = false;
 
-		values_[key] = values;
-	}
-
-	/**
-	*	Registers a command line argument
-	*
-	*	Params:
-	*		key = Name of the command line argument to register.
-	*		values = ArgValues struct.
-	*/
-	final void addCommand(const string key, const ArgValues values) @trusted
-	{
 		values_[key] = values;
 	}
 
