@@ -81,12 +81,26 @@ class CommandLineArgs
 	*		The value of value of the command line argument to getcommand line argument to get
 	*
 	*/
-	final Variant get(const string key) @trusted
+	final Variant get(T)(const string key) @trusted
 	{
+		import std.traits;
 		ArgValues defaultValues;
-		//defaultValues.value = Variant();
-		auto values = values_.get(key, defaultValues);
 
+		static if(isNumeric!T)
+		{
+			defaultValues.value = Variant(0);
+		}
+		else static if(isBoolean!T)
+		{
+
+			defaultValues.value = Variant(false);
+		}
+		else
+		{
+			defaultValues.value = Variant("");
+		}
+
+		auto values = values_.get(key, defaultValues);
 		return values.value;
 	}
 
@@ -130,6 +144,7 @@ class CommandLineArgs
 		values.value = defaultValue;
 		values.description = description;
 		values.required = required;
+		values.isFlag = false;
 
 		values_[key] = values;
 	}
@@ -146,6 +161,19 @@ class CommandLineArgs
 		values_[key] = values;
 	}
 
+	final void addFlag(T)(const string key, T defaultValue, const string description,
+		RequiredArg required = RequiredArg.no) @trusted
+	{ //TODO: Add defaultvalue wrapped in variant
+		ArgValues values;
+
+		values.defaultValue = defaultValue;
+		values.value = defaultValue;
+		values.description = description;
+		values.required = required;
+		values.isFlag = true;
+
+		values_[key] = values;
+	}
 	/**
 	*	Retrieves the value of key where key is the name of the command line argument.
 	*	T is the the type that returned value should be converted to.
@@ -157,9 +185,14 @@ class CommandLineArgs
 	*		The value of value of the command line argument to get
 	*
 	*/
+	// Note that since we can't know the type before hand this will throw an exception if you are expecting anything but a string. You should use contains first.
 	final Variant opIndex(const string key) @trusted
 	{
-		return get(key);
+		ArgValues defaultValues;
+		defaultValues.value = Variant("");
+
+		auto values = values_.get(key, defaultValues);
+		return values.value;
 	}
 
 	/**
@@ -204,16 +237,27 @@ class CommandLineArgs
 	*	Returns:
 	*		True if the command line argument is a flag and false otherwise.
 	*/
-	bool isFlag(const string key) @trusted
+	/*bool isFlag(const string key) @trusted
 	{
 		if(contains(key))
 		{
-			immutable auto value = get(key);
-			return value.isBoolean(AllowNumericBooleanValues.no);
+			auto values = values_[key];
+
+			if(typeid(values.value) == typeid(bool))
+			{
+				writeln("isFlag check: ", values.value);
+				//return values.value.coerce!bool;
+			}
+			else
+			{
+				writeln("isFlag check else: ", values.value);
+				return values.value.isBoolean(AllowNumericBooleanValues.no);
+			}
 		}
 
 		return false;
-	}
+	}*/
+
 	/**
 	*	Retrieves the raw value passed via the command line in a safe way.
 	*
@@ -340,7 +384,7 @@ class CommandLineArgs
 	*		Setting allowInvalidArgs.yes will also cause onInvalidArgs to not be fired. Resulting in invalid data in a command.
 	*/
 	final bool processArgs(string[] arguments, IgnoreFirstArg ignoreFirstArg = IgnoreFirstArg.no,
-		AllowInvalidArgs allowInvalidArgs = AllowInvalidArgs.no) @safe
+		AllowInvalidArgs allowInvalidArgs = AllowInvalidArgs.no) @trusted
 	{
 		immutable auto processed = process(arguments, ignoreFirstArg, allowInvalidArgs);
 		bool requiredArgsNotProcessed = checkRequiredArgs();
@@ -412,7 +456,7 @@ class CommandLineArgs
 				immutable string separator = keyValuePair[1];
 				string initialValue = keyValuePair[2].stripLeft();
 
-				Variant value = values_[key].value;
+				Variant value;// = values_[key].value;
 
 				if(initialValue.isInteger)
 				{
@@ -441,7 +485,7 @@ class CommandLineArgs
 					{
 						if(contains(key)) // Key value argument -key=value
 						{
-							if(isFlag(key))
+							if(values_[key].isFlag)
 							{
 								immutable Variant currentValue = values_[key].value;
 
@@ -524,7 +568,7 @@ class CommandLineArgs
 	*/
 	T coerce(T)(const string key) @trusted
 	{
-		Variant value = get(key);
+		Variant value = get!T(key);
 		return value.coerce!T;
 	}
 
