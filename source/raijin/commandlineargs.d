@@ -70,6 +70,7 @@ private string argTypesToString(CommandLineArgTypes type)
 */
 class CommandLineArgs
 {
+private:
 	/**
 	*	Retrieves the value of key where key is the name of the command line argument and converts it to T.
 	*	T is the the type that returned value should be converted to.
@@ -84,7 +85,9 @@ class CommandLineArgs
 	final Variant get(T)(const string key) @trusted
 	{
 		import std.traits;
+
 		ArgValues defaultValues;
+		ArgValues values;
 
 		static if(isNumeric!T)
 		{
@@ -100,7 +103,8 @@ class CommandLineArgs
 			defaultValues.value = Variant("");
 		}
 
-		auto values = values_.get(key, defaultValues);
+		values = values_.get(key, defaultValues);
+
 		return values.value;
 	}
 
@@ -119,15 +123,42 @@ class CommandLineArgs
 	final Variant get(const string key, Variant defaultValue) @trusted
 	{
 		ArgValues defaultValues;
+		ArgValues values;
+
 		defaultValues.defaultValue = defaultValue;
 		defaultValues.value = defaultValue;
+		values = values_.get(key, defaultValues);
 
-		auto values = values_.get(key, defaultValues);
 		return values.value;
 	}
 
 	/**
-	*	Registers a command line argument
+	*	Retrieves the value of key where key is the name of the command line argument and converts it to T.
+	*	T is the the type that returned value should be converted to.
+	*
+	*	Params:
+	*		key = Name of the command line argument to get.
+	*		defaultValue = Allow the assignment of a default value if key does not exist.
+	*
+	*	Returns:
+	*		The value of value of the command line argument to get
+	*
+	*/
+	final Variant get(T)(const string key, T defaultValue = T.init) @trusted
+	{
+		ArgValues defaultValues;
+		ArgValues values;
+
+		defaultValues.defaultValue = defaultValue;
+		defaultValues.value = defaultValue;
+		values = values_.get(key, defaultValues);
+
+		return values.value;
+	}
+
+public:
+	/**
+	*	Registers a command line argument used in year=1942
 	*
 	*	Params:
 	*		key = Name of the command line argument to register.
@@ -137,7 +168,7 @@ class CommandLineArgs
 	*/
 	final void addCommand(T)(const string key, T defaultValue, const string description,
 		RequiredArg required = RequiredArg.no) @trusted
-	{ //TODO: Add defaultvalue wrapped in variant
+	{
 		ArgValues values;
 
 		values.defaultValue = defaultValue;
@@ -161,9 +192,18 @@ class CommandLineArgs
 		values_[key] = values;
 	}
 
+	/**
+	*	Registers a flag argument eg. --flag
+	*
+	*	Params:
+	*		key = Name of the command line argument to register.
+	*		defaultValue = The default value to use if no value is supplied.
+	*		description = The description of what the command line argument does.
+	*		required = Whether the argument is required.
+	*/
 	final void addFlag(T)(const string key, T defaultValue, const string description,
 		RequiredArg required = RequiredArg.no) @trusted
-	{ //TODO: Add defaultvalue wrapped in variant
+	{
 		ArgValues values;
 
 		values.defaultValue = defaultValue;
@@ -566,9 +606,9 @@ class CommandLineArgs
 	*	Returns:
 	*		T = The converted value.
 	*/
-	T coerce(T)(const string key) @trusted
+	T coerce(T)(const string key, T defaultValue = T.init) @trusted
 	{
-		Variant value = get!T(key);
+		Variant value = get!T(key, defaultValue);
 		return value.coerce!T;
 	}
 
