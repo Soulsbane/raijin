@@ -33,9 +33,10 @@ alias ProcessReturnCodes = Tuple!(CommandLineArgTypes, "type", string, "command"
 struct ArgValues
 {
 	Variant defaultValue; /// Initial value a command line argument has if it isn't supplied.
-	Variant value; // The Value set via the command line.
+	Variant value; /// The Value set via the command line.
 	string description; /// The description of the command line argument.
 	bool required; /// true if the command line argument is required false otherwise.
+	bool isFlag; /// true if command line arg should be a flag eg. --myflag
 }
 
 /// NOTE: This mixin inserts a condition for checking whether or not to allowInvalidArgs in process()
@@ -46,30 +47,6 @@ private string breakOnInvalidArg(const string type)
 		{
 			return ProcessReturnCodes(CommandLineArgTypes." ~ type ~ ", element);
 		}";
-}
-
-private string determineTypeForValue()
-{
-	return "
-		Variant value = values_[key].value;
-
-		if(initialValue.isInteger)
-		{
-			value = to!long(initialValue);
-		}
-		else if(initialValue.isDecimal)
-		{
-			value = to!double(initialValue);
-		}
-		else if(isBoolean(initialValue, AllowNumericBooleanValues.no))
-		{
-			value = to!bool(initialValue);
-		}
-		else
-		{
-			value = to!string(initialValue);
-		}
-	";
 }
 
 private string argTypesToString(CommandLineArgTypes type)
@@ -439,11 +416,11 @@ class CommandLineArgs
 
 				if(initialValue.isInteger)
 				{
-					value = to!long(initialValue);
+					value = to!long(initialValue); // TODO: Maybe store type from addCommand and use it here somehow.
 				}
 				else if(initialValue.isDecimal)
 				{
-					value = to!double(initialValue);
+					value = to!double(initialValue); // TODO: Maybe store type from addCommand and use it here somehow.
 				}
 				else if(isBoolean(initialValue, AllowNumericBooleanValues.no))
 				{
@@ -619,12 +596,12 @@ unittest
 	assert(args["flag"] == true);
 	assert(args.coerce!bool("flag") == true);
 
-	writeln(args["aFloat"]);
-	writeln(args.getFloat("aFloat"));
-	//assert(args.getFloat("aFloat") == 4.44); // Throws exception
+	import std.math;
+	float aFloat = args.getFloat("aFloat");
 
-	float aFloat = args.getFloat("aFloat"); // Works
-	writeln(aFloat);
+	assert(args["aFloat"] == 4.44);
+	assert(approxEqual(args.getFloat("aFloat"), 4.44));
+	assert(approxEqual(aFloat, 4.44));
 
 	assert(args.getDouble("aFloat") == 4.44);
 	assert(args["aFloat"] == 4.44);
