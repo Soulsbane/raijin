@@ -269,36 +269,6 @@ public:
 	}
 
 	/**
-	*	Determines if a registered command line argument is a flag.
-	*
-	*	Params:
-	*		key = Name of the command line argument to retrieve.
-	*
-	*	Returns:
-	*		True if the command line argument is a flag and false otherwise.
-	*/
-	/*bool isFlag(const string key) @trusted
-	{
-		if(contains(key))
-		{
-			auto values = values_[key];
-
-			if(typeid(values.value) == typeid(bool))
-			{
-				writeln("isFlag check: ", values.value);
-				//return values.value.coerce!bool;
-			}
-			else
-			{
-				writeln("isFlag check else: ", values.value);
-				return values.value.isBoolean(AllowNumericBooleanValues.no);
-			}
-		}
-
-		return false;
-	}*/
-
-	/**
 	*	Retrieves the raw value passed via the command line in a safe way.
 	*
 	*	Params:
