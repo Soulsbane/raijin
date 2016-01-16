@@ -37,6 +37,7 @@ private struct ArgValues
 	string description; /// The description of the command line argument.
 	bool required; /// true if the command line argument is required false otherwise.
 	bool isFlag; /// true if command line arg should be a flag eg. --myflag
+	TypeInfo storedType; // Stores the default type passed to addCommand or addFlag.
 }
 
 /// NOTE: This mixin inserts a condition for checking whether or not to allowInvalidArgs in process()
@@ -176,6 +177,7 @@ public:
 		values.description = description;
 		values.required = required;
 		values.isFlag = false;
+		values.storedType = typeid(T);
 
 		values_[key] = values;
 	}
@@ -199,6 +201,7 @@ public:
 		values.description = description;
 		values.required = required;
 		values.isFlag = true;
+		values.storedType = typeid(T);
 
 		values_[key] = values;
 	}
