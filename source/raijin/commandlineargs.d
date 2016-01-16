@@ -191,20 +191,20 @@ public:
 	*		description = The description of what the command line argument does.
 	*		required = Whether the argument is required.
 	*/
-	final void addFlag(T)(const string key, T defaultValue, const string description,
-		RequiredArg required = RequiredArg.no) @trusted
+	final void addFlag(const string key, const string description, RequiredArg required = RequiredArg.no) @trusted
 	{
 		ArgValues values;
 
-		values.defaultValue = defaultValue;
-		values.value = defaultValue;
+		values.defaultValue = true;
+		values.value = true;
 		values.description = description;
 		values.required = required;
 		values.isFlag = true;
-		values.storedType = typeid(T);
+		values.storedType = typeid(bool);
 
 		values_[key] = values;
 	}
+
 	/**
 	*	Retrieves the value of key where key is the name of the command line argument.
 	*	T is the the type that returned value should be converted to.
@@ -641,7 +641,7 @@ unittest
 	auto arguments = ["--flag", "value=this is a test", "aFloat=4.44"];
 	auto args = new CommandLineArgs;
 
-	args.addCommand("flag", true, "A test flag");
+	args.addFlag("flag", "A test flag");
 	args.addCommand("aFloat", 3.14, "A float value");
 	args.addCommand("value", "the default value", "Sets value");
 	args.processArgs(arguments);
