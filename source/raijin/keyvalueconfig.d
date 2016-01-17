@@ -42,7 +42,7 @@ private:
 	*	Params:
 	*		text = The text to be processed.
 	*/
-	void processText(const string text) @trusted
+	bool processText(const string text) @trusted
 	{
 		auto lines = text.lineSplitter();
 		string currentGroupName = DEFAULT_GROUP_NAME;
@@ -60,10 +60,17 @@ private:
 			{
 				currentComment = line[1..$];
 			}
-			else if(line.startsWith("[") && line.endsWith("]"))
+			else if(line.startsWith("["))
 			{
-				immutable string groupName = line[1..$-1];
-				currentGroupName = groupName;
+				if(line.endsWith("]"))
+				{
+					immutable string groupName = line[1..$-1];
+					currentGroupName = groupName;
+				}
+				else
+				{
+					return false; // Error incomplete group.
+				}
 			}
 			else
 			{
@@ -103,8 +110,14 @@ private:
 
 					values_ ~= data;
 				}
+				else
+				{
+					return false; // Error line doesn't contain an = sign.
+				}
 			}
 		}
+
+		return true;
 	}
 
 	/**
@@ -191,8 +204,7 @@ public:
 	{
 		if(exists(fileName))
 		{
-			processText(readText(fileName));
-			return true;
+			return processText(readText(fileName));
 		}
 		else
 		{
@@ -213,8 +225,7 @@ public:
 	{
 		if(text.length)
 		{
-			processText(text);
-			return true;
+			return processText(text);
 		}
 		else
 		{
@@ -643,4 +654,24 @@ unittest
 
 	debug config.save();
 	debug config.save("custom-config-format.dat");
+
+	string noEqualSign = "
+		equal=sign
+		time=12:04
+		This is a really long sentence to test for a really long value string!
+	";
+
+	bool equalSignValue = config.loadString(noEqualSign);
+	assert(equalSignValue == false);
+
+	string invalidGroup = "
+		[first]
+		equal=sign
+		time=12:04
+		[second
+		another=key value is here
+	";
+
+	bool invalidGroupValue = config.loadString(invalidGroup);
+	assert(invalidGroupValue == false);
 }
