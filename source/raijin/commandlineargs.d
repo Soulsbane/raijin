@@ -66,6 +66,48 @@ private string argTypesToString(CommandLineArgTypes type)
 	return typeTable[type];
 }
 
+private Variant getValueFromType(const string initialValue, const TypeInfo storedType) @trusted
+{
+	Variant value;
+
+	if(initialValue.isInteger)
+	{
+		if(storedType == typeid(int))
+		{
+			value = to!int(initialValue);
+		}
+		else
+		{
+			value = to!long(initialValue);
+		}
+	}
+	else if(initialValue.isDecimal)
+	{
+		if(storedType == typeid(float))
+		{
+			value = to!float(initialValue);
+		}
+		else if(storedType == typeid(real))
+		{
+			value = to!real(initialValue);
+		}
+		else
+		{
+			value = to!double(initialValue);
+		}
+	}
+	else if(isBoolean(initialValue, AllowNumericBooleanValues.no))
+	{
+		value = to!bool(initialValue);
+	}
+	else
+	{
+		value = to!string(initialValue);
+	}
+
+	return value;
+}
+
 /**
 *	Handles the processing of command line arguments.
 */
@@ -466,23 +508,11 @@ public:
 				immutable string separator = keyValuePair[1];
 				string initialValue = keyValuePair[2].stripLeft();
 
-				Variant value;// = values_[key].value;
+				Variant value;
 
-				if(initialValue.isInteger)
+				if(contains(key))
 				{
-					value = to!long(initialValue); // TODO: Maybe store type from addCommand and use it here somehow.
-				}
-				else if(initialValue.isDecimal)
-				{
-					value = to!double(initialValue); // TODO: Maybe store type from addCommand and use it here somehow.
-				}
-				else if(isBoolean(initialValue, AllowNumericBooleanValues.no))
-				{
-					value = to!bool(initialValue);
-				}
-				else
-				{
-					value = to!string(initialValue);
+					value = getValueFromType(initialValue, values_[key].storedType);
 				}
 
 				if(!firstArgProcessed && (element.indexOf("-") == -1))
