@@ -674,7 +674,7 @@ unittest
 
 	args.addFlag("flag", "A test flag");
 	args.addCommand!float("aFloat", 3.14, "A float value");
-	args.addCommand!int("value", 100, "Sets value");
+	args.addCommand!int("integer", 100, "Sets value");
 	args.processArgs(arguments);
 
 	assert(args.getBool("flag") == true);
@@ -682,16 +682,16 @@ unittest
 	assert(args.coerce!bool("flag") == true);
 
 	import std.math;
+
 	float aFloat = args.getFloat("aFloat");
 
-	//assert(args["aFloat"] == 4.44); // This returns a variant and fails unittest
-	assert(approxEqual(args.getFloat("aFloat"), 4.44));
-	assert(approxEqual(aFloat, 4.44));
+	assert(feqrel(args.getFloat("aFloat"), 4.44));
+	assert(feqrel(aFloat, 4.44));
 
-	assert(approxEqual(args.getDouble("aFloat"), 4.44));
-	//assert(approxEqual(args["aFloat"], 4.44)); // This returns a variant and fails unittest
-	assert(approxEqual(args.coerce!double("aFloat"), 4.44));
+	assert(feqrel(args.getDouble("aFloat"), 4.44));
+	assert(feqrel(args.coerce!double("aFloat"), 4.44));
 
-	assert(args.contains("value") == true);
+	assert(args.contains("integer") == true);
 	assert(args.contains("valuez") == false);
+	assert(args["integer"] == 100);
 }
