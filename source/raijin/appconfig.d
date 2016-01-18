@@ -4,7 +4,7 @@
 
 module raijin.appconfig;
 
-import raijin.keyvalueconfig;
+import raijin.variantconfig;
 import raijin.configpath;
 
 /**
