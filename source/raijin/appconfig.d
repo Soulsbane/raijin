@@ -1,5 +1,5 @@
 /**
-*   This module combines the functionality of keyvalueconfig and configpath into one class.
+*   This module combines the functionality of VariantConfig and configpath into one class.
 */
 
 module raijin.appconfig;
@@ -8,7 +8,7 @@ import raijin.variantconfig;
 import raijin.configpath;
 
 /**
-*	This class combines the functionality of keyvalueconfig and configpath into one class.
+*	This class combines the functionality of VariantConfig and configpath into one class.
 */
 class AppConfig
 {
@@ -80,17 +80,17 @@ public:
 	}
 
 	/**
-	*	Helper property for accessing KeyValueConfig methods.
+	*	Helper property for accessing VariantConfig methods.
 	*
 	*	Returns:
-	*		A KeyValueConfig object.
+	*		A VariantConfig object.
 	*/
-	KeyValueConfig config() @property
+	VariantConfig config() @property
 	{
 		return configFile_;
 	}
 
 private:
-	KeyValueConfig configFile_;
+	VariantConfig configFile_;
 	ConfigPath configPath_;
 }

@@ -637,7 +637,7 @@ unittest
 
 	assert(config["another.japan"] == false);
 
-	writeln("KeyValueConfig: Testing getGroup...");
+	writeln("VariantConfig: Testing getGroup...");
 
 	auto group = config.getGroup("another");
 
