@@ -32,7 +32,7 @@ private struct KeyValueData
 /**
 *	Handles the processing of config files.
 */
-struct KeyValueConfig
+struct VariantConfig
 {
 private:
 
@@ -582,6 +582,8 @@ private:
 	bool valuesModified_;
 }
 
+alias KeyValueConfig = VariantConfig; //NOTE: Temporary will remove once conversion is complete.
+
 ///
 unittest
 {
@@ -602,7 +604,7 @@ unittest
 		japan=false
 	";
 
-	KeyValueConfig config;
+	VariantConfig config;
 
 	immutable bool loaded = config.loadString(text);
 	assert(loaded, "Failed to load string!");
