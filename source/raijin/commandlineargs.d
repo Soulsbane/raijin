@@ -406,7 +406,7 @@ public:
 	/**
 	*	Called when an invalid argument is passed on the command line.
 	*/
-	void onInvalidArgs(CommandLineArgTypes error, string command) @trusted
+	void onInvalidArgs(const CommandLineArgTypes error, const string command) @trusted
 	{
 		writeln("Invalid option ", command, "! ", argTypesToString(error), ". Use -help for a list of available commands.");
 	}
