@@ -256,11 +256,11 @@ public:
 	*		key = Name of the command line argument to get.
 	*
 	*	Returns:
-	*		The value of value of the command line argument to get
+	*		The value of value of the command line argument to get. If the key isn't found it will
+	*		return an unitialized Variant. Method hasValue can be used to test if the returned value is valid.
 	*
 	*/
 	// NOTE: that since we can't know the type before hand this will throw an exception if you are expecting anything but a string. You should use contains first.
-	// FIX: Really this should be remeved since it's so easy to screw up.
 	final Variant opIndex(const string key) @trusted
 	{
 		if(contains(key))
@@ -269,12 +269,8 @@ public:
 		}
 		else
 		{
-			//FIXME: We should probably throw an exception here.
-			ArgValues defaultValues;
-			defaultValues.value = Variant("");
-
-			auto values = values_.get(key, defaultValues);
-			return values.value;
+			Variant value;
+			return value;
 		}
 	}
 
