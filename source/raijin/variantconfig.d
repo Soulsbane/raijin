@@ -243,9 +243,9 @@ public:
 	*		The value associated with key.
 	*
 	*/
-	Variant get(const string key) @safe
+	Variant get(const string key) @trusted
 	{
-		string defaultValue;
+		Variant defaultValue;
 
 		if(isGroupString(key))
 		{
@@ -269,7 +269,7 @@ public:
 	*		The value associated with key.
 	*
 	*/
-	Variant get(const string key, string defaultValue) @safe
+	Variant get(const string key, Variant defaultValue) @trusted
 	{
 		if(isGroupString(key))
 		{
@@ -294,7 +294,7 @@ public:
 	*		The value of value of the key/value pair.
 	*
 	*/
-	Variant get(const string group, const string key, string defaultValue) @trusted
+	Variant get(const string group, const string key, Variant defaultValue) @trusted
 	{
 		if(containsGroup(group))
 		{
