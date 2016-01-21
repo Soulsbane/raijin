@@ -302,7 +302,7 @@ public:
 		}
 		else
 		{
-			return Variant(defaultValue);
+			return defaultValue;
 		}
 	}
 
