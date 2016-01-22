@@ -489,7 +489,6 @@ public:
 				}
 				else
 				{
-					writeln("Inside else isBoolean check 493, current: ", currentValue, " commandLineValue: ", commandLineValue);
 					return ProcessReturnCodes(CommandLineArgTypes.INVALID_FLAG_VALUE, "");
 				}
 			}
@@ -561,7 +560,7 @@ public:
 				auto keyValuePair = element.findSplit("=");
 				immutable string key = keyValuePair[0].stripRight.removeLeadingChars('-');
 				immutable string separator = keyValuePair[1];
-				string commandLineValue = keyValuePair[2].stripLeft();
+				immutable string commandLineValue = keyValuePair[2].stripLeft();
 
 				if(element.indexOf("-") == -1)
 				{
