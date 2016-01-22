@@ -19,7 +19,6 @@ import raijin.stringutils : removeLeadingChars;
 import raijin.typeutils;
 import raijin.debugutils;
 
-
 alias IgnoreFirstArg = Flag!"ignoreFirstArg";
 alias RequiredArg = Flag!"requiredArg";
 alias AllowInvalidArgs = Flag!"allowInvalidArgs";
@@ -67,43 +66,43 @@ private string argTypesToString(CommandLineArgTypes type)
 }
 
 // TODO: Possibly handle more types
-private Variant getValueFromType(const string initialValue, const TypeInfo storedType) @trusted
+private Variant getValueFromType(const string commandLineValue, const TypeInfo storedType) @trusted
 {
 	Variant value;
 
-	if(initialValue.isInteger)
+	if(commandLineValue.isInteger)
 	{
 		if(storedType == typeid(int))
 		{
-			value = to!int(initialValue);
+			value = to!int(commandLineValue);
 		}
 		else
 		{
-			value = to!long(initialValue);
+			value = to!long(commandLineValue);
 		}
 	}
-	else if(initialValue.isDecimal)
+	else if(commandLineValue.isDecimal)
 	{
 		if(storedType == typeid(float))
 		{
-			value = to!float(initialValue);
+			value = to!float(commandLineValue);
 		}
 		else if(storedType == typeid(real))
 		{
-			value = to!real(initialValue);
+			value = to!real(commandLineValue);
 		}
 		else
 		{
-			value = to!double(initialValue);
+			value = to!double(commandLineValue);
 		}
 	}
-	else if(isBoolean(initialValue, AllowNumericBooleanValues.no))
+	else if(isBoolean(commandLineValue, AllowNumericBooleanValues.no))
 	{
-		value = to!bool(initialValue);
+		value = to!bool(commandLineValue);
 	}
 	else
 	{
-		value = to!string(initialValue);
+		value = to!string(commandLineValue);
 	}
 
 	return value;
@@ -503,13 +502,12 @@ public:
 				auto keyValuePair = element.findSplit("=");
 				immutable string key = keyValuePair[0].stripRight.removeLeadingChars('-');
 				immutable string separator = keyValuePair[1];
-				string initialValue = keyValuePair[2].stripLeft();
-
-				Variant value;
+				string commandLineValue = keyValuePair[2].stripLeft();
+				Variant value; // Value that will will be stored.
 
 				if(contains(key))
 				{
-					value = getValueFromType(initialValue, values_[key].storedType);
+					value = getValueFromType(commandLineValue, values_[key].storedType);
 				}
 
 				if(!firstArgProcessed && (element.indexOf("-") == -1))
@@ -518,7 +516,7 @@ public:
 				}
 				else
 				{
-					if(separator.length && initialValue.length)
+					if(separator.length && commandLineValue.length)
 					{
 						if(contains(key)) // Key value argument -key=value
 						{
@@ -527,7 +525,7 @@ public:
 								immutable Variant currentValue = values_[key].value;
 
 								if(currentValue.isBoolean(AllowNumericBooleanValues.no) &&
-									initialValue.isBoolean(AllowNumericBooleanValues.no))
+									commandLineValue.isBoolean(AllowNumericBooleanValues.no))
 								{
 									values_[key].required = false;
 									values_[key].value = value;
