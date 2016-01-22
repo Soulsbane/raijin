@@ -238,8 +238,8 @@ public:
 	{
 		ArgValues values;
 
-		values.defaultValue = true;
-		values.value = true;
+		values.defaultValue = false;
+		values.value = false;
 		values.description = description;
 		values.required = required;
 		values.isFlag = true;
@@ -556,23 +556,16 @@ public:
 
 		if(elements.length > 0)
 		{
-			bool firstArgProcessed;
-
-			if(!ignoreFirstArg)
-			{
-				firstArgProcessed = true;
-			}
-
-			foreach(element; elements)
+			foreach(pos, element; elements)
 			{
 				auto keyValuePair = element.findSplit("=");
 				immutable string key = keyValuePair[0].stripRight.removeLeadingChars('-');
 				immutable string separator = keyValuePair[1];
 				string commandLineValue = keyValuePair[2].stripLeft();
 
-				if(!firstArgProcessed && (element.indexOf("-") == -1))
+				if(element.indexOf("-") == -1)
 				{
-					firstArgProcessed = true;
+					continue;
 				}
 				else
 				{
@@ -683,14 +676,16 @@ private:
 ///
 unittest
 {
-	auto arguments = ["--flag", "value=this is a test", "aFloat=4.44"];
+	auto arguments = ["testapp", "-flag", "-value=this is a test", "-aFloat=4.44"];
 	auto args = new CommandLineArgs;
 
 	args.addFlag("flag", "A test flag");
 	args.addCommand!float("aFloat", 3.14, "A float value");
 	args.addCommand!int("integer", 100, "Sets value");
+	args.addCommand!string("value", "hello world", "Just a silly value.");
 	args.processArgs(arguments);
 
+	writeln(args.getBool("flag"));
 	assert(args.getBool("flag") == true);
 	assert(args["flag"] == true);
 	assert(args.coerce!bool("flag") == true);
