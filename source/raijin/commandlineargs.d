@@ -23,7 +23,7 @@ alias IgnoreFirstArg = Flag!"ignoreFirstArg";
 alias RequiredArg = Flag!"requiredArg";
 alias AllowInvalidArgs = Flag!"allowInvalidArgs";
 
-enum CommandLineArgTypes { INVALID_ARG, INVALID_ARG_PAIR, INVALID_FLAG_VALUE, VALID_ARGS, NO_ARGS, HELP_ARG, VERSION_ARG }
+enum CommandLineArgTypes { INVALID_ARG, INVALID_ARG_PAIR, INVALID_FLAG_VALUE, VALID_ARGS, NO_ARGS, HELP_ARG, VERSION_ARG, PROCESSED_AND_VALID_ARG }
 alias ProcessReturnCodes = Tuple!(CommandLineArgTypes, "type", string, "command");
 
 /**
@@ -59,7 +59,8 @@ private string argTypesToString(CommandLineArgTypes type)
 		CommandLineArgTypes.VALID_ARGS:"",
 		CommandLineArgTypes.NO_ARGS:"",
 		CommandLineArgTypes.HELP_ARG:"",
-		CommandLineArgTypes.VERSION_ARG:""
+		CommandLineArgTypes.VERSION_ARG:"",
+		CommandLineArgTypes.PROCESSED_AND_VALID_ARG:""
 	];
 
 	return typeTable[type];
@@ -468,6 +469,71 @@ public:
 		}
 	}
 
+	private auto handlePairArg(const string key, const string commandLineValue)
+	{
+		if(contains(key))
+		{
+			Variant value = getValueFromType(commandLineValue, values_[key].storedType);
+
+			if(values_[key].isFlag)
+			{
+				immutable Variant currentValue = values_[key].value;
+
+				if(commandLineValue.isBoolean(AllowNumericBooleanValues.no))
+				{
+					values_[key].required = false;
+					values_[key].value = value;
+
+					onValidArg(key);
+					return ProcessReturnCodes(CommandLineArgTypes.PROCESSED_AND_VALID_ARG, "");
+				}
+				else
+				{
+					writeln("Inside else isBoolean check 493, current: ", currentValue, " commandLineValue: ", commandLineValue);
+					return ProcessReturnCodes(CommandLineArgTypes.INVALID_FLAG_VALUE, "");
+				}
+			}
+			else
+			{
+				values_[key].value = value;
+				values_[key].required = false;
+
+				onValidArg(key);
+				return ProcessReturnCodes(CommandLineArgTypes.PROCESSED_AND_VALID_ARG, "");
+			}
+		}
+		else
+		{
+			return ProcessReturnCodes(CommandLineArgTypes.INVALID_ARG, "");
+		}
+	}
+
+	private auto handleFlagArg(const string key)
+	{
+		if(contains(key)) // Flag argument -key
+		{
+			values_[key].value = true;
+			values_[key].required = false;
+
+			onValidArg(key);
+			return ProcessReturnCodes(CommandLineArgTypes.PROCESSED_AND_VALID_ARG, "");
+		}
+		else
+		{
+			if(key == "help")
+			{
+				return ProcessReturnCodes(CommandLineArgTypes.HELP_ARG, "-help");
+			}
+
+			if(key == "version")
+			{
+				return ProcessReturnCodes(CommandLineArgTypes.VERSION_ARG, "-version");
+			}
+
+			return ProcessReturnCodes(CommandLineArgTypes.INVALID_ARG, "");
+		}
+	}
+
 	/**
 	*	Handles the registration of command line arguments passed to the program. This is the internal command line
 	*	argument processing method. The method processArgs should be used as it simplifies handling of command line
@@ -503,12 +569,6 @@ public:
 				immutable string key = keyValuePair[0].stripRight.removeLeadingChars('-');
 				immutable string separator = keyValuePair[1];
 				string commandLineValue = keyValuePair[2].stripLeft();
-				Variant value; // Value that will will be stored.
-
-				if(contains(key))
-				{
-					value = getValueFromType(commandLineValue, values_[key].storedType);
-				}
 
 				if(!firstArgProcessed && (element.indexOf("-") == -1))
 				{
@@ -518,36 +578,11 @@ public:
 				{
 					if(separator.length && commandLineValue.length)
 					{
-						if(contains(key)) // Key value argument -key=value
+						const auto commandLineArgType = handlePairArg(key, commandLineValue);
+
+						if(allowInvalidArgs == false && commandLineArgType.type != CommandLineArgTypes.PROCESSED_AND_VALID_ARG)
 						{
-							if(values_[key].isFlag)
-							{
-								immutable Variant currentValue = values_[key].value;
-
-								if(currentValue.isBoolean(AllowNumericBooleanValues.no) &&
-									commandLineValue.isBoolean(AllowNumericBooleanValues.no))
-								{
-									values_[key].required = false;
-									values_[key].value = value;
-
-									onValidArg(key);
-								}
-								else
-								{
-									mixin(breakOnInvalidArg("INVALID_FLAG_VALUE"));
-								}
-							}
-							else
-							{
-								values_[key].value = value;
-								values_[key].required = false;
-
-								onValidArg(key);
-							}
-						}
-						else
-						{
-							mixin(breakOnInvalidArg("INVALID_ARG"));
+							return commandLineArgType;
 						}
 					}
 					else
@@ -558,26 +593,11 @@ public:
 						}
 						else
 						{
-							if(contains(key)) // Flag argument -key
+							const auto commandLineArgType = handleFlagArg(key);
+
+							if(allowInvalidArgs == false && commandLineArgType.type == CommandLineArgTypes.INVALID_ARG)
 							{
-								values_[key].value = true;
-								values_[key].required = false;
-
-								onValidArg(key);
-							}
-							else
-							{
-								if(key == "help")
-								{
-									return ProcessReturnCodes(CommandLineArgTypes.HELP_ARG, "-help");
-								}
-
-								if(key == "version")
-								{
-									return ProcessReturnCodes(CommandLineArgTypes.VERSION_ARG, "-version");
-								}
-
-								mixin(breakOnInvalidArg("INVALID_ARG"));
+								return commandLineArgType;
 							}
 						}
 					}
