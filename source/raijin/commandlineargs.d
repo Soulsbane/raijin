@@ -684,7 +684,6 @@ unittest
 	args.addCommand!string("value", "hello world", "Just a silly value.");
 	args.processArgs(arguments);
 
-	writeln(args.getBool("flag"));
 	assert(args.getBool("flag") == true);
 	assert(args["flag"] == true);
 	assert(args.coerce!bool("flag") == true);
