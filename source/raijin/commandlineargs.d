@@ -485,11 +485,11 @@ public:
 					values_[key].value = value;
 
 					onValidArg(key);
-					return ProcessReturnCodes(CommandLineArgTypes.PROCESSED_AND_VALID_ARG, "");
+					return CommandLineArgTypes.PROCESSED_AND_VALID_ARG;
 				}
 				else
 				{
-					return ProcessReturnCodes(CommandLineArgTypes.INVALID_FLAG_VALUE, "");
+					return CommandLineArgTypes.INVALID_FLAG_VALUE;
 				}
 			}
 			else
@@ -498,12 +498,12 @@ public:
 				values_[key].required = false;
 
 				onValidArg(key);
-				return ProcessReturnCodes(CommandLineArgTypes.PROCESSED_AND_VALID_ARG, "");
+				return CommandLineArgTypes.PROCESSED_AND_VALID_ARG;
 			}
 		}
 		else
 		{
-			return ProcessReturnCodes(CommandLineArgTypes.INVALID_ARG, "");
+			return CommandLineArgTypes.INVALID_ARG;
 		}
 	}
 
@@ -515,21 +515,21 @@ public:
 			values_[key].required = false;
 
 			onValidArg(key);
-			return ProcessReturnCodes(CommandLineArgTypes.PROCESSED_AND_VALID_ARG, "");
+			return CommandLineArgTypes.PROCESSED_AND_VALID_ARG;
 		}
 		else
 		{
 			if(key == "help")
 			{
-				return ProcessReturnCodes(CommandLineArgTypes.HELP_ARG, "-help");
+				return CommandLineArgTypes.HELP_ARG;
 			}
 
 			if(key == "version")
 			{
-				return ProcessReturnCodes(CommandLineArgTypes.VERSION_ARG, "-version");
+				return CommandLineArgTypes.VERSION_ARG;
 			}
 
-			return ProcessReturnCodes(CommandLineArgTypes.INVALID_ARG, "");
+			return CommandLineArgTypes.INVALID_ARG;
 		}
 	}
 
@@ -572,9 +572,9 @@ public:
 					{
 						const auto commandLineArgType = handlePairArg(key, commandLineValue);
 
-						if(allowInvalidArgs == false && commandLineArgType.type != CommandLineArgTypes.PROCESSED_AND_VALID_ARG)
+						if(allowInvalidArgs == false && commandLineArgType!= CommandLineArgTypes.PROCESSED_AND_VALID_ARG)
 						{
-							return commandLineArgType;
+							return ProcessReturnCodes(commandLineArgType, element);
 						}
 					}
 					else
@@ -587,9 +587,14 @@ public:
 						{
 							const auto commandLineArgType = handleFlagArg(key);
 
-							if(allowInvalidArgs == false && commandLineArgType.type == CommandLineArgTypes.INVALID_ARG)
+							if(allowInvalidArgs == false && commandLineArgType == CommandLineArgTypes.INVALID_ARG)
 							{
-								return commandLineArgType;
+								return ProcessReturnCodes(commandLineArgType, element);
+							}
+
+							if(commandLineArgType == CommandLineArgTypes.HELP_ARG || CommandLineArgTypes.VERSION_ARG)
+							{
+								return ProcessReturnCodes(commandLineArgType, element);
 							}
 						}
 					}
