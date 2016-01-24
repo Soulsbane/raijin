@@ -509,7 +509,7 @@ public:
 
 	private auto handleFlagArg(const string key)
 	{
-		if(contains(key)) // Flag argument -key
+		if(contains(key))
 		{
 			values_[key].value = true;
 			values_[key].required = false;
@@ -572,7 +572,7 @@ public:
 					{
 						const auto commandLineArgType = handlePairArg(key, commandLineValue);
 
-						if(allowInvalidArgs == false && commandLineArgType!= CommandLineArgTypes.PROCESSED_AND_VALID_ARG)
+						if(allowInvalidArgs == false && commandLineArgType != CommandLineArgTypes.PROCESSED_AND_VALID_ARG)
 						{
 							return ProcessReturnCodes(commandLineArgType, element);
 						}
