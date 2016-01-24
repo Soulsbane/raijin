@@ -50,7 +50,7 @@ unittest
 */
 bool isVowelChar(char vowelChar) pure @safe
 {
-	string vowels = "aeiou";
+	const string vowels = "aeiou";
 	return vowels.canFind!(a => a == vowelChar);
 }
 
@@ -169,4 +169,3 @@ unittest
 	assert("--help".removeLeadingChars('-') == "help");
 	assert("--help-me".removeLeadingChars('-') == "help-me");
 }
-
