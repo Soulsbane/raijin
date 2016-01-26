@@ -1,5 +1,7 @@
 /**
 *	Provides an easy way to work the users configuration directory.
+*
+*	Author: Paul Crane
 */
 module raijin.configpath;
 

@@ -1,5 +1,7 @@
 /**
 *	Various functions for dealing with files.
+*
+*	Author: Paul Crane
 */
 
 module raijin.fileutils;

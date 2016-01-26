@@ -135,6 +135,7 @@ unittest
 	assert("cat".pluralize == "cats");
 	assert("cat".pluralize("catz") == "catz");
 }
+
 /**
 *	Removes the charactor from the beginning of a string.
 *

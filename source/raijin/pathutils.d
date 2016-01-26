@@ -1,5 +1,7 @@
 /**
 *	Various functions for dealing with path based manipulation and retrieval.
+*
+*	Author: Paul Crane
 */
 
 module raijin.pathutils;
@@ -150,4 +152,3 @@ unittest
 	assert(ensurePathExists("my/test/dir"));
 	assert(removePathIfExists("my"));
 }
-

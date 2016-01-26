@@ -1,5 +1,7 @@
 /**
 *   This module combines the functionality of VariantConfig and configpath into one class.
+*
+*	Author: Paul Crane
 */
 
 module raijin.appconfig;

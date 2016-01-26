@@ -1,5 +1,7 @@
 /**
 *   Various functions to determine types at runtime.
+*
+*	Author: Paul Crane
 */
 
 module raijin.typeutils;

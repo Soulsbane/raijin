@@ -1,5 +1,7 @@
 /**
 *   Functions for outputing a debug string.
+*
+*	Author: Paul Crane
 */
 
 module raijin.debugutils;
