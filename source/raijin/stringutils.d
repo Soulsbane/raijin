@@ -170,3 +170,39 @@ unittest
 	assert("--help".removeLeadingChars('-') == "help");
 	assert("--help-me".removeLeadingChars('-') == "help-me");
 }
+
+/**
+*	Modifies the passed string by removing the character specified.
+*
+*	Params:
+*		str = The string to remove characters from.
+*		charToRemove = The character to remove.
+*/
+void removeLeadingCharsInPlace(ref string str, const dchar charToRemove) pure @safe
+{
+	// INFO: Surely there is a phobos function to do this but I couldn't find it.
+	while(!str.empty)
+	{
+		auto c = str.front;
+
+		if(c != charToRemove)
+		{
+			break;
+		}
+
+		str.popFront();
+	}
+}
+
+///
+unittest
+{
+	string value = "--help";
+	string anotherValue = "--help-me";
+
+	value.removeLeadingCharsInPlace('-');
+	anotherValue.removeLeadingCharsInPlace('-');
+
+	assert(value == "help");
+	assert(anotherValue == "help-me");
+}
