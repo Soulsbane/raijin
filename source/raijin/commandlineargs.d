@@ -11,20 +11,16 @@ import std.conv : to;
 import std.string : removechars, stripLeft, stripRight, indexOf;
 import std.algorithm : findSplit;
 import std.stdio : writeln;
-import std.typecons : Flag, Tuple;
+import std.typecons;
 import std.path : baseName;
 import std.variant;
 
-import raijin.stringutils : removeLeadingChars;
+import raijin.stringutils;
 import raijin.typeutils;
-import raijin.debugutils;
 
-alias IgnoreFirstArg = Flag!"ignoreFirstArg";
-alias RequiredArg = Flag!"requiredArg";
+alias IgnoreNonArgs = Flag!"IgnoreNonArgs";
 alias AllowInvalidArgs = Flag!"allowInvalidArgs";
-
-enum CommandLineArgTypes { INVALID_ARG, INVALID_ARG_PAIR, INVALID_FLAG_VALUE, VALID_ARGS, NO_ARGS, HELP_ARG, VERSION_ARG, PROCESSED_AND_VALID_ARG }
-alias ProcessReturnCodes = Tuple!(CommandLineArgTypes, "type", string, "command");
+alias RequiredArg = Flag!"requiredArg";
 
 /**
 	The type in which each command line argument is stored in.
@@ -45,22 +41,18 @@ private string breakOnInvalidArg(const string type)
 	return "
 		if(allowInvalidArgs == false)
 		{
-			return ProcessReturnCodes(CommandLineArgTypes." ~ type ~ ", element);
+			onInvalidArg(\"" ~ type ~ "\", element);
+			return false;
 		}";
 }
 
-private string argTypesToString(CommandLineArgTypes type)
+private string argTypesToString(const string type)
 {
-	string[CommandLineArgTypes] typeTable =
+	string[string] typeTable =
 	[
-		CommandLineArgTypes.INVALID_ARG:"Invalid argument was passed",
-		CommandLineArgTypes.INVALID_ARG_PAIR:"Argument requires a value",
-		CommandLineArgTypes.INVALID_FLAG_VALUE:"Argument must not contain a value",
-		CommandLineArgTypes.VALID_ARGS:"",
-		CommandLineArgTypes.NO_ARGS:"",
-		CommandLineArgTypes.HELP_ARG:"",
-		CommandLineArgTypes.VERSION_ARG:"",
-		CommandLineArgTypes.PROCESSED_AND_VALID_ARG:""
+		"INVALID_ARG":"Invalid argument was passed",
+		"INVALID_ARG_PAIR":"Argument requires a value",
+		"INVALID_FLAG_VALUE":"Argument must not contain a value"
 	];
 
 	return typeTable[type];
@@ -402,7 +394,7 @@ public:
 	/**
 	*	Called when an invalid argument is passed on the command line.
 	*/
-	void onInvalidArgs(const CommandLineArgTypes error, const string command) @trusted
+	void onInvalidArg(const string error, const string command) @trusted
 	{
 		writeln("Invalid option ", command, "! ", argTypesToString(error), ". Use -help for a list of available commands.");
 	}
@@ -423,130 +415,19 @@ public:
 	void onNoArgs() @trusted {}
 
 	/**
-	*	Handles the registration of command line arguments passed to the program.
-	*
-	*	Params:
-	*		arguments = The arguments that are sent from main()
-	*		ignoreFirstArg = Ignore the first argument passed and continue processing the remaining arguments
-	*		allowInvalidArgs = Any invalid arguments will be ignored and onInvalidArgs won't be called.
-	*	Note:
-	*		Setting allowInvalidArgs.yes will also cause onInvalidArgs to not be fired. Resulting in invalid data in a command.
-	*/
-	final bool processArgs(string[] arguments, IgnoreFirstArg ignoreFirstArg = IgnoreFirstArg.no,
-		AllowInvalidArgs allowInvalidArgs = AllowInvalidArgs.no) @trusted
-	{
-		immutable auto processed = process(arguments, ignoreFirstArg, allowInvalidArgs);
-		bool requiredArgsNotProcessed = checkRequiredArgs();
-
-		if(!requiredArgsNotProcessed)
-		{
-			switch(processed.type) with (CommandLineArgTypes)
-			{
-				case VALID_ARGS:
-					onValidArgs();
-					return true;
-
-				case HELP_ARG:
-					onPrintHelp();
-					return true;
-
-				case VERSION_ARG:
-					onPrintVersion();
-					return true;
-
-				case NO_ARGS:
-					onNoArgs();
-					return true;
-
-				default:
-					onInvalidArgs(processed.type, processed.command);
-					return false;
-			}
-		}
-		else
-		{
-			return false;
-		}
-	}
-
-	private auto handlePairArg(const string key, const string commandLineValue)
-	{
-		if(contains(key))
-		{
-			Variant value = getValueFromType(commandLineValue, values_[key].storedType);
-
-			if(values_[key].isFlag)
-			{
-				immutable Variant currentValue = values_[key].value;
-
-				if(commandLineValue.isBoolean(AllowNumericBooleanValues.no))
-				{
-					values_[key].required = false;
-					values_[key].value = value;
-
-					onValidArg(key);
-					return CommandLineArgTypes.PROCESSED_AND_VALID_ARG;
-				}
-				else
-				{
-					return CommandLineArgTypes.INVALID_FLAG_VALUE;
-				}
-			}
-			else
-			{
-				values_[key].value = value;
-				values_[key].required = false;
-
-				onValidArg(key);
-				return CommandLineArgTypes.PROCESSED_AND_VALID_ARG;
-			}
-		}
-		else
-		{
-			return CommandLineArgTypes.INVALID_ARG;
-		}
-	}
-
-	private auto handleFlagArg(const string key)
-	{
-		if(contains(key))
-		{
-			values_[key].value = true;
-			values_[key].required = false;
-
-			onValidArg(key);
-			return CommandLineArgTypes.PROCESSED_AND_VALID_ARG;
-		}
-		else
-		{
-			if(key == "help")
-			{
-				return CommandLineArgTypes.HELP_ARG;
-			}
-
-			if(key == "version")
-			{
-				return CommandLineArgTypes.VERSION_ARG;
-			}
-
-			return CommandLineArgTypes.INVALID_ARG;
-		}
-	}
-
-	/**
 	*	Handles the registration of command line arguments passed to the program. This is the internal command line
 	*	argument processing method. The method processArgs should be used as it simplifies handling of command line
 	*	arguments.
 	*
 	*	Params:
 	*		arguments = The arguments that are sent from main()
-	*		ignoreFirstArg = Ignore the first argument passed and continue processing the remaining arguments
-	*		allowInvalidArgs = Any invalid arguments will be ignored and onInvalidArgs won't be called.
+	*		ignoreNonArgs = Ignore the first argument passed and continue processing the remaining arguments
+	*		allowInvalidArgs = Any invalid arguments will be ignored and won't be called.
 	*	Note:
 	*		Setting allowInvalidArgs.yes will also cause onInvalidArgs to not be fired. Resulting in invalid data in a command.
 	*/
-	final auto process(string[] arguments, IgnoreFirstArg ignoreFirstArg = IgnoreFirstArg.no,
-		AllowInvalidArgs allowInvalidArgs = AllowInvalidArgs.no) @trusted
+	bool process(string[] arguments, IgnoreNonArgs ignoreNonArgs = IgnoreNonArgs.no,
+		AllowInvalidArgs allowInvalidArgs = AllowInvalidArgs.no)
 	{
 		auto elements = arguments[1 .. $]; // INFO: Remove program name.
 
@@ -555,58 +436,86 @@ public:
 
 		if(elements.length > 0)
 		{
-			foreach(pos, element; elements)
+			foreach(element; elements)
 			{
-				auto keyValuePair = element.findSplit("=");
-				immutable string key = keyValuePair[0].stripRight.removeLeadingChars('-');
-				immutable string separator = keyValuePair[1];
-				immutable string commandLineValue = keyValuePair[2].stripLeft();
+				auto elementParts = Tuple!(string, "key", string, "separator", string, "commandLineValue")(element.findSplit("="));
 
-				if(element.indexOf("-") == -1)
+				elementParts.key.removeLeadingCharsInPlace('-');
+
+				if(element.indexOf("-") == -1) // Argument has no leading '-' character. Should handle ignoreNonArgs here.
 				{
 					continue;
 				}
 				else
 				{
-					if(separator.length && commandLineValue.length)
+					if(elementParts.separator.length && elementParts.commandLineValue.length) // key=value argument
 					{
-						const auto commandLineArgType = handlePairArg(key, commandLineValue);
+						if(contains(elementParts.key))
+						{
+							Variant value = getValueFromType(elementParts.commandLineValue, values_[elementParts.key].storedType);
 
-						if(allowInvalidArgs == false && commandLineArgType != CommandLineArgTypes.PROCESSED_AND_VALID_ARG)
-						{
-							return ProcessReturnCodes(commandLineArgType, element);
-						}
-					}
-					else
-					{
-						if(separator.length) // Broken argument in form of -key=
-						{
-							mixin(breakOnInvalidArg("INVALID_ARG_PAIR"));
+							values_[elementParts.key].value = value;
+							values_[elementParts.key].required = false;
+
+							onValidArg(elementParts.key);
 						}
 						else
 						{
-							const auto commandLineArgType = handleFlagArg(key);
-
-							if(allowInvalidArgs == false && commandLineArgType == CommandLineArgTypes.INVALID_ARG)
+								mixin(breakOnInvalidArg("INVALID_ARG"));
+						}
+					}
+					else // flag argument -key or -key=
+					{
+						if(elementParts.separator.length) // Broken argument -key=
+						{
+							mixin(breakOnInvalidArg("INVALID_ARG_PAIR"));
+						}
+						else //Valid -key flag argument
+						{
+							if(contains(elementParts.key))
 							{
-								return ProcessReturnCodes(commandLineArgType, element);
+								values_[elementParts.key].value = true;
+								values_[elementParts.key].required = false;
+
+								onValidArg(elementParts.key);
 							}
-
-							if(commandLineArgType == CommandLineArgTypes.HELP_ARG || CommandLineArgTypes.VERSION_ARG)
+							else
 							{
-								return ProcessReturnCodes(commandLineArgType, element);
+								if(elementParts.key == "help")
+								{
+									onPrintHelp();
+									return true;
+								}
+
+								if(elementParts.key == "version")
+								{
+									onPrintVersion();
+									return true;
+								}
+
+								mixin(breakOnInvalidArg("INVALID_ARG"));
 							}
 						}
 					}
 				}
 			}
 
-			return ProcessReturnCodes(CommandLineArgTypes.VALID_ARGS, "");
+			onValidArgs();
 		}
 		else
 		{
-			return ProcessReturnCodes(CommandLineArgTypes.NO_ARGS, "");
+			// No arguments passed
+			onNoArgs();
 		}
+
+		immutable bool requiredArgsNotProcessed = checkRequiredArgs();
+
+		if(requiredArgsNotProcessed)
+		{
+			return false;
+		}
+
+		return true;
 	}
 
 	/**
@@ -687,7 +596,7 @@ unittest
 	args.addCommand!float("aFloat", 3.14, "A float value");
 	args.addCommand!int("integer", 100, "Sets value");
 	args.addCommand!string("value", "hello world", "Just a silly value.");
-	args.processArgs(arguments);
+	args.process(arguments);
 
 	assert(args.getBool("flag") == true);
 	assert(args["flag"] == true);
