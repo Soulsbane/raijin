@@ -52,7 +52,8 @@ private string argTypesToString(const string type)
 	[
 		"INVALID_ARG":"Invalid argument was passed",
 		"INVALID_ARG_PAIR":"Argument requires a value",
-		"INVALID_FLAG_VALUE":"Argument must not contain a value"
+		"INVALID_FLAG_VALUE":"Argument must not contain a value",
+		"NON_ARG":"Non argument passed"
 	];
 
 	return typeTable[type];
@@ -442,9 +443,9 @@ public:
 
 				elementParts.key.removeLeadingCharsInPlace('-');
 
-				if(element.indexOf("-") == -1) // Argument has no leading '-' character. Should handle ignoreNonArgs here.
+				if(element.indexOf("-") == -1 && ignoreNonArgs == false) // Argument has no leading '-' character. Should handle ignoreNonArgs here.
 				{
-					continue;
+					mixin(breakOnInvalidArg("NON_ARG"));
 				}
 				else
 				{
