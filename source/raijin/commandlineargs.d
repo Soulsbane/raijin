@@ -223,7 +223,6 @@ public:
 	*
 	*	Params:
 	*		key = Name of the command line argument to register.
-	*		defaultValue = The default value to use if no value is supplied.
 	*		description = The description of what the command line argument does.
 	*		required = Whether the argument is required.
 	*/
@@ -524,6 +523,7 @@ public:
 	*
 	*	Params:
 	*		key = Name of the key to retrieve.
+	*		defaultValue = Default value if key isn't found.
 	*
 	*	Returns:
 	*		T = The converted value.
