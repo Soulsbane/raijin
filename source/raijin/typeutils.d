@@ -8,8 +8,173 @@ module raijin.typeutils;
 
 import std.typecons;
 import std.traits;
+import std.conv;
 
 alias AllowNumericBooleanValues = Flag!"allowNumericBooleanValues";
+
+**
+*   A simple type that can store strings, integers, booleans and decimals only.
+*/
+struct DynamicType
+{
+	enum Type { integer, string, decimal, boolean }
+	private Type type;
+
+	private union
+	{
+		long integer;
+		string str;
+		double decimal;
+		bool boolean;
+	}
+
+	this(T)(T t)
+	{
+		this = t;
+	}
+
+	DynamicType opAssign(long value)
+	{
+		type = Type.integer;
+		integer = value;
+
+		return this;
+	}
+
+	DynamicType opAssign(double value)
+	{
+		type = Type.decimal;
+		decimal = value;
+
+		return this;
+	}
+
+	DynamicType opAssign(string value)
+	{
+		type = Type.string;
+		str = value;
+
+		return this;
+	}
+
+	DynamicType opAssign(bool value)
+	{
+		type = Type.boolean;
+		boolean = value;
+
+		return this;
+	}
+
+	bool opEquals(long value) const
+	{
+		return(value == integer);
+	}
+
+	bool opEquals(string value) const
+	{
+		return(value == str);
+	}
+
+	bool opEquals(bool value) const
+	{
+		return(value == boolean);
+	}
+
+	bool opEquals(double value) const
+	{
+		import std.math;
+		return approxEqual(value, decimal);
+	}
+
+	long asInteger()
+	{
+		final switch(type)
+		{
+			case Type.integer:
+				return integer;
+			case Type.string:
+				return to!long(str);
+			case Type.decimal:
+				return to!long(decimal);
+			case Type.boolean:
+				return to!long(boolean);
+		}
+	}
+
+	string asString()
+	{
+		final switch(type)
+		{
+			case Type.string:
+				return str;
+			case Type.integer:
+				return to!string(integer);
+			case Type.decimal:
+				return to!string(decimal);
+			case Type.boolean:
+				return to!string(boolean);
+		}
+	}
+
+	bool asBool()
+	{
+		final switch(type)
+		{
+			case Type.string:
+				return to!bool(str);
+			case Type.integer:
+				return to!bool(integer);
+			case Type.decimal:
+				// This is about the dumbest thing to do but we'll support it.
+				// Will be removed once I work out a better solution.
+				immutable int decToInt = to!int(decimal);
+
+				if(decToInt < 1)
+					return false;
+				else
+					return true;
+			case Type.boolean:
+				return boolean;
+		}
+	}
+
+	double asDecimal()
+	{
+		final switch(type)
+		{
+			case Type.integer:
+				return to!double(integer);
+			case Type.string:
+				return to!double(str);
+			case Type.decimal:
+				return decimal;
+			case Type.boolean:
+				return to!double(boolean);
+		}
+	}
+
+	string toString()
+	{
+		return asString();
+	}
+}
+
+///
+unittest
+{
+	DynamicType compareInt = 666;
+	assert(compareInt == 666);
+
+	DynamicType compareDec = 36.786;
+	assert(compareDec == 36.786);
+
+	DynamicType compareBool = false;
+	assert(compareBool == false);
+
+	DynamicType compareBool2 = true;
+	assert(compareBool2 == true);
+}
+
 /**
 *   Determines if value is a true value
 *
