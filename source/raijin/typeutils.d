@@ -18,7 +18,7 @@ alias AllowNumericBooleanValues = Flag!"allowNumericBooleanValues";
 struct DynamicType
 {
 	enum Type { integer, string, decimal, boolean }
-	private Type type;
+	private Type type_;
 
 	private union
 	{
@@ -35,7 +35,7 @@ struct DynamicType
 
 	DynamicType opAssign(long value)
 	{
-		type = Type.integer;
+		type_ = Type.integer;
 		integer = value;
 
 		return this;
@@ -43,7 +43,7 @@ struct DynamicType
 
 	DynamicType opAssign(double value)
 	{
-		type = Type.decimal;
+		type_ = Type.decimal;
 		decimal = value;
 
 		return this;
@@ -51,7 +51,7 @@ struct DynamicType
 
 	DynamicType opAssign(string value)
 	{
-		type = Type.string;
+		type_ = Type.string;
 		str = value;
 
 		return this;
@@ -59,7 +59,7 @@ struct DynamicType
 
 	DynamicType opAssign(bool value)
 	{
-		type = Type.boolean;
+		type_ = Type.boolean;
 		boolean = value;
 
 		return this;
@@ -88,7 +88,7 @@ struct DynamicType
 
 	long asInteger()
 	{
-		final switch(type)
+		final switch(type_)
 		{
 			case Type.integer:
 				return integer;
@@ -103,7 +103,7 @@ struct DynamicType
 
 	string asString()
 	{
-		final switch(type)
+		final switch(type_)
 		{
 			case Type.string:
 				return str;
@@ -118,7 +118,7 @@ struct DynamicType
 
 	bool asBool()
 	{
-		final switch(type)
+		final switch(type_)
 		{
 			case Type.string:
 				return to!bool(str);
@@ -140,7 +140,7 @@ struct DynamicType
 
 	double asDecimal()
 	{
-		final switch(type)
+		final switch(type_)
 		{
 			case Type.integer:
 				return to!double(integer);
@@ -156,6 +156,11 @@ struct DynamicType
 	string toString()
 	{
 		return asString();
+	}
+
+	Type type() @property
+	{
+		return type_;
 	}
 }
 
