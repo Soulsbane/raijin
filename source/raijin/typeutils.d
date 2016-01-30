@@ -123,16 +123,9 @@ struct DynamicType
 			case Type.string:
 				return to!bool(str);
 			case Type.integer:
-				return to!bool(integer);
+				return (integer < 1) ? false : true;
 			case Type.decimal:
-				// This is about the dumbest thing to do but we'll support it.
-				// Will be removed once I work out a better solution.
-				immutable int decToInt = to!int(decimal);
-
-				if(decToInt < 1)
-					return false;
-				else
-					return true;
+				return false; // Why would you convert a decimal?
 			case Type.boolean:
 				return boolean;
 		}
@@ -149,7 +142,7 @@ struct DynamicType
 			case Type.decimal:
 				return decimal;
 			case Type.boolean:
-				return to!double(boolean);
+				return to!double(boolean); // FIXME
 		}
 	}
 
@@ -168,16 +161,28 @@ struct DynamicType
 unittest
 {
 	DynamicType compareInt = 666;
+
 	assert(compareInt == 666);
+	assert(compareInt.asString == "666");
+	assert(compareInt.asBool == true);
+	assert(compareInt.asDecimal == 666);
 
 	DynamicType compareDec = 36.786;
 	assert(compareDec == 36.786);
+	assert(compareDec.asString == "36.786");
+	assert(compareDec.asInteger == 36);
+	assert(compareDec.asBool == false);
 
 	DynamicType compareBool = false;
 	assert(compareBool == false);
+	import std.stdio;
+	//writeln("compareBool asDecimal: ", compareBool.asDecimal);
+	//writeln("compareBool asInteger: ", compareBool.asInteger);
 
 	DynamicType compareBool2 = true;
 	assert(compareBool2 == true);
+	//writeln("compareBool2: ", compareBool.asDecimal);
+	//writeln("compareBool2 asInteger: ", compareBool.asInteger);
 }
 
 /**
