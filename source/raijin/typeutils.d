@@ -12,7 +12,7 @@ import std.conv;
 
 alias AllowNumericBooleanValues = Flag!"allowNumericBooleanValues";
 
-**
+/**
 *   A simple type that can store strings, integers, booleans and decimals only.
 */
 struct DynamicType
