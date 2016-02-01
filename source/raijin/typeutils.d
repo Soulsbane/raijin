@@ -116,7 +116,7 @@ struct DynamicType
 		}
 	}
 
-	bool asBool()
+	bool asBoolean()
 	{
 		final switch(type_)
 		{
@@ -164,14 +164,14 @@ unittest
 
 	assert(compareInt == 666);
 	assert(compareInt.asString == "666");
-	assert(compareInt.asBool == true);
+	assert(compareInt.asBoolean == true);
 	assert(compareInt.asDecimal == 666);
 
 	DynamicType compareDec = 36.786;
 	assert(compareDec == 36.786);
 	assert(compareDec.asString == "36.786");
 	assert(compareDec.asInteger == 36);
-	assert(compareDec.asBool == false);
+	assert(compareDec.asBoolean == false);
 
 	DynamicType compareBool = false;
 	assert(compareBool == false);
