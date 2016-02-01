@@ -86,6 +86,26 @@ struct DynamicType
 		return approxEqual(value, decimal);
 	}
 
+	bool opEquals(DynamicType value) const
+	{
+		if(type_ == value.type)
+		{
+			final switch(value.type)
+			{
+				case Type.integer:
+					return (integer == value.integer);
+				case Type.string:
+					return (str == value.str);
+				case Type.decimal:
+					return (decimal == value.decimal);
+				case Type.boolean:
+					return (boolean == value.boolean);
+			}
+		}
+
+		return false;
+	}
+
 	long asInteger()
 	{
 		final switch(type_)
@@ -181,6 +201,23 @@ unittest
 
 	DynamicType compareBool2 = true;
 	assert(compareBool2 == true);
+
+	DynamicType compareDynString1 = "Hello World";
+	DynamicType compareDynString2 = "Hello World";
+	assert(compareDynString1 == compareDynString2);
+
+	DynamicType compareDynBoolean1 = false;
+	DynamicType compareDynBoolean2 = false;
+	assert(compareDynBoolean1 == compareDynBoolean2);
+
+	DynamicType compareDynInteger1 = 333;
+	DynamicType compareDynInteger2 = 333;
+	assert(compareDynInteger1 == compareDynInteger2);
+
+	DynamicType compareDynDecimal1 = 45.89;
+	DynamicType compareDynDecimal2 = 45.89;
+	assert(compareDynDecimal1 == compareDynDecimal2);
+
 	//writeln("compareBool2: ", compareBool.asDecimal);
 	//writeln("compareBool2 asInteger: ", compareBool.asInteger);
 }
