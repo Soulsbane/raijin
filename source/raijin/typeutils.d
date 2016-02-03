@@ -213,7 +213,9 @@ unittest
 
 	DynamicType compareDynDecimal1 = 45.89;
 	DynamicType compareDynDecimal2 = 45.89;
+	DynamicType compareDynDecimalString3 = "45.89";
 	assert(compareDynDecimal1 == compareDynDecimal2);
+	assert(!(compareDynDecimal2 == compareDynDecimalString3));
 }
 
 /**
