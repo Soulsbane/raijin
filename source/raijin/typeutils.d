@@ -181,7 +181,6 @@ struct DynamicType
 unittest
 {
 	DynamicType compareInt = 666;
-
 	assert(compareInt == 666);
 	assert(compareInt.asString == "666");
 	assert(compareInt.asBoolean == true);
@@ -196,8 +195,6 @@ unittest
 	DynamicType compareBool = false;
 	assert(compareBool == false);
 	import std.stdio;
-	//writeln("compareBool asDecimal: ", compareBool.asDecimal);
-	//writeln("compareBool asInteger: ", compareBool.asInteger);
 
 	DynamicType compareBool2 = true;
 	assert(compareBool2 == true);
@@ -217,9 +214,6 @@ unittest
 	DynamicType compareDynDecimal1 = 45.89;
 	DynamicType compareDynDecimal2 = 45.89;
 	assert(compareDynDecimal1 == compareDynDecimal2);
-
-	//writeln("compareBool2: ", compareBool.asDecimal);
-	//writeln("compareBool2 asInteger: ", compareBool.asInteger);
 }
 
 /**
