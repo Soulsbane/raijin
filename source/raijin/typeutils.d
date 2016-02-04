@@ -33,6 +33,7 @@ struct DynamicType
 		this = t;
 	}
 
+	/// Assign a DynamicType to a long value.
 	DynamicType opAssign(long value)
 	{
 		type_ = Type.integer;
@@ -41,6 +42,7 @@ struct DynamicType
 		return this;
 	}
 
+	/// Assign a DynamicType to a double value.
 	DynamicType opAssign(double value)
 	{
 		type_ = Type.decimal;
@@ -49,6 +51,7 @@ struct DynamicType
 		return this;
 	}
 
+	/// Assign a DynamicType to a string value.
 	DynamicType opAssign(string value)
 	{
 		type_ = Type.string;
@@ -57,6 +60,7 @@ struct DynamicType
 		return this;
 	}
 
+	/// Assign a DynamicType to a boolean value.
 	DynamicType opAssign(bool value)
 	{
 		type_ = Type.boolean;
@@ -65,27 +69,32 @@ struct DynamicType
 		return this;
 	}
 
+	/// Compare a DynamicType to a long value.
 	bool opEquals(long value) const
 	{
 		return(value == integer);
 	}
 
+	/// Compare a DynamicType to a string value.
 	bool opEquals(string value) const
 	{
 		return(value == str);
 	}
 
+	/// Compare a DynamicType to a boolean value.
 	bool opEquals(bool value) const
 	{
 		return(value == boolean);
 	}
 
+	/// Compare a DynamicType to a double value.
 	bool opEquals(double value) const
 	{
 		import std.math;
 		return approxEqual(value, decimal);
 	}
 
+	/// Compare a DynamicType to a DynamicType.
 	bool opEquals(DynamicType value) const
 	{
 		if(type_ == value.type)
