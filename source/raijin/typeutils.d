@@ -69,6 +69,30 @@ struct DynamicType
 		return this;
 	}
 
+	DynamicType opAssign(DynamicType value)
+	{
+		import std.stdio;
+		type_ = value.type;
+
+		final switch(type_)
+		{
+			case Type.integer:
+				integer = value.integer;
+				break;
+			case Type.string:
+				str = value.str;
+				break;
+			case Type.decimal:
+				decimal = value.decimal;
+				break;
+			case Type.boolean:
+				boolean = value.boolean;
+				break;
+		}
+
+		return this;
+	}
+
 	/// Compare a DynamicType to a long value.
 	bool opEquals(long value) const
 	{
@@ -225,6 +249,10 @@ unittest
 	DynamicType compareDynDecimalString3 = "45.89";
 	assert(compareDynDecimal1 == compareDynDecimal2);
 	assert(!(compareDynDecimal2 == compareDynDecimalString3));
+
+	DynamicType assignToDynamicType1 = 15;
+	DynamicType assignToDynamicType2 = assignToDynamicType1;
+	assert(assignToDynamicType2 == 15);
 }
 
 /**
