@@ -256,6 +256,59 @@ unittest
 }
 
 /**
+	Converts a string to its appropriate type to be stored in a DynamicType.
+
+	Params:
+		value = The string to convert.
+
+	Returns:
+		The converted string as a DynamicType.
+*/
+DynamicType getDynamicTypeFromString(const string value)
+{
+	DynamicType dynValue;
+
+	if(value.isInteger)
+	{
+		dynValue = to!long(value);
+	}
+	else if(value.isDecimal)
+	{
+		dynValue = to!double(value);
+	}
+	else if(isBoolean(value, AllowNumericBooleanValues.no))
+	{
+		dynValue = to!bool(value);
+	}
+	else
+	{
+		dynValue = to!string(value);
+	}
+
+	return dynValue;
+}
+
+///
+unittest
+{
+	const string strInt = "90210";
+	DynamicType dynInt = getDynamicTypeFromString(strInt);
+	assert(dynInt == 90210);
+
+	const string strDec = "90.210";
+	DynamicType dynDec = getDynamicTypeFromString(strDec);
+	assert(dynDec == 90.210);
+
+	const string strBool = "true";
+	DynamicType dynBool = getDynamicTypeFromString(strBool);
+	assert(dynBool == true);
+
+	const string str = "My zip code is 90210";
+	DynamicType dynStr = getDynamicTypeFromString(str);
+	assert(dynStr == str);
+}
+
+/**
 *   Determines if value is a true value
 *
 *   Params:
