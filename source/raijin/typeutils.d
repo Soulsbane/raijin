@@ -479,12 +479,12 @@ unittest
 */
 
 // NOTE: The following functions can be found in CyberShadows ae lib https://github.com/CyberShadow/ae/
-template ValueTuple(T...)
+private template ValueTuple(T...)
 {
 	alias ValueTuple = T;
 }
 
-template RangeTupleImpl(size_t N, R...)
+private template RangeTupleImpl(size_t N, R...)
 {
 	static if (N==R.length)
 		alias RangeTupleImpl = R;
@@ -494,7 +494,7 @@ template RangeTupleImpl(size_t N, R...)
 
 /// Generate a tuple containing integers from 0 to N-1.
 /// Useful for static loop unrolling. (staticIota)
-template RangeTuple(size_t N)
+private template RangeTuple(size_t N)
 {
 	alias RangeTuple = RangeTupleImpl!(N, ValueTuple!());
 }
