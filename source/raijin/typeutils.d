@@ -514,13 +514,15 @@ auto list(Args...)(auto ref Args args)
 
 		void opAssign(T)(auto ref T t)
 		{
-			assert(t.length == args.length,
-				"Assigning %d elements to list with %d elements"
-				.format(t.length, args.length));
+			assert(t.length == args.length, "Assigning %d elements to list with %d elements".format(t.length, args.length));
 
 				foreach (i; RangeTuple!(Args.length))
-					static if (!is(Args[i] == typeof(null)))
+				{
+					static if(!is(Args[i] == typeof(null)))
+					{
 						args[i] = t[i];
+					}
+				}
 		}
 	}
 
