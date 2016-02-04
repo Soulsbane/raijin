@@ -486,10 +486,14 @@ private template ValueTuple(T...)
 
 private template RangeTupleImpl(size_t N, R...)
 {
-	static if (N==R.length)
+	static if(N == R.length)
+	{
 		alias RangeTupleImpl = R;
+	}
 	else
+	{
 		alias RangeTupleImpl = RangeTupleImpl!(N, ValueTuple!(R, R.length));
+	}
 }
 
 /// Generate a tuple containing integers from 0 to N-1.
