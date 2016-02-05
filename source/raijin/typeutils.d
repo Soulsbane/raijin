@@ -22,10 +22,10 @@ struct DynamicType
 
 	private union
 	{
-		long integer;
-		string str;
-		double decimal;
-		bool boolean;
+		long integer_;
+		string str_;
+		double decimal_;
+		bool boolean_;
 	}
 
 	this(T)(T t)
@@ -37,7 +37,7 @@ struct DynamicType
 	DynamicType opAssign(long value)
 	{
 		type_ = Type.integer;
-		integer = value;
+		integer_ = value;
 
 		return this;
 	}
@@ -46,7 +46,7 @@ struct DynamicType
 	DynamicType opAssign(double value)
 	{
 		type_ = Type.decimal;
-		decimal = value;
+		decimal_ = value;
 
 		return this;
 	}
@@ -55,7 +55,7 @@ struct DynamicType
 	DynamicType opAssign(string value)
 	{
 		type_ = Type.string;
-		str = value;
+		str_ = value;
 
 		return this;
 	}
@@ -64,7 +64,7 @@ struct DynamicType
 	DynamicType opAssign(bool value)
 	{
 		type_ = Type.boolean;
-		boolean = value;
+		boolean_ = value;
 
 		return this;
 	}
@@ -77,16 +77,16 @@ struct DynamicType
 		final switch(type_)
 		{
 			case Type.integer:
-				integer = value.integer;
+				integer_ = value.integer;
 				break;
 			case Type.string:
-				str = value.str;
+				str_ = value.str;
 				break;
 			case Type.decimal:
-				decimal = value.decimal;
+				decimal_ = value.decimal;
 				break;
 			case Type.boolean:
-				boolean = value.boolean;
+				boolean_ = value.boolean;
 				break;
 		}
 
@@ -96,26 +96,26 @@ struct DynamicType
 	/// Compare a DynamicType to a long value.
 	bool opEquals(long value) const
 	{
-		return(value == integer);
+		return(value == integer_);
 	}
 
 	/// Compare a DynamicType to a string value.
 	bool opEquals(string value) const
 	{
-		return(value == str);
+		return(value == str_);
 	}
 
 	/// Compare a DynamicType to a boolean value.
 	bool opEquals(bool value) const
 	{
-		return(value == boolean);
+		return(value == boolean_);
 	}
 
 	/// Compare a DynamicType to a double value.
 	bool opEquals(double value) const
 	{
 		import std.math;
-		return approxEqual(value, decimal);
+		return approxEqual(value, decimal_);
 	}
 
 	/// Compare a DynamicType to a DynamicType.
@@ -126,13 +126,13 @@ struct DynamicType
 			final switch(value.type)
 			{
 				case Type.integer:
-					return (integer == value.integer);
+					return (integer_ == value.integer);
 				case Type.string:
-					return (str == value.str);
+					return (str_ == value.str);
 				case Type.decimal:
-					return (decimal == value.decimal);
+					return (decimal_ == value.decimal);
 				case Type.boolean:
-					return (boolean == value.boolean);
+					return (boolean_ == value.boolean);
 			}
 		}
 
@@ -144,13 +144,13 @@ struct DynamicType
 		final switch(type_)
 		{
 			case Type.integer:
-				return integer;
+				return integer_;
 			case Type.string:
-				return to!long(str);
+				return to!long(str_);
 			case Type.decimal:
-				return to!long(decimal);
+				return to!long(decimal_);
 			case Type.boolean:
-				return to!long(boolean);
+				return to!long(boolean_);
 		}
 	}
 
@@ -159,13 +159,13 @@ struct DynamicType
 		final switch(type_)
 		{
 			case Type.string:
-				return str;
+				return str_;
 			case Type.integer:
-				return to!string(integer);
+				return to!string(integer_);
 			case Type.decimal:
-				return to!string(decimal);
+				return to!string(decimal_);
 			case Type.boolean:
-				return to!string(boolean);
+				return to!string(boolean_);
 		}
 	}
 
@@ -174,13 +174,13 @@ struct DynamicType
 		final switch(type_)
 		{
 			case Type.string:
-				return to!bool(str);
+				return to!bool(str_);
 			case Type.integer:
-				return (integer < 1) ? false : true;
+				return (integer_ < 1) ? false : true;
 			case Type.decimal:
 				return false; // Why would you convert a decimal?
 			case Type.boolean:
-				return boolean;
+				return boolean_;
 		}
 	}
 
@@ -189,13 +189,13 @@ struct DynamicType
 		final switch(type_)
 		{
 			case Type.integer:
-				return to!double(integer);
+				return to!double(integer_);
 			case Type.string:
-				return to!double(str);
+				return to!double(str_);
 			case Type.decimal:
-				return decimal;
+				return decimal_;
 			case Type.boolean:
-				return to!double(boolean); // FIXME
+				return to!double(boolean_); // FIXME
 		}
 	}
 
@@ -204,7 +204,28 @@ struct DynamicType
 		return asString();
 	}
 
-	Type type() @property
+	// Properties to access union values and type.
+	long integer() const @property
+	{
+		return integer_;
+	}
+
+	double decimal() const @property
+	{
+		return decimal_;
+	}
+
+	bool boolean() const @property
+	{
+		return boolean_;
+	}
+
+	string str() const @property
+	{
+		return str_;
+	}
+
+	Type type() const @property
 	{
 		return type_;
 	}
@@ -235,19 +256,23 @@ unittest
 	DynamicType compareDynString1 = "Hello World";
 	DynamicType compareDynString2 = "Hello World";
 	assert(compareDynString1 == compareDynString2);
+	assert(compareDynString1.str == compareDynString2.str);
 
 	DynamicType compareDynBoolean1 = false;
 	DynamicType compareDynBoolean2 = false;
 	assert(compareDynBoolean1 == compareDynBoolean2);
+	assert(compareDynBoolean1.boolean == compareDynBoolean2.boolean);
 
 	DynamicType compareDynInteger1 = 333;
 	DynamicType compareDynInteger2 = 333;
 	assert(compareDynInteger1 == compareDynInteger2);
+	assert(compareDynInteger1.integer == compareDynInteger2.integer);
 
 	DynamicType compareDynDecimal1 = 45.89;
 	DynamicType compareDynDecimal2 = 45.89;
 	DynamicType compareDynDecimalString3 = "45.89";
 	assert(compareDynDecimal1 == compareDynDecimal2);
+	assert(compareDynDecimal1.decimal == compareDynDecimal2.decimal);
 	assert(!(compareDynDecimal2 == compareDynDecimalString3));
 
 	DynamicType assignToDynamicType1 = 15;
