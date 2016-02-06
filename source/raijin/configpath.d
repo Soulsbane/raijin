@@ -1,7 +1,7 @@
 /**
-*	Provides an easy way to work the users configuration directory.
-*
-*	Author: Paul Crane
+	Provides an easy way to work the users configuration directory.
+
+	Author: Paul Crane
 */
 module raijin.configpath;
 
@@ -11,12 +11,12 @@ import std.file : exists, mkdirRecurse, rmdirRecurse, thisExePath;
 import standardpaths : writablePath, StandardPath;
 
 /**
-*	Allows for the creation and deletion of directories in the users configuration directory.
+	Allows for the creation and deletion of directories in the users configuration directory.
 */
 class ConfigPath
 {
 	/**
-	*	Intializes the application name to executables name and setups up config directory.
+		Intializes the application name to executables name and setups up config directory.
 	*/
 	this() @safe
 	{
@@ -25,11 +25,11 @@ class ConfigPath
 	}
 
 	/**
-	*	Intializes the application name to executables name and setups up config directory using supplied arguments.
-	*
-	*	Params:
-	*		organizationName = Name of your organization.
-	*		applicationName = Name of your application.
+		Intializes the application name to executables name and setups up config directory using supplied arguments.
+
+		Params:
+			organizationName = Name of your organization.
+			applicationName = Name of your application.
 	*/
 	this(const string organizationName, const string applicationName) @safe
 	{
@@ -39,10 +39,10 @@ class ConfigPath
 	}
 
 	/**
-	*	Retries the path to the users config directory with an optional path appended to the end.
-	*
-	*	Params:
-	*		name = Name of the directory to retrieve.
+		Retries the path to the users config directory with an optional path appended to the end.
+
+		Params:
+			name = Name of the directory to retrieve.
 	*/
 	string getConfigDir(const string name = string.init) pure nothrow @safe const
 	{
@@ -55,10 +55,10 @@ class ConfigPath
 	}
 
 	/**
-	*	Creates a directory in the users config directory.
-	*
-	*	Params:
-	*		name = Name of the directory to create.
+		Creates a directory in the users config directory.
+
+		Params:
+			name = Name of the directory to create.
 	*/
 	void createConfigDir(const string name = string.init) @trusted
 	{
@@ -71,10 +71,10 @@ class ConfigPath
 	}
 
 	/**
-	*	Removes a directory from the users config directory.
-	*
-	*	Params:
-	*		name = Name of the directory to remove.
+		Removes a directory from the users config directory.
+
+		Params:
+			name = Name of the directory to remove.
 	*/
 	void removeConfigDir(const string name) @trusted
 	{
