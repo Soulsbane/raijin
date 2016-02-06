@@ -9,7 +9,7 @@ module raijin.stringutils;
 import std.string : indexOf, CaseSensitive;
 import std.conv : to;
 import std.range.primitives : empty, popFront, front;
-import std.algorithm : canFind;
+import std.algorithm : canFind, equal, map;
 
 /**
 	Determines if a string has the value specified
@@ -205,4 +205,12 @@ unittest
 
 	assert(value == "help");
 	assert(anotherValue == "help-me");
+}
+
+alias toStringAll = map!(to!string);
+
+unittest
+{
+	int[] stringMe = [10];
+	assert(equal(toStringAll(stringMe), ["10"]));
 }
