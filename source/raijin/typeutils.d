@@ -541,11 +541,13 @@ private template RangeTuple(size_t N)
 	alias RangeTuple = RangeTupleImpl!(N, ValueTuple!());
 }
 
-/// Equivalent of PHP's `list` language construct:
-/// http://php.net/manual/en/function.list.php
-/// Works with arrays and tuples.
-/// Specify `null` as an argument to ignore that index
-/// (equivalent of `list(x, , y)` in PHP).
+/** Equivalent of PHP's `list` language construct:
+	Works with arrays and tuples. Specify `null` as an argument to ignore that index
+	(equivalent of `list(x, , y)` in PHP).
+
+	See_Also:
+		This function was taken from CyberShadows ae lib https://github.com/CyberShadow/ae/
+*/
 auto list(Args...)(auto ref Args args)
 {
 	import std.format : format;
