@@ -1,7 +1,7 @@
 /**
-*	Various functions for dealing with files.
-*
-*	Author: Paul Crane
+	Various functions for dealing with files.
+
+	Author: Paul Crane
 */
 
 module raijin.fileutils;
@@ -16,14 +16,14 @@ alias AppendMode = Flag!"appendMode";
 
 //@trusted:
 /**
-*	Creates fileName if it dosn't exist or opens if it does exist.
-*
-*	Params:
-*		fileName = Name of the file to create or open.
-*		mode = Set to AppendMode.yes if the file should be opened in append mode.
-*
-*	Returns:
-*		The File handle to the open file.
+	Creates fileName if it dosn't exist or opens if it does exist.
+
+	Params:
+		fileName = Name of the file to create or open.
+		mode = Set to AppendMode.yes if the file should be opened in append mode.
+
+	Returns:
+		The File handle to the open file.
 */
 File ensureFileExists(const string fileName, AppendMode mode = AppendMode.no)
 {
@@ -48,13 +48,13 @@ File ensureFileExists(const string fileName, AppendMode mode = AppendMode.no)
 }
 
 /**
-*	Removes fileName if it exists.
-*
-* 	Params:
-* 		fileName = Name of the file to remove.
-*
-*	Returns:
-*		true if the fileName was removed false otherwise.
+	Removes fileName if it exists.
+
+ 	Params:
+ 		fileName = Name of the file to remove.
+
+	Returns:
+		true if the fileName was removed false otherwise.
 */
 bool removeFileIfExists(const string fileName)
 {
@@ -67,13 +67,13 @@ bool removeFileIfExists(const string fileName)
 }
 
 /**
-* 	Determines if fileName is hidden.
-*
-* 	Params:
-*		fileName = Name of the file to check for hidden status.
-*
-*	Returns:
-*		true if the fileName is hidden false otherwise.
+ 	Determines if fileName is hidden.
+
+ 	Params:
+		fileName = Name of the file to check for hidden status.
+
+	Returns:
+		true if the fileName is hidden false otherwise.
 */
 bool isFileHidden(const string fileName)
 {
