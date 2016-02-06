@@ -1,7 +1,7 @@
 /**
-*	This module contains a few additons to handling strings.
-*
-*	Author: Paul Crane
+	This module contains a few additons to handling strings.
+
+	Author: Paul Crane
 */
 
 module raijin.stringutils;
@@ -12,15 +12,15 @@ import std.range.primitives : empty, popFront, front;
 import std.algorithm : canFind;
 
 /**
-*	Determines if a string has the value specified
-*
-*	Params:
-*		value = The string to search.
-*		toFindValue = The value to find.
-*		cs = Set whether the search term is case sensitive. CaseSensitive.yes or CaseSensitive.no
-*
-*	Returns:
-*		True if the toFindValue is found false otherwise.
+	Determines if a string has the value specified
+
+	Params:
+		value = The string to search.
+		toFindValue = The value to find.
+		cs = Set whether the search term is case sensitive. CaseSensitive.yes or CaseSensitive.no
+
+	Returns:
+		True if the toFindValue is found false otherwise.
 */
 bool find(const string value, const string toFindValue, CaseSensitive cs = CaseSensitive.no) pure @safe
 {
@@ -40,12 +40,12 @@ unittest
 }
 
 /**
-*	Determines is a character is a vowel
-*
-*	Params:
-*		vowelChar = The character to check.
-*
-*	Returns:
+	Determines is a character is a vowel
+
+	Params:
+		vowelChar = The character to check.
+
+	Returns:
 *		true if the character is a vowel false otherwise.
 */
 bool isVowelChar(char vowelChar) pure @safe
@@ -55,14 +55,14 @@ bool isVowelChar(char vowelChar) pure @safe
 }
 
 /**
-*	Pluralizes a string.
-*
-*	Params:
-*		text = The word to pluralize.
-*		pluralizeToWord = The word to use when a value needs to be pluralized
-*
-*	Returns:
-*		The pluralized string.
+	Pluralizes a string.
+
+	Params:
+		text = The word to pluralize.
+		pluralizeToWord = The word to use when a value needs to be pluralized
+
+	Returns:
+		The pluralized string.
 */
 string pluralize(const string text, const string pluralizeToWord = string.init) pure @safe
 {
@@ -70,15 +70,15 @@ string pluralize(const string text, const string pluralizeToWord = string.init) 
 }
 
 /**
-*	Pluralizes a string if count is greater than one.
-*
-*	Params:
-*		text = The word to pluralize.
-*		count = The number of words.
-*		pluralizeToWord = The word to use when a value needs to be pluralized
-*
-*	Returns:
-*		The pluralized string if more than one of type or singular form otherwise.
+	Pluralizes a string if count is greater than one.
+
+	Params:
+		text = The word to pluralize.
+		count = The number of words.
+		pluralizeToWord = The word to use when a value needs to be pluralized
+
+	Returns:
+		The pluralized string if more than one of type or singular form otherwise.
 */
 string pluralize(const string text, const size_t count, const string pluralizeToWord = string.init) pure @safe
 {
@@ -137,14 +137,14 @@ unittest
 }
 
 /**
-*	Removes the charactor from the beginning of a string.
-*
-*	Params:
-*		str = The string to remove characters from.
-*		charToRemove = The character to remove.
+	Removes the charactor from the beginning of a string.
 
-*	Returns:
-*		The modified string with all characters to be removed are removed.
+	Params:
+		str = The string to remove characters from.
+		charToRemove = The character to remove.
+
+	Returns:
+		The modified string with all characters to be removed are removed.
 */
 string removeLeadingChars(string str, const dchar charToRemove) pure @safe
 {
@@ -172,11 +172,11 @@ unittest
 }
 
 /**
-*	Modifies the passed string by removing the character specified.
-*
-*	Params:
-*		str = The string to remove characters from.
-*		charToRemove = The character to remove.
+	Modifies the passed string by removing the character specified.
+
+	Params:
+		str = The string to remove characters from.
+		charToRemove = The character to remove.
 */
 void removeLeadingCharsInPlace(ref string str, const dchar charToRemove) pure @safe
 {
