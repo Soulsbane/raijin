@@ -69,3 +69,23 @@ unittest
 	Log.warn("This is a warn test");
 	Log.error("This is a error test");
 }
+
+/**
+	A debug function for outputing each argument with a space in between. Useful for printing multiple variables.
+
+	Params:
+		args = The arguments(variables) that should be printed.
+*/
+void print(T)(T[] args...)
+{
+	import std.conv;
+
+	args.each!(a => write(to!string(a), " "));
+	writeln;
+}
+
+unittest
+{
+	print("hello", "world");
+	print(1234, 5678, 9);
+}
