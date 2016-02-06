@@ -84,6 +84,7 @@ void print(T)(T[] args...)
 	writeln;
 }
 
+///
 unittest
 {
 	print("hello", "world");
