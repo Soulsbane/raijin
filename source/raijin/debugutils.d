@@ -76,7 +76,7 @@ unittest
 	Params:
 		args = The arguments(variables) that should be printed.
 */
-void print(T)(T[] args...)
+void printArgs(T)(T[] args...)
 {
 	import std.conv;
 
@@ -87,6 +87,6 @@ void print(T)(T[] args...)
 ///
 unittest
 {
-	print("hello", "world");
-	print(1234, 5678, 9);
+	printArgs("hello", "world");
+	printArgs(1234, 5678, 9);
 }
