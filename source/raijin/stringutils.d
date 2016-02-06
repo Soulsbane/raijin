@@ -207,10 +207,33 @@ unittest
 	assert(anotherValue == "help-me");
 }
 
+/// Converts all elements of an array to strings.
 alias toStringAll = map!(to!string);
 
+///
 unittest
 {
-	int[] stringMe = [10];
-	assert(equal(toStringAll(stringMe), ["10"]));
+	assert(equal(toStringAll([ 1, 2, 3, 4 ]), [ "1", "2", "3", "4" ]));
+}
+
+/**
+	Converts each argument to a string.
+
+	Params:
+		args = The variable number of arguments to convert.
+
+	Returns:
+		An array of containing the arguments converted to a string.
+*/
+auto toStringAll(T)(T[] args...)
+{
+	auto strings = args.map!(a => a.to!string);
+	return strings;
+}
+
+///
+unittest
+{
+	auto strings = toStringAll(10, 15);
+	assert(equal(strings, ["10", "15"]));
 }
