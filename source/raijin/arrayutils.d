@@ -1,18 +1,18 @@
 /**
-*	Various functions for working with arrays.
-*
-*	Author: Paul Crane
+	Various functions for working with arrays.
+
+	Author: Paul Crane
 */
 module raijin.arrayutils;
 
 import std.algorithm;
 
 /**
-* Removes the specified element from the array (once).
-*
-*	Params:
-*		array = The array to remove value from.
-*		value = The value to remove.
+	Removes the specified element from the array (once).
+
+	Params:
+		array = The array to remove value from.
+		value = The value to remove.
 */
 void remove(T)(ref T[] array, T value)
 {
