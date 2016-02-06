@@ -1,9 +1,9 @@
 /**
-*	This module contains a simple class that processes command line arguments and stores
-*	them in a hashtable. The hash table is static so this class object can be created multiple
-*	times without having to reinitialize it when the arguments from main.
-*
-*	Author: Paul Crane
+	This module contains a simple class that processes command line arguments and stores
+	them in a hashtable. The hash table is static so this class object can be created multiple
+	times without having to reinitialize it when the arguments from main.
+
+	Author: Paul Crane
 */
 module raijin.commandlineargs;
 
@@ -103,21 +103,21 @@ private Variant getValueFromType(const string commandLineValue, const TypeInfo s
 }
 
 /**
-*	Handles the processing of command line arguments.
+	Handles the processing of command line arguments.
 */
 class CommandLineArgs
 {
 private:
 	/**
-	*	Retrieves the value of key where key is the name of the command line argument and converts it to T.
-	*	T is the the type that returned value should be converted to.
-	*
-	*	Params:
-	*		key = Name of the command line argument to get.
-	*
-	*	Returns:
-	*		The value of value of the command line argument to getcommand line argument to get
-	*
+		Retrieves the value of key where key is the name of the command line argument and converts it to T.
+		T is the the type that returned value should be converted to.
+
+		Params:
+			key = Name of the command line argument to get.
+
+		Returns:
+			The value of value of the command line argument to getcommand line argument to get
+
 	*/
 	final Variant get(T)(const string key) @trusted
 	{
@@ -146,16 +146,16 @@ private:
 	}
 
 	/**
-	*	Retrieves the value of key where key is the name of the command line argument and converts it to T.
-	*	T is the the type that returned value should be converted to.
-	*
-	*	Params:
-	*		key = Name of the command line argument to get.
-	*		defaultValue = Allow the assignment of a default value if key does not exist.
-	*
-	*	Returns:
-	*		The value of value of the command line argument to get
-	*
+		Retrieves the value of key where key is the name of the command line argument and converts it to T.
+		T is the the type that returned value should be converted to.
+
+		Params:
+			key = Name of the command line argument to get.
+			defaultValue = Allow the assignment of a default value if key does not exist.
+
+		Returns:
+			The value of value of the command line argument to get
+
 	*/
 	final Variant get(const string key, Variant defaultValue) @trusted
 	{
@@ -170,16 +170,16 @@ private:
 	}
 
 	/**
-	*	Retrieves the value of key where key is the name of the command line argument and converts it to T.
-	*	T is the the type that returned value should be converted to.
-	*
-	*	Params:
-	*		key = Name of the command line argument to get.
-	*		defaultValue = Allow the assignment of a default value if key does not exist.
-	*
-	*	Returns:
-	*		The value of value of the command line argument to get
-	*
+		Retrieves the value of key where key is the name of the command line argument and converts it to T.
+		T is the the type that returned value should be converted to.
+
+		Params:
+			key = Name of the command line argument to get.
+			defaultValue = Allow the assignment of a default value if key does not exist.
+
+		Returns:
+			The value of value of the command line argument to get
+
 	*/
 	final Variant get(T)(const string key, T defaultValue = T.init) @trusted
 	{
@@ -195,13 +195,13 @@ private:
 
 public:
 	/**
-	*	Registers a command line argument used in year=1942
-	*
-	*	Params:
-	*		key = Name of the command line argument to register.
-	*		defaultValue = The default value to use if no value is supplied.
-	*		description = The description of what the command line argument does.
-	*		required = Whether the argument is required.
+		Registers a command line argument used in year=1942
+
+		Params:
+			key = Name of the command line argument to register.
+			defaultValue = The default value to use if no value is supplied.
+			description = The description of what the command line argument does.
+			required = Whether the argument is required.
 	*/
 	final void addCommand(T)(const string key, T defaultValue, const string description,
 		RequiredArg required = RequiredArg.no) @trusted
@@ -219,12 +219,12 @@ public:
 	}
 
 	/**
-	*	Registers a flag argument eg. --flag
-	*
-	*	Params:
-	*		key = Name of the command line argument to register.
-	*		description = The description of what the command line argument does.
-	*		required = Whether the argument is required.
+		Registers a flag argument eg. --flag
+
+		Params:
+			key = Name of the command line argument to register.
+			description = The description of what the command line argument does.
+			required = Whether the argument is required.
 	*/
 	final void addFlag(const string key, const string description, RequiredArg required = RequiredArg.no) @trusted
 	{
@@ -241,16 +241,16 @@ public:
 	}
 
 	/**
-	*	Retrieves the value of key where key is the name of the command line argument.
-	*	T is the the type that returned value should be converted to.
-	*
-	*	Params:
-	*		key = Name of the command line argument to get.
-	*
-	*	Returns:
-	*		The value of value of the command line argument to get. If the key isn't found it will
-	*		return an unitialized Variant. Method hasValue can be used to test if the returned value is valid.
-	*
+		Retrieves the value of key where key is the name of the command line argument.
+		T is the the type that returned value should be converted to.
+
+		Params:
+			key = Name of the command line argument to get.
+
+		Returns:
+			The value of value of the command line argument to get. If the key isn't found it will
+			return an unitialized Variant. Method hasValue can be used to test if the returned value is valid.
+
 	*/
 	// NOTE: that since we can't know the type before hand this will throw an exception if you are expecting anything but a string. You should use contains first.
 	final Variant opIndex(const string key) @trusted
@@ -267,7 +267,7 @@ public:
 	}
 
 	/**
-	*	Assigns a value to a commandline argument stored internally.
+		Assigns a value to a commandline argument stored internally.
 	*/
 	final void opIndexAssign(T)(T value, const string key) @trusted
 	{
@@ -278,7 +278,7 @@ public:
 	}
 
 	/**
-	*	Assigns a value to a commandline argument stored internally but uses ArgValues as the value.
+		Assigns a value to a commandline argument stored internally but uses ArgValues as the value.
 	*/
 	final void opIndexAssign(ArgValues values, const string key) @trusted
 	{
@@ -286,13 +286,13 @@ public:
 	}
 
 	/**
-	*	Determines if the key(command line argument) exists.
-	*
-	*	Params:
-	*		key = Name of the key to get the value from.
-	*
-	*	Returns:
-	*		true if the command line argument exists, false otherwise.
+		Determines if the key(command line argument) exists.
+
+		Params:
+			key = Name of the key to get the value from.
+
+		Returns:
+			true if the command line argument exists, false otherwise.
 	*/
 	final bool contains(const string key) @safe
 	{
@@ -300,14 +300,14 @@ public:
 	}
 
 	/**
-	*	Retrieves the raw value passed via the command line in a safe way.
-	*
-	*	Params:
-	*		index = The integer value denoting the number of the argument passed.
-	*		defaultValue = Default value to use if the index is out of range.
-	*
-	*	Returns:
-	*		The value of the command line argument at index or defaultValue otherwise.
+		Retrieves the raw value passed via the command line in a safe way.
+
+		Params:
+			index = The integer value denoting the number of the argument passed.
+			defaultValue = Default value to use if the index is out of range.
+
+		Returns:
+			The value of the command line argument at index or defaultValue otherwise.
 	*/
 	final T safeGet(T = string)(const size_t index, string defaultValue = string.init) @safe
 	{
@@ -339,10 +339,10 @@ public:
 	}
 
 	/**
-	*	Returns the name of the program.
-	*
-	*	Returns:
-	*		The name of the program.
+		Returns the name of the program.
+
+		Returns:
+			The name of the program.
 	*/
 	string getProgramName() @safe nothrow
 	{
@@ -350,10 +350,10 @@ public:
 	}
 
 	/**
-	*	Sets the programs version string to be used with -version argument.
-	*
-	*	Params:
-	*		programVersion = Text used when -version argument is called.
+		Sets the programs version string to be used with -version argument.
+
+		Params:
+			programVersion = Text used when -version argument is called.
 	*/
 	void setProgramVersion(const string programVersion) @safe nothrow
 	{
@@ -361,7 +361,7 @@ public:
 	}
 
 	/**
-	*	Default print method for printing registered command line options.
+		Default print method for printing registered command line options.
 	*/
 	void onPrintHelp() @trusted
 	{
@@ -377,7 +377,7 @@ public:
 	}
 
 	/**
-	*	Prints the program version string when -version argument is passed.
+		Prints the program version string when -version argument is passed.
 	*/
 	void onPrintVersion() @trusted
 	{
@@ -392,7 +392,7 @@ public:
 	}
 
 	/**
-	*	Called when an invalid argument is passed on the command line.
+		Called when an invalid argument is passed on the command line.
 	*/
 	void onInvalidArg(const string error, const string command) @trusted
 	{
@@ -400,31 +400,31 @@ public:
 	}
 
 	/**
-	*	Called when an valid argument is passed on the command line.
+		Called when an valid argument is passed on the command line.
 	*/
 	void onValidArgs() @trusted {}
 
 	/**
-	*	Called each time a valid argument is passed.
+		Called each time a valid argument is passed.
 	*/
 	void onValidArg(const string argument) @trusted {}
 
 	/**
-	*	Called when an valid argument is passed on the command line.
+		Called when an valid argument is passed on the command line.
 	*/
 	void onNoArgs() @trusted {}
 
 	/**
-	*	Handles the registration of command line arguments passed to the program. This is the internal command line
-	*	argument processing method. The method processArgs should be used as it simplifies handling of command line
-	*	arguments.
-	*
-	*	Params:
-	*		arguments = The arguments that are sent from main()
-	*		ignoreNonArgs = Ignore the first argument passed and continue processing the remaining arguments
-	*		allowInvalidArgs = Any invalid arguments will be ignored and won't be called.
-	*	Note:
-	*		Setting allowInvalidArgs.yes will also cause onInvalidArgs to not be fired. Resulting in invalid data in a command.
+		Handles the registration of command line arguments passed to the program. This is the internal command line
+		argument processing method. The method processArgs should be used as it simplifies handling of command line
+		arguments.
+
+		Params:
+			arguments = The arguments that are sent from main()
+			ignoreNonArgs = Ignore the first argument passed and continue processing the remaining arguments
+			allowInvalidArgs = Any invalid arguments will be ignored and won't be called.
+		Note:
+			Setting allowInvalidArgs.yes will also cause onInvalidArgs to not be fired. Resulting in invalid data in a command.
 	*/
 	bool process(string[] arguments, IgnoreNonArgs ignoreNonArgs = IgnoreNonArgs.no,
 		AllowInvalidArgs allowInvalidArgs = AllowInvalidArgs.no)
@@ -519,14 +519,14 @@ public:
 	}
 
 	/**
-	*	Converts the value of key to type of T. Works the same as std.variant's coerce.
-	*
-	*	Params:
-	*		key = Name of the key to retrieve.
-	*		defaultValue = Default value if key isn't found.
-	*
-	*	Returns:
-	*		T = The converted value.
+		Converts the value of key to type of T. Works the same as std.variant's coerce.
+
+		Params:
+			key = Name of the key to retrieve.
+			defaultValue = Default value if key isn't found.
+
+		Returns:
+			T = The converted value.
 	*/
 	T coerce(T)(const string key, T defaultValue = T.init) @trusted
 	{
