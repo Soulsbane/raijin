@@ -1,7 +1,7 @@
 /**
-*   Various functions to determine types at runtime.
-*
-*	Author: Paul Crane
+	Various functions to determine types at runtime.
+
+	Author: Paul Crane
 */
 
 module raijin.typeutils;
@@ -13,7 +13,7 @@ import std.conv;
 alias AllowNumericBooleanValues = Flag!"allowNumericBooleanValues";
 
 /**
-*   A simple type that can store strings, integers, booleans and decimals only.
+	simple type that can store strings, integers, booleans and decimals only.
 */
 struct DynamicType
 {
@@ -347,14 +347,14 @@ unittest
 }
 
 /**
-*   Determines if value is a true value
-*
-*   Params:
-*       value = The value to check for a true value
-*		allowInteger = Set to allowNumericBooleanValues.yes if a true value can be a numeric 1
-*
-*   Returns:
-*       true if the value is true false otherwise.
+	Determines if value is a true value
+
+	Params:
+		value = The value to check for a true value
+		allowInteger = Set to allowNumericBooleanValues.yes if a true value can be a numeric 1
+
+	Returns:
+		true if the value is true false otherwise.
 */
 bool isTrue(T)(const T value, const AllowNumericBooleanValues allowInteger = AllowNumericBooleanValues.yes) @trusted
 {
@@ -387,14 +387,14 @@ unittest
 }
 
 /**
-*   Determines if value is a false value
-*
-*   Params:
-*       value = The value to check for a false value
-*		allowInteger = Set to allowNumericBooleanValues.yes if a false value can be a numeric 0
-*
-*   Returns:
-*       true if the value is false false otherwise.
+	Determines if value is a false value
+
+	Params:
+		value = The value to check for a false value
+		allowInteger = Set to allowNumericBooleanValues.yes if a false value can be a numeric 0
+
+	Returns:
+		true if the value is false false otherwise.
 */
 bool isFalse(T)(const T value, const AllowNumericBooleanValues allowInteger = AllowNumericBooleanValues.yes) @trusted
 {
@@ -427,14 +427,14 @@ unittest
 }
 
 /**
-*   Determines if a value is of type boolean using 0, 1, true and false as qualifiers.
-*
-*   Params:
-*       value = number or boolean string to use. Valid values of 0, 1, "0", "1", "true", "false"
-*		allowInteger = Set to allowNumericBooleanValues.yes if a true/false value can be a numeric 0 or 1
-*
-*   Returns:
-*       true if the value is a boolean false otherwise.
+	Determines if a value is of type boolean using 0, 1, true and false as qualifiers.
+
+	Params:
+		value = number or boolean string to use. Valid values of 0, 1, "0", "1", "true", "false"
+		allowInteger = Set to allowNumericBooleanValues.yes if a true/false value can be a numeric 0 or 1
+
+	Returns:
+		true if the value is a boolean false otherwise.
 */
 bool isBoolean(T)(const T value, const AllowNumericBooleanValues allowInteger = AllowNumericBooleanValues.yes) @trusted
 {
@@ -461,13 +461,13 @@ unittest
 }
 
 /**
-*   Determines if a string is a decimal value
-*
-*   Params:
-*       value = string to use.
-*
-*   Returns:
-*       true if the value is a decimal false otherwise.
+	Determines if a string is a decimal value
+
+	Params:
+		value = string to use.
+
+	Returns:
+		true if the value is a decimal false otherwise.
 */
 bool isDecimal(const string value) pure @safe
 {
@@ -483,13 +483,13 @@ unittest
 	assert("zzzz".isDecimal == false);
 }
 /**
-*   Determines if a string is an integer value.
-*
-*   Params:
-*       value = string to use.
-*
-*   Returns:
-*       true if the value is a integer false otherwise.
+	Determines if a string is an integer value.
+
+	Params:
+		value = string to use.
+
+	Returns:
+		true if the value is a integer false otherwise.
 */
 bool isInteger(const string value) pure @safe
 {
@@ -506,14 +506,14 @@ unittest
 }
 
 /**
-* Same as TypeTuple, but meant to be used with values.
-*
-*	Example:
-*		foreach (char channel; ValueTuple!('r', 'g', 'b'))
-*		{
-*			the loop is unrolled at compile-time
-*			"channel" is a compile-time value, and can be used in string mixins
-*		}
+ Same as TypeTuple, but meant to be used with values.
+
+	Example:
+		foreach (char channel; ValueTuple!('r', 'g', 'b'))
+		{
+			the loop is unrolled at compile-time
+			"channel" is a compile-time value, and can be used in string mixins
+		}
 */
 
 // NOTE: The following functions can be found in CyberShadows ae lib https://github.com/CyberShadow/ae/
