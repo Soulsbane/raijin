@@ -1,7 +1,7 @@
 /**
-*	Various functions for dealing with path based manipulation and retrieval.
-*
-*	Author: Paul Crane
+	Various functions for dealing with path based manipulation and retrieval.
+
+	Author: Paul Crane
 */
 
 module raijin.pathutils;
@@ -14,13 +14,13 @@ import std.algorithm : splitter;
 import std.string;
 
 /**
-*	Determines if executableName is in the user's path.
-*
-*	Params:
-*		executableName = Name of the executable to look for.
-*
-*	Returns:
-*		The path to the executable if found otherwise null.
+	Determines if executableName is in the user's path.
+
+	Params:
+		executableName = Name of the executable to look for.
+
+	Returns:
+		The path to the executable if found otherwise null.
 */
 string isInPath(const string executableName) @safe
 {
@@ -47,13 +47,13 @@ string isInPath(const string executableName) @safe
 }
 
 /**
-*	Ensures a directory path exists by creating it if it does not already exist.
-*
-*	Params:
-*		path = string containing the path to create.
-*
-*	Returns:
-*		true if path was created false otherwise.
+	Ensures a directory path exists by creating it if it does not already exist.
+
+	Params:
+		path = string containing the path to create.
+
+	Returns:
+		true if path was created false otherwise.
 */
 bool ensurePathExists(const string path) @trusted
 {
@@ -66,13 +66,13 @@ bool ensurePathExists(const string path) @trusted
 }
 
 /**
-*	Ensures a directory path exists by creating it if it does not already exist.
-*
-*	Params:
-*		args = Variable number of argument strings containing the path to create.
-*
-*	Returns:
-*		true if path was created false otherwise.
+	Ensures a directory path exists by creating it if it does not already exist.
+
+	Params:
+		args = Variable number of argument strings containing the path to create.
+
+	Returns:
+		true if path was created false otherwise.
 */
 bool ensurePathExists(T...)(T args) @trusted
 {
@@ -87,10 +87,10 @@ bool ensurePathExists(T...)(T args) @trusted
 }
 
 /**
-*	Remove the path if it exists.
-*
-*	Params:
-*		path = path to create.
+	Remove the path if it exists.
+
+	Params:
+		path = path to create.
 */
 bool removePathIfExists(const string path) @trusted
 {
@@ -103,10 +103,10 @@ bool removePathIfExists(const string path) @trusted
 }
 
 /**
-*	Remove the path if it exists.
-*
-*	Params:
-*		args = Variable number of strings that compose the path.
+	Remove the path if it exists.
+
+	Params:
+		args = Variable number of strings that compose the path.
 */
 bool removePathIfExists(T...)(T args) pure nothrow @safe
 {
@@ -121,7 +121,7 @@ bool removePathIfExists(T...)(T args) pure nothrow @safe
 }
 
 /**
-*	Retrieves the complete path where the application resides.
+	Retrieves the complete path where the application resides.
 */
 string getAppPath() @safe
 {
@@ -129,10 +129,10 @@ string getAppPath() @safe
 }
 
 /**
-*	Retrieves the complete path where the application resides with the provided path appended.
-*
-*	Params:
-*		path = The path to append to the application path.
+	Retrieves the complete path where the application resides with the provided path appended.
+
+	Params:
+		path = The path to append to the application path.
 */
 string getAppPath(string[] path...) @safe
 {
