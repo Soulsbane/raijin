@@ -1,7 +1,7 @@
 /**
-*   This module combines the functionality of VariantConfig and configpath into one class.
-*
-*	Author: Paul Crane
+   This module combines the functionality of VariantConfig and configpath into one class.
+
+	Author: Paul Crane
 */
 
 module raijin.appconfig;
@@ -10,20 +10,20 @@ import raijin.variantconfig;
 import raijin.configpath;
 
 /**
-*	This class combines the functionality of VariantConfig and configpath into one class.
+	This class combines the functionality of VariantConfig and configpath into one class.
 */
 class AppConfig
 {
 private:
 
 	/**
-	*	Loads app.config file and populates it with defaultConfigFileData if app.config isn't found.
-	*
-	*	Params:
-	*		defaultConfigFileData = The data app.config should be populated with if app.config isn't found.
-	*
-	*	Returns:
-	*		true of the config file was successfully loaded false otherwise.
+		Loads app.config file and populates it with defaultConfigFileData if app.config isn't found.
+
+		Params:
+			defaultConfigFileData = The data app.config should be populated with if app.config isn't found.
+
+		Returns:
+			true of the config file was successfully loaded false otherwise.
 	*/
 	bool loadConfigFile(const string defaultConfigFileData = string.init) @safe
 	{
@@ -42,7 +42,7 @@ private:
 
 public:
 	/**
-	*	Used for creating directories in users config directory and setting up the config file app.config.
+		Used for creating directories in users config directory and setting up the config file app.config.
 	*/
 	this()
 	{
@@ -53,13 +53,13 @@ public:
 	}
 
 	/**
-	*	Overload that allows setting of organizationName, applicationName and defaultConfigFileData to be used
-	*	when creating directories in users config directory and setting up the config file app.config.
-	*
-	*	Params:
-	*		organizationName = Name of the organization/company.
-	*		applicationName = Name of the application.
-	*		defaultConfigFileData = The data app.config should be populated with if app.config isn't found.
+		Overload that allows setting of organizationName, applicationName and defaultConfigFileData to be used
+		when creating directories in users config directory and setting up the config file app.config.
+
+		Params:
+			organizationName = Name of the organization/company.
+			applicationName = Name of the application.
+			defaultConfigFileData = The data app.config should be populated with if app.config isn't found.
 	*/
 	this(const string organizationName, const string applicationName,
 		const string defaultConfigFileData = string.init) @safe
@@ -71,10 +71,10 @@ public:
 	}
 
 	/**
-	*	Helper property for accessing ConfigPath methods.
-	*
-	*	Returns:
-	*		A ConfigPath object.
+		Helper property for accessing ConfigPath methods.
+
+		Returns:
+			A ConfigPath object.
 	*/
 	ConfigPath path() @property
 	{
@@ -82,10 +82,10 @@ public:
 	}
 
 	/**
-	*	Helper property for accessing VariantConfig methods.
-	*
-	*	Returns:
-	*		A VariantConfig object.
+		Helper property for accessing VariantConfig methods.
+
+		Returns:
+			A VariantConfig object.
 	*/
 	VariantConfig config() @property
 	{
