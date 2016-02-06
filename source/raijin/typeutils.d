@@ -278,6 +278,19 @@ unittest
 	DynamicType assignToDynamicType1 = 15;
 	DynamicType assignToDynamicType2 = assignToDynamicType1;
 	assert(assignToDynamicType2 == 15);
+
+	// property tests
+	DynamicType propInteger = 732;
+	assert(propInteger.integer == 732);
+
+	DynamicType propStr = "732";
+	assert(propStr.str == "732");
+
+	DynamicType propDec = 7.32;
+	assert(propDec.decimal == 7.32);
+
+	DynamicType propBoolean = true;
+	assert(propBoolean.boolean == true);
 }
 
 /**
