@@ -10,6 +10,8 @@ import std.stdio;
 import std.algorithm;
 import std.path;
 import std.datetime;
+import std.string;
+import std.array;
 
 /**
 *	Wrapper around info, warn and error functions that acts as a namespace.
@@ -76,12 +78,13 @@ unittest
 	Params:
 		args = The arguments(variables) that should be printed.
 */
-void printArgs(T)(T[] args...)
+void printArgs(T...)(T args)
 {
 	import std.conv;
 
-	args.each!(a => write(to!string(a), " "));
+	write(concatArgs(args));
 	writeln;
+
 }
 
 ///
@@ -89,4 +92,33 @@ unittest
 {
 	printArgs("hello", "world");
 	printArgs(1234, 5678, 9);
+	printArgs(1234, true, 9);
+}
+
+/**
+	A debug function for outputing each argument with a space in between. Useful for printing multiple variables.
+
+	Params:
+		args = The arguments(variables) that should be printed.
+*/
+string concatArgs(T...)(T args)
+{
+	import std.conv;
+
+	string output;
+
+	foreach(arg; args)
+	{
+		output ~= to!string(arg) ~ " ";
+	}
+
+	return output.stripRight;
+
+}
+
+///
+unittest
+{
+	assert(concatArgs(1, 2, 3, 4) == "1 2 3 4");
+	assert(concatArgs(true, "blah", 54) == "true blah 54");
 }
