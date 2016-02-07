@@ -14,7 +14,7 @@ import std.algorithm : sort, findSplit, filter, canFind, remove;
 import std.range : take;
 import std.array : empty, array;
 import std.typecons : tuple;
-import std.variant;
+import std.format;
 
 import raijin.typeutils;
 
@@ -24,9 +24,20 @@ private enum DEFAULT_CONFIG_FILE_NAME = "app.config";
 private struct KeyValueData
 {
 	string key;
-	Variant value;
+	DynamicType value;
 	string group;
 	string comment;
+}
+
+string generateAsMethodFor(T)(const string functionName) @safe
+{
+	return format(q{
+		%s %s(const string key, %s defaultValue = %s.init)
+		{
+			DynamicType dynValue = get(key, defaultValue);
+			return dynValue.%s;
+		}
+	}, T.stringof, functionName, T.stringof, T.stringof, functionName);
 }
 
 /**
@@ -156,6 +167,76 @@ private:
 		return tuple!("group", "key")(group, key);
 	}
 
+	/**
+		Retrieves the value T associated with key where T is the designated type to be converted to.
+
+		Params:
+			key = Name of the key to get.
+
+		Returns:
+			The value associated with key.
+	*/
+	DynamicType get(const string key) @trusted
+	{
+		DynamicType defaultValue;
+
+		if(isGroupString(key))
+		{
+			auto groupAndKey = getGroupAndKeyFromString(key);
+			return get(groupAndKey.group, groupAndKey.key, defaultValue);
+		}
+		else
+		{
+			return get(DEFAULT_GROUP_NAME, key, defaultValue);
+		}
+	}
+
+	/**
+		Retrieves the value T associated with key where T is the designated type to be converted to.
+
+		Params:
+			key = Name of the key to get.
+			defaultValue = Allow the assignment of a default value if key does not exist.
+
+		Returns:
+			The value associated with key.
+	*/
+	DynamicType get(T)(const string key, const T defaultValue) @trusted
+	{
+		if(isGroupString(key))
+		{
+			auto groupAndKey = getGroupAndKeyFromString(key);
+			return get(groupAndKey.group, groupAndKey.key, defaultValue);
+		}
+		else
+		{
+			return get(DEFAULT_GROUP_NAME, key, defaultValue);
+		}
+	}
+
+	/**
+		Retrieves the value T associated with key where T is the designated type to be converted to.
+
+		Params:
+			group = Name of the group to retrieve ie portion [groupName] of config file/string.
+			key = Name of the key to get.
+			defaultValue = Allow the assignment of a default value if key does not exist.
+
+		Returns:
+			The value of value of the key/value pair.
+	*/
+	DynamicType get(T)(const string group, const string key, const T defaultValue) @trusted
+	{
+		if(containsGroup(group))
+		{
+			return getGroupValue(group, key);
+		}
+		else
+		{
+			DynamicType value = defaultValue;
+			return value;
+		}
+	}
 public:
 
 	/**
@@ -233,78 +314,10 @@ public:
 		}
 	}
 
-	/**
-		Retrieves the value T associated with key where T is the designated type to be converted to.
-
-		Params:
-			key = Name of the key to get.
-
-		Returns:
-			The value associated with key.
-
-	*/
-	Variant get(const string key) @trusted
-	{
-		Variant defaultValue;
-
-		if(isGroupString(key))
-		{
-			auto groupAndKey = getGroupAndKeyFromString(key);
-			return get(groupAndKey.group, groupAndKey.key, defaultValue);
-		}
-		else
-		{
-			return get(DEFAULT_GROUP_NAME, key, defaultValue);
-		}
-	}
-
-	/**
-		Retrieves the value T associated with key where T is the designated type to be converted to.
-
-		Params:
-			key = Name of the key to get.
-			defaultValue = Allow the assignment of a default value if key does not exist.
-
-		Returns:
-			The value associated with key.
-
-	*/
-	Variant get(const string key, Variant defaultValue) @trusted
-	{
-		if(isGroupString(key))
-		{
-			auto groupAndKey = getGroupAndKeyFromString(key);
-			return get(groupAndKey.group, groupAndKey.key, defaultValue);
-		}
-		else
-		{
-			return get(DEFAULT_GROUP_NAME, key, defaultValue);
-		}
-	}
-
-	/**
-		Retrieves the value T associated with key where T is the designated type to be converted to.
-
-		Params:
-			group = Name of the group to retrieve ie portion [groupName] of config file/string.
-			key = Name of the key to get.
-			defaultValue = Allow the assignment of a default value if key does not exist.
-
-		Returns:
-			The value of value of the key/value pair.
-
-	*/
-	Variant get(const string group, const string key, Variant defaultValue) @trusted
-	{
-		if(containsGroup(group))
-		{
-			return getGroupValue(group, key);
-		}
-		else
-		{
-			return defaultValue;
-		}
-	}
+	mixin(generateAsMethodFor!long("asInteger"));
+	mixin(generateAsMethodFor!bool("asBoolean"));
+	mixin(generateAsMethodFor!double("asDecimal"));
+	mixin(generateAsMethodFor!string("asString"));
 
 	/**
 		Gets the value associated with the group and key.
@@ -316,7 +329,7 @@ public:
 		Returns:
 			The value associated with the group and key.
 	*/
-	Variant getGroupValue(const string group, const string key) @trusted
+	DynamicType getGroupValue(const string group, const string key) @trusted
 	{
 		auto value = values_.filter!(a => (a.group == group) && (a.key == key));//.take(1);
 		return value.front.value;
@@ -378,12 +391,11 @@ public:
 			key = Name of the key to set.
 			value = The value to be set to.
 	*/
-	void set(T = string)(const string group, const string key, const T value) @trusted
+	void set(T)(const string group, const string key, const T value) @trusted
 	{
-		//writeln("Key: ", key, /*"type: ", typeof(T).stringof, */" valuetype: ", typeof(value).stringof, " acutual value: ", value);
 		auto foundValue = values_.filter!(a => (a.group == group) && (a.key == key));
 
-		foundValue.front.value = value.to!T;
+		foundValue.front.value = value;
 		valuesModified_ = true;
 	}
 
@@ -518,7 +530,7 @@ public:
 		Returns:
 			The string value associated with the key.
 	*/
-	Variant opIndex(const string key) @trusted
+	DynamicType opIndex(const string key) @trusted
 	{
 		return get(key);
 	}
@@ -534,48 +546,6 @@ public:
 	{
 		set(key, value);
 	}
-
-	/**
-		Converts the value of key to type of T. Works the same as std.variant's coerce.
-
-	*	Params:
-			key = Name of the key to retrieve.
-
-		Returns:
-			T = The converted value.
-	*/
-	T coerce(T)(const string key) @trusted
-	{
-		Variant value = get(key);
-		return value.coerce!T;
-	}
-
-	/// Gets the value and converts it to a bool.
-	alias getBool = coerce!bool;
-
-	/// Gets the value and converts it to a int.
-	alias getInt = coerce!int;
-
-	/// Gets the value and converts it to a float.
-	alias getFloat = coerce!float;
-
-	/// Gets the value and converts it to a real.
-	alias getReal = coerce!real;
-
-	/// Gets the value and converts it to a long.
-	alias getLong = coerce!long;
-
-	/// Gets the value and converts it to a byte.
-	alias getByte = coerce!byte;
-
-	/// Gets the value and converts it to a short.
-	alias getShort = coerce!short;
-
-	/// Gets the value and converts it to a double.
-	alias getDouble = coerce!double;
-
-	/// Gets the value and converts it to a string.
-	alias getString = coerce!string;
 
 private:
 	KeyValueData[] values_;
@@ -613,11 +583,7 @@ unittest
 	config.removeGroup("section");
 	assert(config.containsGroup("section") == false);
 
-	assert(config.get("aBool").coerce!bool == true);
-	assert(config.getBool("aBool")); // Syntactic sugar
-	assert(config["aBool"].coerce!bool == true); // Also works but rather awkward
-	assert(config.coerce!bool("aBool") == true); // Also works and more natural
-
+	assert(config.asBoolean("aBool"));
 	assert(config.contains("time"));
 
 	auto number = config["number"];
@@ -637,7 +603,7 @@ unittest
 
 	assert(config["another.japan"] == false);
 
-	writeln("VariantConfig: Testing getGroup...");
+	writeln("Testing getGroup...");
 
 	auto group = config.getGroup("another");
 
@@ -649,10 +615,8 @@ unittest
 	writeln();
 
 	config.set("aBool", false);
-	assert(config["aBool"].coerce!bool == false);
 	config["aBool"] = true;
-	assert(config["aBool"].coerce!bool == true);
-	assert(config["aBool"].toString == "true");
+	assert(config["aBool"].asString == "true");
 
 	debug config.save();
 	debug config.save("custom-config-format.dat");
