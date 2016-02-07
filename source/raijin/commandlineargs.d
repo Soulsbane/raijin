@@ -13,7 +13,7 @@ import std.algorithm : findSplit;
 import std.stdio : writeln;
 import std.typecons;
 import std.path : baseName;
-import std.variant;
+import std.format;
 
 import raijin.stringutils;
 import raijin.typeutils;
@@ -27,12 +27,11 @@ alias RequiredArg = Flag!"requiredArg";
 */
 private struct ArgValues
 {
-	Variant defaultValue; /// Initial value a command line argument has if it isn't supplied.
-	Variant value; /// The Value set via the command line.
+	DynamicType defaultValue; /// Initial value a command line argument has if it isn't supplied.
+	DynamicType value; /// The Value set via the command line.
 	string description; /// The description of the command line argument.
 	bool required; /// true if the command line argument is required false otherwise.
 	bool isFlag; /// true if command line arg should be a flag eg. --myflag
-	TypeInfo storedType; // Stores the default type passed to addCommand or addFlag.
 }
 
 /// NOTE: This mixin inserts a condition for checking whether or not to allowInvalidArgs in process()
@@ -44,6 +43,41 @@ private string breakOnInvalidArg(const string type)
 			onInvalidArg(\"" ~ type ~ "\", element);
 			return false;
 		}";
+}
+
+private string generateAddCommand(T)()
+{
+	return format(q{
+		void addCommand(const string key, %s defaultValue, const string description, RequiredArg required = RequiredArg.no) @trusted
+		{
+			ArgValues values;
+
+			values.defaultValue = defaultValue;
+			values.value = defaultValue;
+			values.description = description;
+			values.required = required;
+			values.isFlag = false;
+
+			values_[key] = values;
+		}
+	}, T.stringof);
+}
+
+string generateAsMethodFor(T)(const string functionName) @safe
+{
+	return format(q{
+		%s %s(const string key, %s defaultValue = %s.init)
+		{
+			if(contains(key))
+			{
+				ArgValues values;
+
+				values = values_[key];
+				return values.value.%s;
+			}
+			return defaultValue;
+		}
+	}, T.stringof, functionName, T.stringof, T.stringof, functionName);
 }
 
 private string argTypesToString(const string type)
@@ -59,140 +93,11 @@ private string argTypesToString(const string type)
 	return typeTable[type];
 }
 
-// TODO: Possibly handle more types
-private Variant getValueFromType(const string commandLineValue, const TypeInfo storedType) @trusted
-{
-	Variant value;
-
-	if(commandLineValue.isInteger)
-	{
-		if(storedType == typeid(int))
-		{
-			value = to!int(commandLineValue);
-		}
-		else
-		{
-			value = to!long(commandLineValue);
-		}
-	}
-	else if(commandLineValue.isDecimal)
-	{
-		if(storedType == typeid(float))
-		{
-			value = to!float(commandLineValue);
-		}
-		else if(storedType == typeid(real))
-		{
-			value = to!real(commandLineValue);
-		}
-		else
-		{
-			value = to!double(commandLineValue);
-		}
-	}
-	else if(isBoolean(commandLineValue, AllowNumericBooleanValues.no))
-	{
-		value = to!bool(commandLineValue);
-	}
-	else
-	{
-		value = to!string(commandLineValue);
-	}
-
-	return value;
-}
-
 /**
 	Handles the processing of command line arguments.
 */
 class CommandLineArgs
 {
-private:
-	/**
-		Retrieves the value of key where key is the name of the command line argument and converts it to T.
-		T is the the type that returned value should be converted to.
-
-		Params:
-			key = Name of the command line argument to get.
-
-		Returns:
-			The value of value of the command line argument to getcommand line argument to get
-
-	*/
-	final Variant get(T)(const string key) @trusted
-	{
-		import std.traits;
-
-		ArgValues defaultValues;
-		ArgValues values;
-
-		static if(isNumeric!T)
-		{
-			defaultValues.value = Variant(0);
-		}
-		else static if(isBoolean!T)
-		{
-
-			defaultValues.value = Variant(false);
-		}
-		else
-		{
-			defaultValues.value = Variant("");
-		}
-
-		values = values_.get(key, defaultValues);
-
-		return values.value;
-	}
-
-	/**
-		Retrieves the value of key where key is the name of the command line argument and converts it to T.
-		T is the the type that returned value should be converted to.
-
-		Params:
-			key = Name of the command line argument to get.
-			defaultValue = Allow the assignment of a default value if key does not exist.
-
-		Returns:
-			The value of value of the command line argument to get
-
-	*/
-	final Variant get(const string key, Variant defaultValue) @trusted
-	{
-		ArgValues defaultValues;
-		ArgValues values;
-
-		defaultValues.defaultValue = defaultValue;
-		defaultValues.value = defaultValue;
-		values = values_.get(key, defaultValues);
-
-		return values.value;
-	}
-
-	/**
-		Retrieves the value of key where key is the name of the command line argument and converts it to T.
-		T is the the type that returned value should be converted to.
-
-		Params:
-			key = Name of the command line argument to get.
-			defaultValue = Allow the assignment of a default value if key does not exist.
-
-		Returns:
-			The value of value of the command line argument to get
-
-	*/
-	final Variant get(T)(const string key, T defaultValue = T.init) @trusted
-	{
-		ArgValues defaultValues;
-		ArgValues values;
-
-		defaultValues.defaultValue = defaultValue;
-		defaultValues.value = defaultValue;
-		values = values_.get(key, defaultValues);
-
-		return values.value;
-	}
-
 public:
 	/**
 		Registers a command line argument used in year=1942
@@ -203,20 +108,10 @@ public:
 			description = The description of what the command line argument does.
 			required = Whether the argument is required.
 	*/
-	final void addCommand(T)(const string key, T defaultValue, const string description,
-		RequiredArg required = RequiredArg.no) @trusted
-	{
-		ArgValues values;
-
-		values.defaultValue = defaultValue;
-		values.value = defaultValue;
-		values.description = description;
-		values.required = required;
-		values.isFlag = false;
-		values.storedType = typeid(T);
-
-		values_[key] = values;
-	}
+	mixin(generateAddCommand!long);
+	mixin(generateAddCommand!bool);
+	mixin(generateAddCommand!string);
+	mixin(generateAddCommand!double);
 
 	/**
 		Registers a flag argument eg. --flag
@@ -235,10 +130,15 @@ public:
 		values.description = description;
 		values.required = required;
 		values.isFlag = true;
-		values.storedType = typeid(bool);
 
 		values_[key] = values;
 	}
+
+
+	mixin(generateAsMethodFor!long("asInteger"));
+	mixin(generateAsMethodFor!bool("asBoolean"));
+	mixin(generateAsMethodFor!double("asDecimal"));
+	mixin(generateAsMethodFor!string("asString"));
 
 	/**
 		Retrieves the value of key where key is the name of the command line argument.
@@ -249,11 +149,9 @@ public:
 
 		Returns:
 			The value of value of the command line argument to get. If the key isn't found it will
-			return an unitialized Variant. Method hasValue can be used to test if the returned value is valid.
-
+			return an raijin.typeutils.DynamicType.
 	*/
-	// NOTE: that since we can't know the type before hand this will throw an exception if you are expecting anything but a string. You should use contains first.
-	final Variant opIndex(const string key) @trusted
+	final DynamicType opIndex(const string key) @trusted
 	{
 		if(contains(key))
 		{
@@ -261,7 +159,7 @@ public:
 		}
 		else
 		{
-			Variant value;
+			DynamicType value;
 			return value;
 		}
 	}
@@ -452,7 +350,7 @@ public:
 					{
 						if(contains(elementParts.key))
 						{
-							Variant value = getValueFromType(elementParts.commandLineValue, values_[elementParts.key].storedType);
+							DynamicType value = getDynamicTypeFromString(elementParts.commandLineValue);
 
 							values_[elementParts.key].value = value;
 							values_[elementParts.key].required = false;
@@ -518,49 +416,6 @@ public:
 		return true;
 	}
 
-	/**
-		Converts the value of key to type of T. Works the same as std.variant's coerce.
-
-		Params:
-			key = Name of the key to retrieve.
-			defaultValue = Default value if key isn't found.
-
-		Returns:
-			T = The converted value.
-	*/
-	T coerce(T)(const string key, T defaultValue = T.init) @trusted
-	{
-		Variant value = get!T(key, defaultValue);
-		return value.coerce!T;
-	}
-
-	/// Gets the value and converts it to a bool.
-	alias getBool = coerce!bool;
-
-	/// Gets the value and converts it to a int.
-	alias getInt = coerce!int;
-
-	/// Gets the value and converts it to a float.
-	alias getFloat = coerce!float;
-
-	/// Gets the value and converts it to a real.
-	alias getReal = coerce!real;
-
-	/// Gets the value and converts it to a long.
-	alias getLong = coerce!long;
-
-	/// Gets the value and converts it to a byte.
-	alias getByte = coerce!byte;
-
-	/// Gets the value and converts it to a short.
-	alias getShort = coerce!short;
-
-	/// Gets the value and converts it to a double.
-	alias getDouble = coerce!double;
-
-	/// Gets the value and converts it to a string.
-	alias getString = coerce!string;
-
 private:
 	bool checkRequiredArgs() @trusted
 	{
@@ -594,24 +449,22 @@ unittest
 	auto args = new CommandLineArgs;
 
 	args.addFlag("flag", "A test flag");
-	args.addCommand!float("aFloat", 3.14, "A float value");
-	args.addCommand!int("integer", 100, "Sets value");
-	args.addCommand!string("value", "hello world", "Just a silly value.");
+	args.addCommand("aFloat", 3.14, "A float value");
+	args.addCommand("integer", 100, "Sets value");
+	args.addCommand("value", "hello world", "Just a silly value.");
 	args.process(arguments);
 
-	assert(args.getBool("flag") == true);
+	assert(args.asBoolean("flag") == true);
 	assert(args["flag"] == true);
-	assert(args.coerce!bool("flag") == true);
 
 	import std.math;
 
-	float aFloat = args.getFloat("aFloat");
+	float aFloat = args.asDecimal("aFloat");
 
-	assert(feqrel(args.getFloat("aFloat"), 4.44));
+	assert(feqrel(args.asDecimal("aFloat"), 4.44));
 	assert(feqrel(aFloat, 4.44));
 
-	assert(feqrel(args.getDouble("aFloat"), 4.44));
-	assert(feqrel(args.coerce!double("aFloat"), 4.44));
+	assert(feqrel(args.asInteger("aFloat"), 4.44));
 
 	assert(args.contains("integer") == true);
 	assert(args.contains("valuez") == false);
