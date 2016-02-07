@@ -14,37 +14,24 @@ import std.typecons;
 
 alias AppendMode = Flag!"appendMode";
 
-//@trusted:
 /**
 	Creates fileName if it dosn't exist or opens if it does exist.
 
 	Params:
 		fileName = Name of the file to create or open.
-		mode = Set to AppendMode.yes if the file should be opened in append mode.
+		mode = The mode to open the file in. Same as std.stdio.File. Opened in w+ by default.
 
 	Returns:
 		The File handle to the open file.
 */
-File ensureFileExists(const string fileName, AppendMode mode = AppendMode.no)
+File ensureFileExists(const string fileName, const string mode = "w+")
 {
-	if(fileName.exists)
+	if(!fileName.exists)
 	{
-		if(mode)
-		{
-			return File(fileName, "a+");
-		}
-
-		return File(fileName, "r+");
+		File(fileName, "w+");
 	}
-	else
-	{
-		if(mode)
-		{
-			return File(fileName, "a+");
-		}
 
-		return File(fileName, "w+");
-	}
+	return File(fileName, mode);
 }
 
 /**
