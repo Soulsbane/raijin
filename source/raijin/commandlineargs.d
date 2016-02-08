@@ -22,6 +22,10 @@ alias IgnoreNonArgs = Flag!"IgnoreNonArgs";
 alias AllowInvalidArgs = Flag!"allowInvalidArgs";
 alias RequiredArg = Flag!"requiredArg";
 
+alias NoArgsCallback = void delegate();
+alias ValidArgCallback = void delegate(const string);
+alias InvalidArgCallback = void delegate(const string, const string);
+
 /**
 	The type in which each command line argument is stored in.
 */
