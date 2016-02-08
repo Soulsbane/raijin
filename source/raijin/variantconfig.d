@@ -29,7 +29,7 @@ private struct KeyValueData
 	string comment;
 }
 
-string generateAsMethodFor(T)(const string functionName) @safe
+private string generateAsMethodFor(T)(const string functionName) @safe
 {
 	return format(q{
 		%s %s(const string key, %s defaultValue = %s.init)
