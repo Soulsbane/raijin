@@ -22,10 +22,6 @@ alias IgnoreNonArgs = Flag!"IgnoreNonArgs";
 alias AllowInvalidArgs = Flag!"allowInvalidArgs";
 alias RequiredArg = Flag!"requiredArg";
 
-alias NoArgsCallback = void delegate();
-alias ValidArgCallback = void delegate(const string);
-alias InvalidArgCallback = void delegate(const string, const string);
-
 /**
 	The type in which each command line argument is stored in.
 */
@@ -318,7 +314,7 @@ public:
 
 	/**
 		Handles the registration of command line arguments passed to the program.
-		
+
 		Params:
 			arguments = The arguments that are sent from main()
 			ignoreNonArgs = Ignore the first argument passed and continue processing the remaining arguments
