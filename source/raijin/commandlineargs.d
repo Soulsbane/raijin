@@ -302,7 +302,7 @@ public:
 	}
 
 	/**
-		Called when an valid argument is passed on the command line.
+		Called after all arguments have been processed and no invalid arguments were found.
 	*/
 	void onValidArgs() @trusted {}
 
@@ -312,15 +312,13 @@ public:
 	void onValidArg(const string argument) @trusted {}
 
 	/**
-		Called when an valid argument is passed on the command line.
+		Called when no arguments were passed on the command line.
 	*/
 	void onNoArgs() @trusted {}
 
 	/**
-		Handles the registration of command line arguments passed to the program. This is the internal command line
-		argument processing method. The method processArgs should be used as it simplifies handling of command line
-		arguments.
-
+		Handles the registration of command line arguments passed to the program.
+		
 		Params:
 			arguments = The arguments that are sent from main()
 			ignoreNonArgs = Ignore the first argument passed and continue processing the remaining arguments
