@@ -37,12 +37,13 @@ private struct ArgValues
 /// NOTE: This mixin inserts a condition for checking whether or not to allowInvalidArgs in process()
 private string breakOnInvalidArg(const string type)
 {
-	return "
+	return format(q{
 		if(allowInvalidArgs == false)
 		{
-			onInvalidArg(\"" ~ type ~ "\", element);
+			onInvalidArg("%s", element);
 			return false;
-		}";
+		}
+	}, type);
 }
 
 private string generateAddCommand(T)()
