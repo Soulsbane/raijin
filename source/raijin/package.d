@@ -11,5 +11,5 @@ public
 	import raijin.pathutils;
 	import raijin.stringutils;
 	import raijin.typeutils;
-	import raijin.variantconfig;
+	import raijin.keyvalueconfig;
 }

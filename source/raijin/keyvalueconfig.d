@@ -4,7 +4,7 @@
 	Author: Paul Crane
 */
 
-module raijin.variantconfig;
+module raijin.keyvalueconfig;
 
 import std.conv : to;
 import std.string : lineSplitter, indexOf, strip, startsWith, endsWith, stripLeft, stripRight;
@@ -43,7 +43,7 @@ private string generateAsMethodFor(T)(const string functionName) @safe
 /**
 	Handles the processing of config files.
 */
-struct VariantConfig
+struct KeyValueConfig
 {
 private:
 
@@ -552,8 +552,6 @@ private:
 	bool valuesModified_;
 }
 
-alias KeyValueConfig = VariantConfig; //NOTE: Temporary will remove once conversion is complete.
-
 ///
 unittest
 {
@@ -574,7 +572,7 @@ unittest
 		japan=false
 	";
 
-	VariantConfig config;
+	KeyValueConfig config;
 
 	immutable bool loaded = config.loadString(text);
 	assert(loaded, "Failed to load string!");

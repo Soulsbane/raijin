@@ -6,7 +6,7 @@
 
 module raijin.appconfig;
 
-import raijin.variantconfig;
+import raijin.keyvalueconfig;
 import raijin.configpath;
 
 /**
@@ -87,12 +87,12 @@ public:
 		Returns:
 			A VariantConfig object.
 	*/
-	VariantConfig config() @property
+	KeyValueConfig config() @property
 	{
 		return configFile_;
 	}
 
 private:
-	VariantConfig configFile_;
+	KeyValueConfig configFile_;
 	ConfigPath configPath_;
 }
