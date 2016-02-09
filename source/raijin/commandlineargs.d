@@ -80,7 +80,7 @@ string generateAsMethodFor(T)(const string functionName) @safe
 	}, T.stringof, functionName, T.stringof, T.stringof, functionName);
 }
 
-private string argTypesToString(const string type)
+string argTypesToString(const string type)
 {
 	string[string] typeTable =
 	[
