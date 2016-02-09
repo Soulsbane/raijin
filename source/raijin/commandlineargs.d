@@ -418,20 +418,18 @@ public:
 private:
 	bool checkRequiredArgs() @trusted
 	{
-		bool requiredArgsNotProcessed;
-
 		foreach(key, value; values_)
 		{
 			if(value.required)
 			{
 				writeln("Error: -", key, " is a required argument and must be supplied. Please supply ",
 					"-", key, "or use -help for more information.");
-				requiredArgsNotProcessed = true;
-				break; // If there is one required argument missing the others don't matter so bail out.
+
+				return true;
 			}
 		}
 
-		return requiredArgsNotProcessed;
+		return false;
 	}
 
 private:
