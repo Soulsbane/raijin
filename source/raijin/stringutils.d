@@ -6,11 +6,10 @@
 
 module raijin.stringutils;
 
-import std.string;;
-import std.conv : to;
+import std.string;
+import std.conv;
 import std.range;
-//import std.range.primitives : empty, popFront, front;
-import std.algorithm : canFind, equal, map;
+import std.algorithm;
 
 /**
 	Determines if a string has the value specified

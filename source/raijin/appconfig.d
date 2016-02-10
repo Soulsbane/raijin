@@ -6,6 +6,9 @@
 
 module raijin.appconfig;
 
+import std.stdio;
+import std.path;
+
 import raijin.keyvalueconfig;
 import raijin.configpath;
 

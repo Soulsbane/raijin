@@ -5,10 +5,10 @@
 */
 module raijin.configpath;
 
-import std.path : buildNormalizedPath, baseName, stripExtension;
-import std.file : exists, mkdirRecurse, rmdirRecurse, thisExePath;
+import std.path;
+import std.file;
 
-import standardpaths : writablePath, StandardPath;
+import standardpaths;
 
 /**
 	Allows for the creation and deletion of directories in the users configuration directory.

@@ -7,12 +7,12 @@
 */
 module raijin.commandlineargs;
 
-import std.conv : to;
-import std.string : removechars, stripLeft, stripRight, indexOf;
-import std.algorithm : findSplit;
-import std.stdio : writeln;
+import std.conv;
+import std.string;
+import std.algorithm;
+import std.stdio;
 import std.typecons;
-import std.path : baseName;
+import std.path;
 import std.format;
 
 import raijin.stringutils;

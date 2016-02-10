@@ -6,11 +6,11 @@
 
 module raijin.pathutils;
 
-import std.process : environment;
+import std.process;
 import std.path;
 import std.stdio;
 import std.file;
-import std.algorithm : splitter;
+import std.algorithm;
 import std.string;
 
 /**

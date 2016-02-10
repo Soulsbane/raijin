@@ -6,14 +6,14 @@
 
 module raijin.keyvalueconfig;
 
-import std.conv : to;
-import std.string : lineSplitter, indexOf, strip, startsWith, endsWith, stripLeft, stripRight;
-import std.stdio : File, writeln;
-import std.file : exists, readText;
-import std.algorithm : sort, findSplit, filter, canFind, remove;
-import std.range : take;
-import std.array : empty, array;
-import std.typecons : tuple;
+import std.conv;
+import std.string;
+import std.stdio;
+import std.file;
+import std.algorithm;
+import std.range;
+import std.array;
+import std.typecons;
 import std.format;
 
 import raijin.typeutils;
