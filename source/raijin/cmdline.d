@@ -3,13 +3,42 @@
 */
 module raijin.cmdline;
 
-class CmdLineReader
+import std.stdio;
+import std.string;
+
+class CommandProcessor
 {
 public:
 		this()
 		{
-			
+		}
+
+		void onCommand(const string command)
+		{
+			debug writeln("Received command: ", command);
+		}
+
+		void process()
+		{
+			while(keepProcessing)
+			{
+				string command = readln;
+
+				switch(command.strip)
+				{
+					case "exit":
+						keepProcessing = false;
+						break;
+					default:
+						onCommand(command.strip);
+				}
+			}
+		}
+
+		void quit()
+		{
+
 		}
 private:
-
+	bool keepProcessing = true;
 }
