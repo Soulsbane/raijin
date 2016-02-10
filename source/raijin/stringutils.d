@@ -6,9 +6,10 @@
 
 module raijin.stringutils;
 
-import std.string : indexOf, CaseSensitive;
+import std.string;;
 import std.conv : to;
-import std.range.primitives : empty, popFront, front;
+import std.range;
+//import std.range.primitives : empty, popFront, front;
 import std.algorithm : canFind, equal, map;
 
 /**
@@ -225,10 +226,16 @@ unittest
 	Returns:
 		An array of containing the arguments converted to a string.
 */
-auto toStringAll(T)(T[] args...)
+auto toStringAll(T...)(T args)
 {
-	auto strings = args.map!(a => a.to!string);
-	return strings;
+	string[] output;
+
+	foreach(arg; args)
+	{
+		output ~= to!string(arg);
+	}
+
+	return output;
 }
 
 ///
@@ -236,4 +243,7 @@ unittest
 {
 	auto strings = toStringAll(10, 15);
 	assert(equal(strings, ["10", "15"]));
+
+	auto variousStrings = toStringAll(4.1, true, "hah", 5000);
+	assert(equal(variousStrings, ["4.1", "true", "hah", "5000"]));
 }
