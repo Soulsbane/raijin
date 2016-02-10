@@ -5,6 +5,7 @@ public
 	import raijin.arrayutils;
 	import raijin.appconfig;
 	import raijin.commandlineargs;
+	import raijin.cmdline;
 	import raijin.configpath;
 	import raijin.debugutils;
 	import raijin.fileutils;
