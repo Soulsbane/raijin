@@ -5,6 +5,9 @@ module raijin.cmdline;
 
 import std.stdio;
 import std.string;
+import std.typecons;
+
+alias ShowPrompt = Flag!"showPrompt";
 
 class CommandProcessor
 {
@@ -19,10 +22,16 @@ public:
 			debug writeln("Received command: ", command);
 		}
 
-		void process()
+		void process(ShowPrompt showPrompt = ShowPrompt.yes)
 		{
 			while(keepProcessing)
 			{
+				if(showPrompt)
+				{
+					clear();
+					write("Enter Command>");
+				}
+				
 				string command = readln;
 
 				switch(command.strip)
@@ -36,10 +45,25 @@ public:
 			}
 		}
 
-		void quit()
+		final void quit() @safe
 		{
 			keepProcessing = false;
 		}
+
+
 private:
 	bool keepProcessing = true;
+}
+
+void clear() @safe
+{
+	version(linux)
+	{
+		write("\x1B[2J\x1B[H");
+	}
+
+	version(windows)
+	{
+		// call cls
+	}
 }
