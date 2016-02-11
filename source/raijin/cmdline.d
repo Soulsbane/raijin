@@ -11,6 +11,7 @@ class CommandProcessor
 public:
 		this()
 		{
+			// Start up handler for processing before loop starts.
 		}
 
 		void onCommand(const string command)
@@ -37,7 +38,7 @@ public:
 
 		void quit()
 		{
-
+			keepProcessing = false;
 		}
 private:
 	bool keepProcessing = true;
