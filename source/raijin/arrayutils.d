@@ -16,7 +16,7 @@ import std.algorithm;
 */
 void remove(T)(ref T[] array, T value)
 {
-	long index = array.countUntil(value);
+	size_t index = array.countUntil(value);
 
 	if(index >= 0)
 	{
