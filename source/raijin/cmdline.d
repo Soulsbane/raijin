@@ -55,7 +55,7 @@ private:
 	bool keepProcessing = true;
 }
 
-void clear() @safe
+void clear()
 {
 	version(linux)
 	{
