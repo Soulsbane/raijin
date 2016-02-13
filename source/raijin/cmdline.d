@@ -28,7 +28,7 @@ public:
 			debug writeln("Exiting commmand processing loop!");
 		}
 
-		void process(ShowPrompt showPrompt = ShowPrompt.yes, string promptMsg = "Enter Command>")
+		void processCommands(ShowPrompt showPrompt = ShowPrompt.yes, string promptMsg = "Enter Command>")
 		{
 			while(keepProcessing)
 			{
