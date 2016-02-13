@@ -6,6 +6,7 @@ module raijin.cmdline;
 import std.stdio;
 import std.string;
 import std.typecons;
+import std.range;
 
 alias ShowPrompt = Flag!"showPrompt";
 
@@ -65,4 +66,17 @@ void clear()
 	{
 		// call cls
 	}
+}
+
+bool confirmationPrompt(string msg = "Do you wish to continue(y/n): ")
+{
+	write(msg);
+	auto answer = readln();
+
+	if(answer.front == 'Y' || answer.front == 'y')
+	{
+		return true;
+	}
+
+	return false;
 }
