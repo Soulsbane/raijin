@@ -23,13 +23,18 @@ public:
 			debug writeln("Received command: ", command);
 		}
 
-		void process(ShowPrompt showPrompt = ShowPrompt.yes)
+		void onExitProcessCommands()
+		{
+			debug writeln("Exiting commmand processing loop!");
+		}
+
+		void process(ShowPrompt showPrompt = ShowPrompt.yes, string promptMsg = "Enter Command>")
 		{
 			while(keepProcessing)
 			{
 				if(showPrompt)
 				{
-					write("Enter Command>");
+					write(promptMsg);
 				}
 
 				string command = readln;
@@ -43,6 +48,8 @@ public:
 						onCommand(command.strip);
 				}
 			}
+
+			onExitProcessCommands();
 		}
 
 		final void quit() pure @safe
