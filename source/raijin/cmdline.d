@@ -28,8 +28,15 @@ public:
 			debug writeln("Exiting commmand processing loop!");
 		}
 
+		void onEnterProcessCommands()
+		{
+			debug writeln("Entering commmand processing loop!");
+		}
+
 		void processCommands(ShowPrompt showPrompt = ShowPrompt.yes, string promptMsg = "Enter Command>")
 		{
+			onEnterProcessCommands();
+			
 			while(keepProcessing)
 			{
 				if(showPrompt)
