@@ -28,10 +28,9 @@ public:
 			{
 				if(showPrompt)
 				{
-					clear();
 					write("Enter Command>");
 				}
-				
+
 				string command = readln;
 
 				switch(command.strip)
@@ -45,7 +44,7 @@ public:
 			}
 		}
 
-		final void quit() @safe
+		final void quit() pure @safe
 		{
 			keepProcessing = false;
 		}
