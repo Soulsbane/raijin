@@ -36,13 +36,16 @@ public:
 		void onListCommands()
 		{
 			writeln("Commands:");
-			foreach(validCommand; validCommands_)
+			writeln("\t", "list", " - ", "Lists all available commands.");
+			writeln("\t", "exit", " - ", "Exits the program.");
+
+			foreach(validCommand, description; validCommands_)
 			{
-				writeln("\t", validCommand);
+				writeln("\t", validCommand, " - ", description);
 			}
 		}
 
-		void processCommands(ShowPrompt showPrompt = ShowPrompt.yes, string promptMsg = "Enter Command>")
+		final void processCommands(ShowPrompt showPrompt = ShowPrompt.yes, string promptMsg = "Enter Command>")
 		{
 			onEnterProcessCommands();
 
@@ -87,7 +90,7 @@ public:
 
 		final bool isValidCommand(const string command)
 		{
-			foreach(validCommand; validCommands_)
+			foreach(validCommand, description; validCommands_)
 			{
 				if(validCommand == command)
 				{
@@ -98,9 +101,10 @@ public:
 			return false;
 		}
 
-		void addCommand(const string command)
+		void addCommand(const string command, const string description)
 		{
-			validCommands_ ~= command;
+			validCommands_[command] = description;
+
 		}
 
 		final void quit() pure @safe
@@ -110,7 +114,7 @@ public:
 
 private:
 	bool keepProcessing_ = true;
-	string[] validCommands_;
+	string[string] validCommands_;
 }
 
 void pause(const string msg = "Press enter/return to continue...")
