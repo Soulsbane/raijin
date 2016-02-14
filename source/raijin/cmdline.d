@@ -16,21 +16,36 @@ alias ShowPrompt = Flag!"showPrompt";
 class CommandProcessor
 {
 public:
+	/**
+		Recieves commands sent from processCommands
+
+		Params:
+			command = The command that was sent
+	*/
 	void onCommand(const string command)
 	{
 		debug writeln("Received command: ", command);
 	}
 
+	/**
+		Called by processCommands before commands are handled.
+	*/
 	void onExitProcessCommands()
 	{
 		debug writeln("Exiting commmand processing loop!");
 	}
 
+	/**
+		Called by processCommands after commands are handled.
+	*/
 	void onEnterProcessCommands()
 	{
 		debug writeln("Entering commmand processing loop!");
 	}
 
+	/**
+		Called by processCommands when the "list" command is sent.
+	*/
 	void onListCommands()
 	{
 		writeln("Commands:");
@@ -43,6 +58,13 @@ public:
 		}
 	}
 
+	/**
+		Processes commands sent via the command line.
+
+		Params:
+			showPrompt = Set to yes to show a prompt(A message saying Enter Command> by default). Set to no to ignore prompt.
+			promptMsg = The message to print if showPrompt is enabled.
+	*/
 	final void processCommands(ShowPrompt showPrompt = ShowPrompt.yes, string promptMsg = "Enter Command>")
 	{
 		onEnterProcessCommands();
@@ -86,6 +108,12 @@ public:
 		onExitProcessCommands();
 	}
 
+	/**
+		Determines if a command is valid(added via addCommand).
+
+		Params:
+			command = The command to check for.
+	*/
 	final bool isValidCommand(const string command)
 	{
 		foreach(validCommand, description; validCommands_)
@@ -99,12 +127,22 @@ public:
 		return false;
 	}
 
+	/**
+		Adds a command that should be processed.
+
+		Params:
+			command = The command to add.
+			description = A description of what the command does.
+	*/
 	void addCommand(const string command, const string description)
 	{
 		validCommands_[command] = description;
 
 	}
 
+	/**
+		Called by processCommands when the "exit" command is sent.
+	*/
 	final void quit() pure @safe
 	{
 		keepProcessing_ = false;
@@ -115,12 +153,21 @@ private:
 	string[string] validCommands_;
 }
 
+/**
+	Pauses the program until the enter key is pressed
+
+	Params:
+		msg = The message to display.
+*/
 void pause(const string msg = "Press enter/return to continue...")
 {
 	write(msg);
 	getchar();
 }
 
+/**
+	Clears the terminal of all output.
+*/
 void clear()
 {
 	version(linux)
@@ -134,6 +181,9 @@ void clear()
 	}
 }
 
+/**
+	Display a prompt that contains a yes(Y/y) or no instruction.
+*/
 bool confirmationPrompt(string msg = "Do you wish to continue(y/n): ")
 {
 	write(msg);
