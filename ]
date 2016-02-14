@@ -113,10 +113,12 @@ private:
 	string[] validCommands_;
 }
 
-void pause(const string msg = "Press enter/return to continue...")
+void pause(const string msg = "Press any key to continue...")
 {
+	import core.stdc.stdio;
+
 	write(msg);
-	getchar();
+	stdin.getc();
 }
 
 void clear()
