@@ -37,7 +37,7 @@ public:
 		{
 			onEnterProcessCommands();
 
-			while(keepProcessing)
+			while(keepProcessing_)
 			{
 				if(showPrompt)
 				{
@@ -50,7 +50,7 @@ public:
 					case "exit":
 						quit();
 						break;
-						
+
 					default:
 						if(validCommands_.length) // If there are valid commands in the array the user wants to check if they are valid
 						{
@@ -73,7 +73,7 @@ public:
 			onExitProcessCommands();
 		}
 
-		bool isValidCommand(const string command)
+		final bool isValidCommand(const string command)
 		{
 			foreach(validCommand; validCommands_)
 			{
@@ -93,11 +93,11 @@ public:
 
 		final void quit() pure @safe
 		{
-			keepProcessing = false;
+			keepProcessing_ = false;
 		}
 
 private:
-	bool keepProcessing = true;
+	bool keepProcessing_ = true;
 	string[] validCommands_;
 }
 
