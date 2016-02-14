@@ -9,6 +9,7 @@ import std.typecons;
 import std.range;
 
 alias ShowPrompt = Flag!"showPrompt";
+enum DEFAULT_COMMANDS_COUNT = 3;
 
 /**
 	Manages a loop which processes commands via command line input.
@@ -35,6 +36,13 @@ alias ShowPrompt = Flag!"showPrompt";
 class CommandProcessor
 {
 public:
+	this()
+	{
+		addCommand("list", "Lists all available commands.");
+		addCommand("exit", "Exits the program.");
+		addCommand("quit", "Exits the program.");
+	}
+
 	/**
 		Recieves commands sent from processCommands
 
@@ -68,9 +76,6 @@ public:
 	void onListCommands()
 	{
 		writeln("Commands:");
-		writeln("\t", "list", " - ", "Lists all available commands.");
-		writeln("\t", "exit", " - ", "Exits the program.");
-		writeln("\t", "quit", " - ", "Exits the program.");
 
 		foreach(validCommand, description; validCommands_)
 		{
@@ -107,7 +112,7 @@ public:
 					break;
 
 				default:
-					if(validCommands_.length) // If there are valid commands in the array the user wants to check if they are valid
+					if(validCommands_.length > DEFAULT_COMMANDS_COUNT) // If there are valid commands in the array the user wants to check if they are valid
 					{
 						if(isValidCommand(command))
 						{
