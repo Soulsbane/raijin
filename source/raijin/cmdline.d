@@ -10,107 +10,105 @@ import std.range;
 
 alias ShowPrompt = Flag!"showPrompt";
 
+/**
+	Manages a loop which processes commands via command line input.
+*/
 class CommandProcessor
 {
 public:
-		this()
+	void onCommand(const string command)
+	{
+		debug writeln("Received command: ", command);
+	}
+
+	void onExitProcessCommands()
+	{
+		debug writeln("Exiting commmand processing loop!");
+	}
+
+	void onEnterProcessCommands()
+	{
+		debug writeln("Entering commmand processing loop!");
+	}
+
+	void onListCommands()
+	{
+		writeln("Commands:");
+		writeln("\t", "list", " - ", "Lists all available commands.");
+		writeln("\t", "exit", " - ", "Exits the program.");
+
+		foreach(validCommand, description; validCommands_)
 		{
-			// Start up handler for processing before loop starts.
+			writeln("\t", validCommand, " - ", description);
 		}
+	}
 
-		void onCommand(const string command)
+	final void processCommands(ShowPrompt showPrompt = ShowPrompt.yes, string promptMsg = "Enter Command>")
+	{
+		onEnterProcessCommands();
+
+		while(keepProcessing_)
 		{
-			debug writeln("Received command: ", command);
-		}
-
-		void onExitProcessCommands()
-		{
-			debug writeln("Exiting commmand processing loop!");
-		}
-
-		void onEnterProcessCommands()
-		{
-			debug writeln("Entering commmand processing loop!");
-		}
-
-		void onListCommands()
-		{
-			writeln("Commands:");
-			writeln("\t", "list", " - ", "Lists all available commands.");
-			writeln("\t", "exit", " - ", "Exits the program.");
-
-			foreach(validCommand, description; validCommands_)
+			if(showPrompt)
 			{
-				writeln("\t", validCommand, " - ", description);
+				write(promptMsg);
 			}
-		}
 
-		final void processCommands(ShowPrompt showPrompt = ShowPrompt.yes, string promptMsg = "Enter Command>")
-		{
-			onEnterProcessCommands();
-
-			while(keepProcessing_)
+			string command = readln.strip;
+			switch(command)
 			{
-				if(showPrompt)
-				{
-					write(promptMsg);
-				}
+				case "exit":
+					quit();
+					break;
+				case "list":
+					onListCommands();
+					break;
 
-				string command = readln.strip;
-				switch(command)
-				{
-					case "exit":
-						quit();
-						break;
-					case "list":
-						onListCommands();
-						break;
-
-					default:
-						if(validCommands_.length) // If there are valid commands in the array the user wants to check if they are valid
-						{
-							if(isValidCommand(command))
-							{
-								onCommand(command);
-							}
-							else
-							{
-								writeln("Invalid command!");
-							}
-						}
-						else
+				default:
+					if(validCommands_.length) // If there are valid commands in the array the user wants to check if they are valid
+					{
+						if(isValidCommand(command))
 						{
 							onCommand(command);
 						}
-				}
+						else
+						{
+							writeln("Invalid command!");
+						}
+					}
+					else
+					{
+						onCommand(command);
+					}
 			}
-
-			onExitProcessCommands();
 		}
 
-		final bool isValidCommand(const string command)
+		onExitProcessCommands();
+	}
+
+	final bool isValidCommand(const string command)
+	{
+		foreach(validCommand, description; validCommands_)
 		{
-			foreach(validCommand, description; validCommands_)
+			if(validCommand == command)
 			{
-				if(validCommand == command)
-				{
-					return true;
-				}
+				return true;
 			}
-
-			return false;
 		}
 
-		void addCommand(const string command, const string description)
-		{
-			validCommands_[command] = description;
+		return false;
+	}
 
-		}
+	void addCommand(const string command, const string description)
+	{
+		validCommands_[command] = description;
 
-		final void quit() pure @safe
-		{
-			keepProcessing_ = false;
-		}
+	}
+
+	final void quit() pure @safe
+	{
+		keepProcessing_ = false;
+	}
 
 private:
 	bool keepProcessing_ = true;
