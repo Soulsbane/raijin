@@ -36,7 +36,7 @@ public:
 		void processCommands(ShowPrompt showPrompt = ShowPrompt.yes, string promptMsg = "Enter Command>")
 		{
 			onEnterProcessCommands();
-			
+
 			while(keepProcessing)
 			{
 				if(showPrompt)
@@ -44,19 +44,51 @@ public:
 					write(promptMsg);
 				}
 
-				string command = readln;
-
-				switch(command.strip)
+				string command = readln.strip;
+				switch(command)
 				{
 					case "exit":
-						keepProcessing = false;
+						quit();
 						break;
+						
 					default:
-						onCommand(command.strip);
+						if(validCommands_.length) // If there are valid commands in the array the user wants to check if they are valid
+						{
+							if(isValidCommand(command))
+							{
+								onCommand(command);
+							}
+							else
+							{
+								writeln("Invalid command!");
+							}
+						}
+						else
+						{
+							onCommand(command);
+						}
 				}
 			}
 
 			onExitProcessCommands();
+		}
+
+		bool isValidCommand(const string command)
+		{
+			foreach(validCommand; validCommands_)
+			{
+				if(validCommand == command)
+				{
+					return true;
+				}
+			}
+
+			return false;
+		}
+
+		void addCommand(const string command)
+		{
+			validCommands_ ~= command;
 		}
 
 		final void quit() pure @safe
@@ -64,9 +96,9 @@ public:
 			keepProcessing = false;
 		}
 
-
 private:
 	bool keepProcessing = true;
+	string[] validCommands_;
 }
 
 void clear()
