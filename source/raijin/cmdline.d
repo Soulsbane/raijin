@@ -12,6 +12,25 @@ alias ShowPrompt = Flag!"showPrompt";
 
 /**
 	Manages a loop which processes commands via command line input.
+
+	Examples:
+		--------------------
+		class MyCommand : CommandProcessor
+		{
+			// All on<name> commands can be overriden.
+			override void onCommand(const string command)
+			{
+
+				// Will only print "test" since it is the only command registered.
+				writeln("inherited onCommand: ", command);
+			}
+		}
+
+		auto cmd = new MyCommand;
+
+		cmd.addCommand("test", "this is a test");
+		cmd.processCommands();
+		--------------------
 */
 class CommandProcessor
 {
@@ -51,6 +70,7 @@ public:
 		writeln("Commands:");
 		writeln("\t", "list", " - ", "Lists all available commands.");
 		writeln("\t", "exit", " - ", "Exits the program.");
+		writeln("\t", "quit", " - ", "Exits the program.");
 
 		foreach(validCommand, description; validCommands_)
 		{
@@ -79,7 +99,7 @@ public:
 			string command = readln.strip;
 			switch(command)
 			{
-				case "exit":
+				case "exit", "quit":
 					quit();
 					break;
 				case "list":
