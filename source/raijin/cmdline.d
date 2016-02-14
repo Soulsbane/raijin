@@ -33,6 +33,15 @@ public:
 			debug writeln("Entering commmand processing loop!");
 		}
 
+		void onListCommands()
+		{
+			writeln("Commands:");
+			foreach(validCommand; validCommands_)
+			{
+				writeln("\t", validCommand);
+			}
+		}
+
 		void processCommands(ShowPrompt showPrompt = ShowPrompt.yes, string promptMsg = "Enter Command>")
 		{
 			onEnterProcessCommands();
@@ -49,6 +58,9 @@ public:
 				{
 					case "exit":
 						quit();
+						break;
+					case "list":
+						onListCommands();
 						break;
 
 					default:
