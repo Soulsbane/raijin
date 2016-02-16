@@ -139,7 +139,7 @@ public:
 		Params:
 			command = The command to check for.
 	*/
-	final bool isValidCommand(const string command)
+	final bool isValidCommand(const string command) pure @safe
 	{
 		foreach(validCommand, description; validCommands_)
 		{
@@ -159,10 +159,9 @@ public:
 			command = The command to add.
 			description = A description of what the command does.
 	*/
-	void addCommand(const string command, const string description)
+	void addCommand(const string command, const string description) pure @safe
 	{
 		validCommands_[command] = description;
-
 	}
 
 	/**
