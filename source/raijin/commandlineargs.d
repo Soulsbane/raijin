@@ -15,8 +15,8 @@ import std.typecons;
 import std.path;
 import std.format;
 
-import raijin.stringutils;
-import raijin.typeutils;
+import raijin.utils.string;
+import raijin.utils.type;
 
 alias IgnoreNonArgs = Flag!"IgnoreNonArgs";
 alias AllowInvalidArgs = Flag!"allowInvalidArgs";
