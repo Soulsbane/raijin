@@ -4,7 +4,7 @@
 	Author: Paul Crane
 */
 
-module raijin.fileutils;
+module raijin.utils.file;
 
 import std.file;
 import std.path;

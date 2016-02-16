@@ -4,7 +4,7 @@
 	Author: Paul Crane
 */
 
-module raijin.stringutils;
+module raijin.utils.string;
 
 import std.string;
 import std.conv;

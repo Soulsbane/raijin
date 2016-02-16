@@ -4,7 +4,7 @@
 *	Author: Paul Crane
 */
 
-module raijin.debugutils;
+module raijin.utils.debug;
 
 import std.stdio;
 import std.algorithm;

@@ -4,7 +4,7 @@
 	Author: Paul Crane
 */
 
-module raijin.pathutils;
+module raijin.utils.path;
 
 import std.process;
 import std.path;

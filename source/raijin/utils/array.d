@@ -3,7 +3,7 @@
 
 	Author: Paul Crane
 */
-module raijin.arrayutils;
+module raijin.utils.array;
 
 import std.algorithm;
 

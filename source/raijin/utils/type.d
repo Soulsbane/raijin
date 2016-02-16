@@ -4,7 +4,7 @@
 	Author: Paul Crane
 */
 
-module raijin.typeutils;
+module raijin.utils.type;
 
 import std.typecons;
 import std.traits;
