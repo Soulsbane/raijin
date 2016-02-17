@@ -342,7 +342,7 @@ public:
 			group = Name of the the group to retrieve.
 
 		Returns:
-			Returns an array containing all the key/values associated with group.
+			Returns an array containing KeyValueData structs.
 
 	*/
 	auto getGroup(const string group) @trusted
@@ -570,6 +570,10 @@ unittest
 		#And another comment!
 		world=hello
 		japan=false
+		[group]
+		dog=false
+		#Who doesn't love cats?
+		cat=true
 	";
 
 	KeyValueConfig config;
@@ -603,10 +607,11 @@ unittest
 
 	writeln("Testing getGroup...");
 
-	auto group = config.getGroup("another");
+	auto group = config.getGroup("group");
 
 	foreach(value; group)
 	{
+		writeln(value.comment);
 		writeln(value.key, " = ", value.value);
 	}
 
