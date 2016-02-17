@@ -607,7 +607,7 @@ unittest
 
 	foreach(value; group)
 	{
-		writeln(value);
+		writeln(value.key, " = ", value.value);
 	}
 
 	writeln();
