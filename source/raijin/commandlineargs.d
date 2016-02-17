@@ -264,7 +264,7 @@ public:
 	}
 
 	/**
-		Default print method for printing registered command line options.
+		Should not be called directly. Default print method for printing registered command line options.
 	*/
 	void onPrintHelp()
 	{
@@ -280,7 +280,7 @@ public:
 	}
 
 	/**
-		Prints the program version string when -version argument is passed.
+		Should not be called directly. Prints the program version string when -version argument is passed.
 	*/
 	void onPrintVersion()
 	{
@@ -295,7 +295,11 @@ public:
 	}
 
 	/**
-		Called when an invalid argument is passed on the command line.
+		Should not be called directly. Called when an invalid argument is passed on the command line.
+
+		Params:
+			error = Contains the reason the argument was invalid.
+			command = The argument that was passed.
 	*/
 	void onInvalidArg(const string error, const string command)
 	{
@@ -303,19 +307,30 @@ public:
 	}
 
 	/**
-		Called after all arguments have been processed and no invalid arguments were found.
+		Should not be called directly. Called after all arguments have been processed and no invalid arguments were found.
 	*/
 	void onValidArgs() {}
 
 	/**
-		Called each time a valid argument is passed.
+		Should not be called directly. Called each time a valid argument is passed.
+
+		Params:
+			argument = The argument that was passed.
 	*/
 	void onValidArg(const string argument) {}
 
 	/**
-		Called when no arguments were passed on the command line.
+		Should not be called directly. Called when no arguments were passed on the command line.
 	*/
 	void onNoArgs() {}
+
+	/**
+		Should not be called directly. Called when when an argument does not contain a leading '-' and ignoreNonArgs is enabled.
+
+		Params:
+			argument = The argument that was passed.
+	*/
+	void onNonArg(const string argument) {}
 
 	/**
 		Handles the registration of command line arguments passed to the program.
@@ -345,7 +360,7 @@ public:
 
 				if(element.indexOf("-") == -1 && ignoreNonArgs == true) // Argument has no leading '-' character. Should handle ignoreNonArgs here.
 				{
-					//mixin(breakOnInvalidArg("NON_ARG"));
+					onNonArg(elementParts.key);
 				}
 				else
 				{
