@@ -14,6 +14,7 @@ import std.stdio;
 import std.typecons;
 import std.path;
 import std.format;
+import std.traits;
 
 import raijin.utils.string;
 import raijin.utils.type;
@@ -21,6 +22,9 @@ import raijin.utils.type;
 alias IgnoreNonArgs = Flag!"IgnoreNonArgs";
 alias AllowInvalidArgs = Flag!"allowInvalidArgs";
 alias RequiredArg = Flag!"requiredArg";
+
+alias isBooleanT = std.traits.isBoolean;
+alias isNumericT = std.traits.isNumeric;
 
 /**
 	The type in which each command line argument is stored in.
@@ -214,12 +218,12 @@ public:
 
 		if(defaultValue == string.init)
 		{
-			if(isBoolean!T)
+			if(isBooleanT!T)
 			{
 				value = "false";
 			}
 
-			else if(isNumeric!T)
+			else if(isNumericT!T)
 			{
 				value = "0";
 			}
@@ -262,7 +266,7 @@ public:
 	/**
 		Default print method for printing registered command line options.
 	*/
-	void onPrintHelp() @trusted
+	void onPrintHelp()
 	{
 		writeln("The following options are available:\n");
 
@@ -278,7 +282,7 @@ public:
 	/**
 		Prints the program version string when -version argument is passed.
 	*/
-	void onPrintVersion() @trusted
+	void onPrintVersion()
 	{
 		if(programVersion_ == programVersion_.init)
 		{
@@ -293,7 +297,7 @@ public:
 	/**
 		Called when an invalid argument is passed on the command line.
 	*/
-	void onInvalidArg(const string error, const string command) @trusted
+	void onInvalidArg(const string error, const string command)
 	{
 		writeln("Invalid option ", command, "! ", argTypesToString(error), ". Use -help for a list of available commands.");
 	}
@@ -301,17 +305,17 @@ public:
 	/**
 		Called after all arguments have been processed and no invalid arguments were found.
 	*/
-	void onValidArgs() @trusted {}
+	void onValidArgs() {}
 
 	/**
 		Called each time a valid argument is passed.
 	*/
-	void onValidArg(const string argument) @trusted {}
+	void onValidArg(const string argument) {}
 
 	/**
 		Called when no arguments were passed on the command line.
 	*/
-	void onNoArgs() @trusted {}
+	void onNoArgs() {}
 
 	/**
 		Handles the registration of command line arguments passed to the program.
@@ -339,9 +343,9 @@ public:
 
 				elementParts.key.removeLeadingCharsInPlace('-');
 
-				if(element.indexOf("-") == -1 && ignoreNonArgs == false) // Argument has no leading '-' character. Should handle ignoreNonArgs here.
+				if(element.indexOf("-") == -1 && ignoreNonArgs == true) // Argument has no leading '-' character. Should handle ignoreNonArgs here.
 				{
-					mixin(breakOnInvalidArg("NON_ARG"));
+					//mixin(breakOnInvalidArg("NON_ARG"));
 				}
 				else
 				{
