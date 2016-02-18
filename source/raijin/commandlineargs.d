@@ -85,7 +85,12 @@ string generateAsMethodFor(T)(const string functionName) @safe
 	}, T.stringof, functionName, T.stringof, T.stringof, functionName);
 }
 
-string argTypesToString(const string type)
+/**
+	Returns a string that contains a what the user will see for each error type.
+
+	type = The type of error to retrieve.
+*/
+private string argTypesToString(const string type)
 {
 	string[string] typeTable =
 	[
