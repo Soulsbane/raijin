@@ -4,17 +4,13 @@
 module raijin.timers;
 
 import core.thread;
-import std.datetime;
+import core.time;
 debug import std.stdio;
+
+alias dur = core.time.dur; // Avoids having to import core.time in the user's program.
 
 class RepeatingTimer
 {
-	// Only used for testing will be removed in the future
-	void setTimerName(const string name)
-	{
-		timerName_ = name;
-	}
-
 	void start(const Duration dur)
 	{
 		dur_ = dur;
@@ -22,22 +18,40 @@ class RepeatingTimer
 		thread_.start();
 	}
 
+	void onTimerStart()
+	{
+		debug writeln("Starting timer...");
+	}
+
 	void onTimer()
 	{
-		debug writeln(timerName_);
+		debug writeln(thread_.name);
+	}
+
+	void onTimerStop()
+	{
+		debug writeln("Stopping timer: ", thread_.name);
+	}
+
+	void stop()
+	{
+		running_ = false;
 	}
 
 private:
 	void run()
 	{
+		onTimerStart();
+
 		while(running_)
 		{
 			onTimer();
 			thread_.sleep(dur_);
 		}
+
+		onTimerStop();
 	}
 private:
-	string timerName_;
 	bool running_ = true;
 	Thread thread_;
 	Duration dur_;
