@@ -7,6 +7,7 @@ import std.stdio;
 import std.string;
 import std.typecons;
 import std.range;
+import core.thread;
 
 alias ShowPrompt = Flag!"showPrompt";
 enum DEFAULT_COMMANDS_COUNT = 3;
@@ -92,17 +93,26 @@ public:
 	*/
 	final void processCommands(ShowPrompt showPrompt = ShowPrompt.yes, string promptMsg = "Enter Command>")
 	{
+		showPrompt_ = showPrompt;
+		promptMsg_ = promptMsg;
+
+		thread_ = new Thread(&run);
+		thread_.start();
+	}
+
+	private void run()
+	{
 		onEnterProcessCommands();
 
 		while(keepProcessing_)
 		{
-			if(showPrompt)
+			if(showPrompt_)
 			{
-				write(promptMsg);
+				write(promptMsg_);
 			}
 
 			immutable string command = readln.strip;
-			
+
 			switch(command)
 			{
 				case "exit", "quit":
@@ -133,7 +143,6 @@ public:
 
 		onExitProcessCommands();
 	}
-
 	/**
 		Determines if a command is valid(added via addCommand).
 
@@ -175,7 +184,10 @@ public:
 
 private:
 	bool keepProcessing_ = true;
+	string promptMsg_;
+	ShowPrompt showPrompt_;
 	string[string] validCommands_;
+	Thread thread_;
 }
 
 /**
