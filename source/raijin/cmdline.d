@@ -101,7 +101,8 @@ public:
 				write(promptMsg);
 			}
 
-			string command = readln.strip;
+			immutable string command = readln.strip;
+			
 			switch(command)
 			{
 				case "exit", "quit":
