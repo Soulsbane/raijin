@@ -30,9 +30,10 @@ alias dur = core.time.dur; // Avoids having to import core.time in the user's pr
 */
 class RepeatingTimer
 {
-	void start(const Duration dur, const string name = string.init)
+	void start(const Duration dur, const Duration initialDelay = dur!("seconds")(0), const string name = string.init)
 	{
 		dur_ = dur;
+		initialDelay_ = initialDelay;
 		thread_ = new Thread(&run);
 
 		setName(name);
@@ -74,6 +75,11 @@ private:
 
 	void run()
 	{
+		if(initialDelay_ != seconds(0))
+		{
+			thread_.sleep(initialDelay_);
+		}
+
 		onTimerStart();
 
 		while(running_)
@@ -88,4 +94,5 @@ private:
 	bool running_ = true;
 	Thread thread_;
 	Duration dur_;
+	Duration initialDelay_;
 }
