@@ -30,16 +30,18 @@ alias dur = core.time.dur; // Avoids having to import core.time in the user's pr
 */
 class RepeatingTimer
 {
-	void start(const Duration dur)
+	void start(const Duration dur, const string name = string.init)
 	{
 		dur_ = dur;
 		thread_ = new Thread(&run);
+
+		setName(name);
 		thread_.start();
 	}
 
 	void onTimerStart()
 	{
-		debug writeln("Starting timer...");
+		debug writeln("Starting timer:", thread_.name);
 	}
 
 	void onTimer()
@@ -58,6 +60,18 @@ class RepeatingTimer
 	}
 
 private:
+	void setName(const string name)
+	{
+		if(name == string.init)
+		{
+			thread_.name = this.toString;
+		}
+		else
+		{
+			thread_.name = name;
+		}
+	}
+
 	void run()
 	{
 		onTimerStart();
