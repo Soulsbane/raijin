@@ -35,4 +35,7 @@ unittest
 
 	test2.remove("two");
 	assert(test2 == ["one", "three"]);
+
+	test3.remove(2.2);
+	assert(test3 == [1.1, 3.3]);
 }
