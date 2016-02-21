@@ -65,7 +65,8 @@ private:
 	{
 		if(name == string.init)
 		{
-			thread_.name = this.toString;
+			import std.string : chompPrefix;
+			thread_.name = this.toString.chompPrefix("app.");
 		}
 		else
 		{
