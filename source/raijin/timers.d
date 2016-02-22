@@ -76,6 +76,13 @@ class RepeatingTimer
 		thread_.name = this.toString.chompPrefix("app.");
 	}
 
+	/**
+		Starts the timer
+
+		Params:
+			dur = How often onTimer should be called.
+			initialDelay = The time to wait before starting timer repeating.
+	*/
 	void start(const Duration dur = dur!("seconds")(1), const Duration initialDelay = dur!("seconds")(0))
 	{
 		dur_ = dur;
@@ -84,38 +91,59 @@ class RepeatingTimer
 		thread_.start();
 	}
 
+	/**
+		Called when the timer starts.
+	*/
 	void onTimerStart()
 	{
 		debug writeln("Starting timer:", name);
 	}
 
+	/**
+		Called each every Duration specified.
+	*/
 	void onTimer()
 	{
 		debug writeln(name);
 	}
 
+	/**
+		Called when the timer stops.
+	*/
 	void onTimerStop()
 	{
 		debug writeln("Stopping timer: ", name);
 	}
 
+	/**
+		Stops the timer.
+	*/
 	void stop()
 	{
 		running_ = false;
 	}
 
 protected:
+	/**
+		Returns the name of the thread(this.toString by default).
+	*/
 	string name() @property
 	{
 		return thread_.name;
 	}
 
+	/**
+		Sets the threads name.
+	*/
 	void name(const string name) @property
 	{
 		thread_.name = name;
 	}
 
 private:
+	/**
+		Called when thread is created.
+	*/
 	void run()
 	{
 		if(initialDelay_ != seconds(0))
@@ -149,18 +177,30 @@ class CountdownTimer
 		thread_.name = this.toString.chompPrefix("app.");
 	}
 
+	/**
+		Starts the timer
+
+		Params:
+			waitTime = How long to wait before calling onTimer.
+	*/
 	void start(const Duration waitTime)
 	{
 		waitTime_ = waitTime;
 		thread_.start();
 	}
 
+	/**
+		Called after time has elapsed set it start's waitTime parameter.
+	*/
 	void onCountdownFinished()
 	{
 		debug writeln("Countdown finished: ", name);
 	}
 
 private:
+	/**
+		Called when thread is created.
+	*/
 	void run()
 	{
 		thread_.sleep(waitTime_);
@@ -168,11 +208,17 @@ private:
 	}
 
 protected:
+	/**
+		Returns the name of the thread(this.toString by default).
+	*/
 	string name() @property
 	{
 		return thread_.name;
 	}
 
+	/**
+		Sets the threads name.
+	*/
 	void name(const string name) @property
 	{
 		thread_.name = name;
