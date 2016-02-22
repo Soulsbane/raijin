@@ -5,6 +5,7 @@ module raijin.timers;
 
 import core.thread;
 import core.time;
+import std.string;
 debug import std.stdio;
 
 alias dur = core.time.dur; // Avoids having to import core.time in the user's program.
@@ -30,29 +31,33 @@ alias dur = core.time.dur; // Avoids having to import core.time in the user's pr
 */
 class RepeatingTimer
 {
-	void start(const Duration dur, const Duration initialDelay = dur!("seconds")(0), const string name = string.init)
+	this()
+	{
+		thread_ = new Thread(&run);
+		thread_.name = this.toString.chompPrefix("app.");
+	}
+
+	void start(const Duration dur = dur!("seconds")(1), const Duration initialDelay = dur!("seconds")(0))
 	{
 		dur_ = dur;
 		initialDelay_ = initialDelay;
-		thread_ = new Thread(&run);
 
-		setName(name);
 		thread_.start();
 	}
 
 	void onTimerStart()
 	{
-		debug writeln("Starting timer:", thread_.name);
+		debug writeln("Starting timer:", name);
 	}
 
 	void onTimer()
 	{
-		debug writeln(thread_.name);
+		debug writeln(name);
 	}
 
 	void onTimerStop()
 	{
-		debug writeln("Stopping timer: ", thread_.name);
+		debug writeln("Stopping timer: ", name);
 	}
 
 	void stop()
@@ -60,20 +65,18 @@ class RepeatingTimer
 		running_ = false;
 	}
 
-private:
-	void setName(const string name)
+protected:
+	string name() @property
 	{
-		if(name == string.init)
-		{
-			import std.string : chompPrefix;
-			thread_.name = this.toString.chompPrefix("app.");
-		}
-		else
-		{
-			thread_.name = name;
-		}
+		return thread_.name;
 	}
 
+	void name(const string name) @property
+	{
+		thread_.name = name;
+	}
+
+private:
 	void run()
 	{
 		if(initialDelay_ != seconds(0))
@@ -91,9 +94,52 @@ private:
 
 		onTimerStop();
 	}
+
 private:
 	bool running_ = true;
 	Thread thread_;
 	Duration dur_;
 	Duration initialDelay_;
+}
+
+class CountdownTimer
+{
+	this()
+	{
+		thread_ = new Thread(&run);
+		thread_.name = this.toString.chompPrefix("app.");
+	}
+
+	void start(const Duration waitTime)
+	{
+		waitTime_ = waitTime;
+		thread_.start();
+	}
+
+	void onCountdownFinished()
+	{
+		debug writeln("Countdown finished: ", name);
+	}
+
+private:
+	void run()
+	{
+		thread_.sleep(waitTime_);
+		onCountdownFinished();
+	}
+
+protected:
+	string name() @property
+	{
+		return thread_.name;
+	}
+
+	void name(const string name) @property
+	{
+		thread_.name = name;
+	}
+
+private:
+	Thread thread_;
+	Duration waitTime_;
 }
