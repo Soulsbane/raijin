@@ -34,14 +34,6 @@ alias dur = core.time.dur; // Avoids having to import core.time in the user's pr
 		{
 		}
 
-		class CustomCountdown : CountdownTimer
-		{
-			override void onCountdownFinished()
-			{
-				writeln("My onCountdownFinished = ", name);
-			}
-		}
-
 		void main()
 		{
 			auto myDelay = dur!("seconds")(1);
@@ -57,12 +49,6 @@ alias dur = core.time.dur; // Avoids having to import core.time in the user's pr
 
 			auto delay = dur!("seconds")(1);
 			auto countdownDelay = dur!("seconds")(3);
-
-			auto countdown = new CountdownTimer;
-			countdown.start(delay);
-
-			auto custom = new CustomCountdown;
-			custom.start(delay);
 
 			writeln("HELLO");
 		}
@@ -169,6 +155,32 @@ private:
 	Duration initialDelay_;
 }
 
+/**
+	Creates a timer that fires onCountdownFinished after the specified time is elapsed.
+
+	Examples:
+		--------------------------------------
+		import std.stdio;
+		import raijin;
+
+		class CustomCountdown : CountdownTimer
+		{
+			override void onCountdownFinished()
+			{
+				writeln("My onCountdownFinished = ", name);
+			}
+		}
+
+		void main()
+		{
+			auto countdown = new CountdownTimer;
+			countdown.start(delay);
+
+			auto custom = new CustomCountdown;
+			custom.start(delay);
+		}
+		--------------------------------------
+*/
 class CountdownTimer
 {
 	this()
