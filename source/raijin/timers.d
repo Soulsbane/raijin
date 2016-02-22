@@ -173,6 +173,8 @@ private:
 
 		void main()
 		{
+			auto delay = dur!("seconds")(1);
+			
 			auto countdown = new CountdownTimer;
 			countdown.start(delay);
 
