@@ -66,8 +66,8 @@ class RepeatingTimer
 		Starts the timer
 
 		Params:
-			dur = How often onTimer should be called.
-			initialDelay = The time to wait before starting timer repeating.
+			dur = $(LINK2 http://dlang.org/phobos/core_time.html#.Duration, Duration) in which onTimer should be called.
+			initialDelay = The $(LINK2 http://dlang.org/phobos/core_time.html#.Duration, Duration) to wait before starting the timer.
 	*/
 	void start(const Duration dur = dur!("seconds")(1), const Duration initialDelay = dur!("seconds")(0))
 	{
@@ -193,7 +193,7 @@ class CountdownTimer
 		Starts the timer
 
 		Params:
-			waitTime = How long to wait before calling onTimer.
+			waitTime = $(LINK2 http://dlang.org/phobos/core_time.html#.Duration, Duration) to wait before calling onTimer.
 	*/
 	void start(const Duration waitTime)
 	{
