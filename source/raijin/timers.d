@@ -15,18 +15,57 @@ alias dur = core.time.dur; // Avoids having to import core.time in the user's pr
 
 	Examples:
 		--------------------------------------
+		import std.stdio;
+		import raijin;
+
 		class MyRepeatingTimer : RepeatingTimer
 		{
+			this()
+			{
+				name = "This is the name MyRepeatingTimer";
+			}
 			override void onTimer()
 			{
-				writeln("MyRepeatingTimer");
+				writeln(name);
 			}
 		}
 
-		auto delay = dur!("seconds")(1);
+		class InitialDelayRepeatingTimer : RepeatingTimer
+		{
+		}
 
-		auto myTimer = new MyRepeatingTimer;
-		myTimer.start(delay);
+		class CustomCountdown : CountdownTimer
+		{
+			override void onCountdownFinished()
+			{
+				writeln("My onCountdownFinished = ", name);
+			}
+		}
+
+		void main()
+		{
+			auto myDelay = dur!("seconds")(1);
+
+			auto myTimer = new MyRepeatingTimer;
+
+			myTimer.start(myDelay);
+
+			auto initialDelayTimer = new InitialDelayRepeatingTimer ;
+			auto initialDelay = dur!("seconds")(3);
+
+			initialDelayTimer.start(myDelay, initialDelay);
+
+			auto delay = dur!("seconds")(1);
+			auto countdownDelay = dur!("seconds")(3);
+
+			auto countdown = new CountdownTimer;
+			countdown.start(delay);
+
+			auto custom = new CustomCountdown;
+			custom.start(delay);
+
+			writeln("HELLO");
+		}
 		--------------------------------------
 */
 class RepeatingTimer
