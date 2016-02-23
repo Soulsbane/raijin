@@ -10,7 +10,7 @@ import std.range;
 import core.thread;
 
 alias ShowPrompt = Flag!"showPrompt";
-enum DEFAULT_COMMANDS_COUNT = 3;
+enum DEFAULT_COMMANDS_COUNT = 3; /// The number of commands registered by default with addCommand in constructor.
 
 /**
 	Manages a loop which processes commands via command line input.
@@ -123,7 +123,7 @@ public:
 					break;
 
 				default:
-					if(validCommands_.length > DEFAULT_COMMANDS_COUNT) // If there are valid commands in the array the user wants to check if they are valid
+					if(validCommands_.length > DEFAULT_COMMANDS_COUNT) // If length is greater the user added a command so process it.
 					{
 						if(isValidCommand(command))
 						{
