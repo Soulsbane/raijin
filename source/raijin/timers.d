@@ -1,5 +1,6 @@
 /**
 	Add support for creating a repeating timer.
+	FIXME: Currently timers use sleep internally. This will be replaced in the future with a time based solution.
 */
 module raijin.timers;
 
@@ -174,7 +175,7 @@ private:
 		void main()
 		{
 			auto delay = dur!("seconds")(1);
-			
+
 			auto countdown = new CountdownTimer;
 			countdown.start(delay);
 
