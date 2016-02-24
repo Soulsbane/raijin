@@ -143,6 +143,8 @@ private:
 
 		while(running_)
 		{
+			thread_.sleep(dur!("msecs")(10)); // Throttle so we don't take up too much CPU
+
 			MonoTime after = MonoTime.currTime;
 			Duration dur = after - before;
 
@@ -231,6 +233,8 @@ private:
 
 		while(running_)
 		{
+			thread_.sleep(dur!("msecs")(10)); // Throttle so we don't take up too much CPU
+
 			MonoTime after = MonoTime.currTime;
 			Duration dur = after - before;
 
