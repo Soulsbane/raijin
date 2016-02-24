@@ -1,6 +1,5 @@
 /**
 	Add support for creating a repeating timer.
-	FIXME: Currently timers use sleep internally. This will be replaced in the future with a time based solution.
 */
 module raijin.timers;
 
@@ -140,10 +139,20 @@ private:
 
 		onTimerStart();
 
+		MonoTime before = MonoTime.currTime;
+
 		while(running_)
 		{
-			onTimer();
-			thread_.sleep(dur_);
+			MonoTime after = MonoTime.currTime;
+			Duration dur = after - before;
+
+			if(dur >= dur_)
+			{
+				onTimer();
+
+				before = MonoTime.currTime;
+				after = MonoTime.currTime;
+			}
 		}
 
 		onTimerStop();
@@ -218,8 +227,19 @@ private:
 	*/
 	void run()
 	{
-		thread_.sleep(waitTime_);
-		onCountdownFinished();
+		MonoTime before = MonoTime.currTime;
+
+		while(running_)
+		{
+			MonoTime after = MonoTime.currTime;
+			Duration dur = after - before;
+
+			if(dur >= waitTime_)
+			{
+				onCountdownFinished();
+				running_ = false;
+			}
+		}
 	}
 
 protected:
@@ -240,6 +260,7 @@ protected:
 	}
 
 private:
+	bool running_ = true;
 	Thread thread_;
 	Duration waitTime_;
 }
