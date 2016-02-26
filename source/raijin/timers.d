@@ -55,7 +55,7 @@ alias dur = core.time.dur; // Avoids having to import core.time in the user's pr
 		}
 		--------------------------------------
 */
-class RepeatingTimer
+abstract class RepeatingTimer
 {
 	this()
 	{
@@ -198,7 +198,7 @@ private:
 		}
 		--------------------------------------
 */
-class CountdownTimer
+abstract class CountdownTimer
 {
 	this()
 	{
