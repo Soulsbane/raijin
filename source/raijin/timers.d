@@ -111,7 +111,7 @@ class RepeatingTimer
 
 protected:
 	/**
-		Returns the name of the thread(this.toString by default).
+		Returns the name of the timer(this.toString by default).
 	*/
 	string name() @property
 	{
@@ -128,7 +128,7 @@ protected:
 
 private:
 	/**
-		Called when thread is created.
+		Called when the timer is created.
 	*/
 	void run()
 	{
@@ -225,7 +225,7 @@ class CountdownTimer
 
 private:
 	/**
-		Called when thread is created.
+		Called when the timer is created.
 	*/
 	void run()
 	{
@@ -248,7 +248,7 @@ private:
 
 protected:
 	/**
-		Returns the name of the thread(this.toString by default).
+		Returns the name of the timer(this.toString by default).
 	*/
 	string name() @property
 	{
@@ -256,7 +256,7 @@ protected:
 	}
 
 	/**
-		Sets the threads name.
+		Sets the timers name.
 	*/
 	void name(const string name) @property
 	{
