@@ -5,6 +5,7 @@ module raijin.timers;
 
 import core.thread;
 import core.time;
+import core.sync.semaphore;
 import std.string;
 debug import std.stdio;
 
@@ -60,6 +61,7 @@ class RepeatingTimer
 	{
 		thread_ = new Thread(&run);
 		thread_.name = this.toString.chompPrefix("app.");
+		semaphore_ = new Semaphore;
 	}
 
 	/**
@@ -143,7 +145,7 @@ private:
 
 		while(running_)
 		{
-			thread_.sleep(dur!("msecs")(10)); // Throttle so we don't take up too much CPU
+			semaphore_.wait(dur!("msecs")(10));
 
 			MonoTime after = MonoTime.currTime;
 			Duration dur = after - before;
@@ -163,6 +165,7 @@ private:
 private:
 	bool running_ = true;
 	Thread thread_;
+	Semaphore semaphore_;
 	Duration dur_;
 	Duration initialDelay_;
 }
@@ -201,6 +204,7 @@ class CountdownTimer
 	{
 		thread_ = new Thread(&run);
 		thread_.name = this.toString.chompPrefix("app.");
+		semaphore_ = new Semaphore;
 	}
 
 	/**
@@ -233,7 +237,7 @@ private:
 
 		while(running_)
 		{
-			thread_.sleep(dur!("msecs")(10)); // Throttle so we don't take up too much CPU
+			semaphore_.wait(dur!("msecs")(10));
 
 			MonoTime after = MonoTime.currTime;
 			Duration dur = after - before;
@@ -266,5 +270,6 @@ protected:
 private:
 	bool running_ = true;
 	Thread thread_;
+	Semaphore semaphore_;
 	Duration waitTime_;
 }
