@@ -78,6 +78,13 @@ class RepeatingTimer
 		thread_.start();
 	}
 
+	/**
+		Sets a callback to a function instead of having to inherit from class.
+
+		Params:
+			callBackName = Name of the callback to use(valid values are: onTimer, onTimerStart or onTimerStop).
+			callback = The function to be called.
+	*/
 	void setCallBack(const string callBackName, VoidCallBack callback)
 	{
 		final switch(callBackName)
@@ -257,6 +264,13 @@ class CountdownTimer
 		thread_.start();
 	}
 
+	/**
+		Sets a callback to a function instead of having to inherit from class.
+
+		Params:
+			callBackName = Name of the callback to use(valid values are: onTimer, onTimerStart or onTimerStop).
+			callback = The function to be called.
+	*/
 	void setCallBack(const string callBackName, VoidCallBack callback)
 	{
 		final switch(callBackName)
