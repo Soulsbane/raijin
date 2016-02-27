@@ -9,6 +9,7 @@ import std.string;
 debug import std.stdio;
 
 alias dur = core.time.dur; // Avoids having to import core.time in the user's program.
+alias VoidCallBack = void function();
 
 /**
 	A class for creating a RepeatingTimer.
@@ -77,6 +78,22 @@ class RepeatingTimer
 		thread_.start();
 	}
 
+	void setCallBack(const string callBackName, VoidCallBack callback)
+	{
+		final switch(callBackName)
+		{
+			case "onTimer":
+				onTimer_ = callback;
+				break;
+			case "onTimerStart":
+				onTimerStart_ = callback;
+				break;
+			case "onTimerStop":
+				onTimerStop_ = callback;
+				break;
+		}
+	}
+
 	/**
 		Called when the timer starts.
 	*/
@@ -137,7 +154,14 @@ private:
 			thread_.sleep(initialDelay_);
 		}
 
-		onTimerStart();
+		if(onTimerStart_ == null)
+		{
+			onTimerStart();
+		}
+		else
+		{
+			onTimerStart_();
+		}
 
 		MonoTime before = MonoTime.currTime;
 
@@ -150,14 +174,28 @@ private:
 
 			if(dur >= dur_)
 			{
-				onTimer();
+				if(onTimer_ == null)
+				{
+					onTimer();
+				}
+				else
+				{
+					onTimer_();
+				}
 
 				before = MonoTime.currTime;
 				after = MonoTime.currTime;
 			}
 		}
 
-		onTimerStop();
+		if(onTimerStop_ == null)
+		{
+			onTimerStop();
+		}
+		else
+		{
+			onTimerStop_();
+		}
 	}
 
 private:
@@ -165,6 +203,10 @@ private:
 	Thread thread_;
 	Duration dur_;
 	Duration initialDelay_;
+
+	VoidCallBack onTimer_;
+	VoidCallBack onTimerStart_;
+	VoidCallBack onTimerStop_;
 }
 
 /**
@@ -215,6 +257,16 @@ class CountdownTimer
 		thread_.start();
 	}
 
+	void setCallBack(const string callBackName, VoidCallBack callback)
+	{
+		final switch(callBackName)
+		{
+			case "onCountdownFinished":
+				onCountdownFinished_ = callback;
+				break;
+		}
+	}
+
 	/**
 		Called after time has elapsed set it start's waitTime parameter.
 	*/
@@ -240,7 +292,14 @@ private:
 
 			if(dur >= waitTime_)
 			{
-				onCountdownFinished();
+				if(onCountdownFinished_ == null)
+				{
+					onCountdownFinished();
+				}
+				else
+				{
+					onCountdownFinished_();
+				}
 				running_ = false;
 			}
 		}
@@ -267,4 +326,6 @@ private:
 	bool running_ = true;
 	Thread thread_;
 	Duration waitTime_;
+
+	VoidCallBack onCountdownFinished_;
 }
