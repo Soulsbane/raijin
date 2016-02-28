@@ -288,7 +288,14 @@ class CountdownTimer
 	{
 		debug writeln("Countdown finished: ", name);
 	}
-
+	
+	/**
+		Stops the timer.
+	*/
+	void stop()
+	{
+		running_ = false;
+	}
 private:
 	/**
 		Called when the timer is created.
