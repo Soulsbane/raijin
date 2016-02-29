@@ -83,7 +83,7 @@ class RepeatingTimer
 
 		Params:
 			callBackName = Name of the callback to use(valid values are: onTimer, onTimerStart or onTimerStop).
-			callback = The function to be called.
+			callback = The function to be called. Function must take no arguments and have void return type.
 	*/
 	void setCallBack(const string callBackName, VoidCallBack callback)
 	{
@@ -269,7 +269,7 @@ class CountdownTimer
 
 		Params:
 			callBackName = Name of the callback to use(valid values are: onTimer, onTimerStart or onTimerStop).
-			callback = The function to be called.
+			callback = The function to be called. Function must take no arguments and have void return type.
 	*/
 	void setCallBack(const string callBackName, VoidCallBack callback)
 	{
@@ -288,7 +288,7 @@ class CountdownTimer
 	{
 		debug writeln("Countdown finished: ", name);
 	}
-	
+
 	/**
 		Stops the timer.
 	*/
