@@ -246,3 +246,24 @@ unittest
 	auto variousStrings = toStringAll(4.1, true, "hah", 5000);
 	assert(equal(variousStrings, ["4.1", "true", "hah", "5000"]));
 }
+
+/**
+	Converts a boolean value to a Yes or No string.
+
+	Params:
+		value = The boolean value to convert.
+
+	Returns:
+		Either a Yes for a true value or No for a false value.
+*/
+string toYesNo(const bool value)
+{
+	return value ? "Yes" : "No";
+}
+
+///
+unittest
+{
+	assert(true.toYesNo == "Yes");
+	assert(false.toYesNo == "No");
+}
