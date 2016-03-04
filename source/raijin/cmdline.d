@@ -49,26 +49,17 @@ public:
 		Params:
 			command = The command that was sent
 	*/
-	void onCommand(const string command, const string[] args)
-	{
-		debug writeln("Received command: ", command);
-	}
+	abstract void onCommand(const string command, const string[] args);
 
 	/**
 		Called by processCommands before commands are handled.
 	*/
-	void onExitProcessCommands()
-	{
-		debug writeln("Exiting commmand processing loop!");
-	}
+	void onExitProcessCommands() {}
 
 	/**
 		Called by processCommands after commands are handled.
 	*/
-	void onEnterProcessCommands()
-	{
-		debug writeln("Entering commmand processing loop!");
-	}
+	void onEnterProcessCommands() {}
 
 	/**
 		Called by processCommands when the "list" command is sent.
