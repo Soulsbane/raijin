@@ -178,13 +178,11 @@ public:
 	void addCommand(const string command, const string description)// pure @safe
 	{
 		validCommands_[command] = description;
-		writeln("ADD COMMAND: ", command);
 	}
 
 	void removeCommand(const string command)
 	{
 		validCommands_.remove(command);
-		writeln("REMOVED COMMAND: ", command);
 	}
 
 	/**
