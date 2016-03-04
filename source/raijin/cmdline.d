@@ -115,31 +115,35 @@ public:
 			immutable string command = commands[0];
 			immutable string[] args = commands[1..$];
 
-			switch(command)
+			if(command == "exit" && isValidCommand("exit")) // Make sure one of the default commands weren't removed before calling quit.
 			{
-				case "exit", "quit":
-					quit();
-					break;
-				case "list":
-					onListCommands();
-					break;
-
-				default:
-					if(validCommands_.length > DEFAULT_COMMANDS_COUNT) // If length is greater the user added a command so process it.
-					{
-						if(isValidCommand(command))
-						{
-							onCommand(command, args);
-						}
-						else
-						{
-							writeln("Invalid command!");
-						}
-					}
-					else
+				quit();
+			}
+			else if(command == "quit" && isValidCommand("quit"))
+			{
+				quit();
+			}
+			else if(command == "list" && isValidCommand("list"))
+			{
+				onListCommands();
+			}
+			else
+			{
+				if(validCommands_.length > DEFAULT_COMMANDS_COUNT) // If length is greater the user added a command so process it.
+				{
+					if(isValidCommand(command))
 					{
 						onCommand(command, args);
 					}
+					else
+					{
+						writeln("Invalid command!");
+					}
+				}
+				else
+				{
+					onCommand(command, args);
+				}
 			}
 		}
 
@@ -171,9 +175,16 @@ public:
 			command = The command to add.
 			description = A description of what the command does.
 	*/
-	void addCommand(const string command, const string description) pure @safe
+	void addCommand(const string command, const string description)// pure @safe
 	{
 		validCommands_[command] = description;
+		writeln("ADD COMMAND: ", command);
+	}
+
+	void removeCommand(const string command)
+	{
+		validCommands_.remove(command);
+		writeln("REMOVED COMMAND: ", command);
 	}
 
 	/**
