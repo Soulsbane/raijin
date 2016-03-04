@@ -20,11 +20,10 @@ enum DEFAULT_COMMANDS_COUNT = 3; /// The number of commands registered by defaul
 		class MyCommand : CommandProcessor
 		{
 			// All on<name> commands can be overriden.
-			override void onCommand(const string command)
+			override void onCommand(const string command, const string[] args)
 			{
-
 				// Will only print "test" since it is the only command registered.
-				writeln("inherited onCommand: ", command);
+				writeln("Command: ", command, " Args: ", args);
 			}
 		}
 
@@ -50,7 +49,7 @@ public:
 		Params:
 			command = The command that was sent
 	*/
-	void onCommand(const string command)
+	void onCommand(const string command, const string[] args)
 	{
 		debug writeln("Received command: ", command);
 	}
@@ -111,7 +110,10 @@ public:
 				write(promptMsg_);
 			}
 
-			immutable string command = readln.strip;
+			immutable string input = readln.strip;
+			immutable string[] commands = input.split(' ');
+			immutable string command = commands[0];
+			immutable string[] args = commands[1..$];
 
 			switch(command)
 			{
@@ -127,7 +129,7 @@ public:
 					{
 						if(isValidCommand(command))
 						{
-							onCommand(command);
+							onCommand(command, args);
 						}
 						else
 						{
@@ -136,7 +138,7 @@ public:
 					}
 					else
 					{
-						onCommand(command);
+						onCommand(command, args);
 					}
 			}
 		}
