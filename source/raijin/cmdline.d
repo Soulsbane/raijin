@@ -37,6 +37,7 @@ class CommandProcessor
 public:
 	this()
 	{
+		addCommand("clear", "Clear screen of output and display command prompt.");
 		addCommand("list", "Lists all available commands.");
 		addCommand("exit", "Exits the program.");
 		addCommand("quit", "Exits the program.");
@@ -118,6 +119,10 @@ public:
 			else if(command == "list" && isValidCommand("list"))
 			{
 				onListCommands();
+			}
+			else if(command == "clear" && isValidCommand("clear"))
+			{
+				clear();
 			}
 			else
 			{
