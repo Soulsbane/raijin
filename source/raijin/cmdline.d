@@ -10,7 +10,6 @@ import std.range;
 import core.thread;
 
 alias ShowPrompt = Flag!"showPrompt";
-enum DEFAULT_COMMANDS_COUNT = 3; /// The number of commands registered by default with addCommand in constructor.
 
 /**
 	Manages a loop which processes commands via command line input.
@@ -41,6 +40,8 @@ public:
 		addCommand("list", "Lists all available commands.");
 		addCommand("exit", "Exits the program.");
 		addCommand("quit", "Exits the program.");
+
+		defaultCommandsCount_ = validCommands_.length;
 	}
 
 	/**
@@ -120,7 +121,7 @@ public:
 			}
 			else
 			{
-				if(validCommands_.length > DEFAULT_COMMANDS_COUNT) // If length is greater the user added a command so process it.
+				if(validCommands_.length > defaultCommandsCount_) // If length is greater the user added a command so process it.
 				{
 					if(isValidCommand(command))
 					{
@@ -189,6 +190,7 @@ private:
 	string promptMsg_;
 	ShowPrompt showPrompt_;
 	string[string] validCommands_;
+	size_t defaultCommandsCount_;
 	Thread thread_;
 }
 
