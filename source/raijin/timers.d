@@ -104,26 +104,17 @@ class RepeatingTimer
 	/**
 		Called when the timer starts.
 	*/
-	void onTimerStart()
-	{
-		debug writeln("Starting timer:", name);
-	}
+	void onTimerStart() {}
 
 	/**
 		Called each every Duration specified.
 	*/
-	void onTimer()
-	{
-		debug writeln(name);
-	}
+	void onTimer() {}
 
 	/**
 		Called when the timer stops.
 	*/
-	void onTimerStop()
-	{
-		debug writeln("Stopping timer: ", name);
-	}
+	void onTimerStop() {}
 
 	/**
 		Stops the timer.
@@ -284,10 +275,7 @@ class CountdownTimer
 	/**
 		Called after time has elapsed set it start's waitTime parameter.
 	*/
-	void onCountdownFinished()
-	{
-		debug writeln("Countdown finished: ", name);
-	}
+	void onCountdownFinished() {}
 
 	/**
 		Stops the timer.
