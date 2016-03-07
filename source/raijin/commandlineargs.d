@@ -322,7 +322,7 @@ public:
 		Params:
 			argument = The argument that was passed.
 	*/
-	void onValidArg(const string argument) {}
+	void onValidArg(const string argument, const DynamicType value) {}
 
 	/**
 		Should not be called directly. Called when no arguments were passed on the command line.
@@ -378,7 +378,7 @@ public:
 							values_[elementParts.key].value = value;
 							values_[elementParts.key].required = false;
 
-							onValidArg(elementParts.key);
+							onValidArg(elementParts.key, value);
 						}
 						else
 						{
@@ -398,7 +398,7 @@ public:
 								values_[elementParts.key].value = true;
 								values_[elementParts.key].required = false;
 
-								onValidArg(elementParts.key);
+								onValidArg(elementParts.key, DynamicType(true));
 							}
 							else
 							{

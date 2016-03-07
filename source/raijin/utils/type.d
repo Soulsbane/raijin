@@ -24,7 +24,7 @@ struct DynamicType
 	{
 		long integer_;
 		string str_;
-		double decimal_ = 0.0;
+		double decimal_;
 		bool boolean_;
 	}
 
