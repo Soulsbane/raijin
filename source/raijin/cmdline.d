@@ -68,12 +68,11 @@ public:
 	*/
 	void onListCommands()
 	{
-		writeln("Commands:");
+		import std.algorithm;
+		auto keys = sort(validCommands_.keys);
 
-		foreach(validCommand, description; validCommands_)
-		{
-			writeln("\t", validCommand, " - ", description);
-		}
+		writeln("Commands:");
+		keys.each!((key) => writeln("\t", key, " - ", validCommands_[key]));
 	}
 
 	/**
