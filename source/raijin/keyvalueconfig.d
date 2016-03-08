@@ -29,6 +29,21 @@ private struct KeyValueData
 	string comment;
 }
 
+/**
+	Generates a method for retrieving a key and returning it's value.
+
+	Params:
+		functionName = The generated functions name.
+
+	Examples:
+		mixin(generateAsMethodFor!long("asInteger"));
+		// The above mixin call will generate the following code:
+		long asInteger(const string key, long defaultValue = long.init)
+		{
+				DynamicType dynValue = get(key, defaultValue);
+				return dynValue.asInteger;
+		}
+*/
 private string generateAsMethodFor(T)(const string functionName) @safe
 {
 	return format(q{
