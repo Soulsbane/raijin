@@ -1,5 +1,5 @@
 /**
-   This module combines the functionality of VariantConfig and configpath into one class.
+	This module combines the functionality of KeyValueConfig and ConfigPath into one class.
 
 	Author: Paul Crane
 */
