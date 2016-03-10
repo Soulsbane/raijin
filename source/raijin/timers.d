@@ -6,10 +6,11 @@ module raijin.timers;
 import core.thread;
 import core.time;
 import std.string;
+import std.traits;
 debug import std.stdio;
 
 alias dur = core.time.dur; // Avoids having to import core.time in the user's program.
-alias VoidCallBack = void function();
+alias VoidDelegate = void delegate();
 
 /**
 	A class for creating a RepeatingTimer.
@@ -75,6 +76,21 @@ class RepeatingTimer
 		dur_ = dur;
 		initialDelay_ = initialDelay;
 
+		if(!onTimer_)
+		{
+			onTimer_ = &onTimer;
+		}
+
+		if(!onTimerStart_)
+		{
+			onTimerStart_ = &onTimerStart;
+		}
+
+		if(!onTimerStop_)
+		{
+			onTimerStop_ = &onTimerStop;
+		}
+
 		thread_.start();
 	}
 
@@ -85,18 +101,30 @@ class RepeatingTimer
 			callBackName = Name of the callback to use(valid values are: onTimer, onTimerStart or onTimerStop).
 			callback = The function to be called. Function must take no arguments and have void return type.
 	*/
-	void setCallBack(const string callBackName, VoidCallBack callback)
+	void setCallBack(T)(const string callBackName, T callback)
 	{
+		VoidDelegate voidCall;
+
+		static if(!isDelegate!T)
+		{
+			import std.functional;
+			voidCall = toDelegate(callback);
+		}
+		else
+		{
+			voidCall = callback;
+		}
+
 		final switch(callBackName)
 		{
 			case "onTimer":
-				onTimer_ = callback;
+				onTimer_ = voidCall;
 				break;
 			case "onTimerStart":
-				onTimerStart_ = callback;
+				onTimerStart_ = voidCall;
 				break;
 			case "onTimerStop":
-				onTimerStop_ = callback;
+				onTimerStop_ = voidCall;
 				break;
 		}
 	}
@@ -152,14 +180,7 @@ private:
 			thread_.sleep(initialDelay_);
 		}
 
-		if(onTimerStart_ == null)
-		{
-			onTimerStart();
-		}
-		else
-		{
-			onTimerStart_();
-		}
+		onTimerStart_();
 
 		MonoTime before = MonoTime.currTime;
 
@@ -172,28 +193,14 @@ private:
 
 			if(dur >= dur_)
 			{
-				if(onTimer_ == null)
-				{
-					onTimer();
-				}
-				else
-				{
-					onTimer_();
-				}
+				onTimer_();
 
 				before = MonoTime.currTime;
 				after = MonoTime.currTime;
 			}
 		}
 
-		if(onTimerStop_ == null)
-		{
-			onTimerStop();
-		}
-		else
-		{
-			onTimerStop_();
-		}
+		onTimerStop_();
 	}
 
 private:
@@ -202,9 +209,9 @@ private:
 	Duration dur_;
 	Duration initialDelay_;
 
-	VoidCallBack onTimer_;
-	VoidCallBack onTimerStart_;
-	VoidCallBack onTimerStop_;
+	VoidDelegate onTimer_;
+	VoidDelegate onTimerStart_;
+	VoidDelegate onTimerStop_;
 }
 
 /**
@@ -252,6 +259,12 @@ class CountdownTimer
 	void start(const Duration waitTime)
 	{
 		waitTime_ = waitTime;
+
+		if(!onCountdownFinished_)
+		{
+			onCountdownFinished_ = &onCountdownFinished;
+		}
+
 		thread_.start();
 	}
 
@@ -262,12 +275,24 @@ class CountdownTimer
 			callBackName = Name of the callback to use(valid values are: onTimer, onTimerStart or onTimerStop).
 			callback = The function to be called. Function must take no arguments and have void return type.
 	*/
-	void setCallBack(const string callBackName, VoidCallBack callback)
+	void setCallBack(T)(const string callBackName, T callback)
 	{
+		VoidDelegate voidCall;
+
+		static if(!isDelegate!T)
+		{
+			import std.functional;
+			voidCall = toDelegate(callback);
+		}
+		else
+		{
+			voidCall = callback;
+		}
+
 		final switch(callBackName)
 		{
 			case "onCountdownFinished":
-				onCountdownFinished_ = callback;
+				onCountdownFinished_ = voidCall;
 				break;
 		}
 	}
@@ -301,14 +326,7 @@ private:
 
 			if(dur >= waitTime_)
 			{
-				if(onCountdownFinished_ == null)
-				{
-					onCountdownFinished();
-				}
-				else
-				{
-					onCountdownFinished_();
-				}
+				onCountdownFinished_();
 				running_ = false;
 			}
 		}
@@ -336,5 +354,5 @@ private:
 	Thread thread_;
 	Duration waitTime_;
 
-	VoidCallBack onCountdownFinished_;
+	VoidDelegate onCountdownFinished_;
 }
