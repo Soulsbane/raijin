@@ -321,6 +321,7 @@ public:
 
 		Params:
 			argument = The argument that was passed.
+			value = The value associated with the argument.
 	*/
 	void onValidArg(const string argument, const DynamicType value) {}
 

@@ -50,6 +50,7 @@ public:
 
 		Params:
 			command = The command that was sent
+			args = Additional arguments sent with command.
 	*/
 	abstract void onCommand(const string command, const string[] args);
 
