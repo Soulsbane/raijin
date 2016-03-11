@@ -268,6 +268,15 @@ unittest
 	assert(false.toYesNo == "No");
 }
 
+/**
+	Converts a string value of Yes, 1 to true. Converts No or any other numeric value to false.
+
+	Params:
+		value = The stirng value to convert.
+
+	Returns:
+		Either a true for a "Yes" or false for No or any other numeric value.
+*/
 bool toBoolean(const string value)
 {
 	return (value == "Yes") || (value == "1") ? true : false;
