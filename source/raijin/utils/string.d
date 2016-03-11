@@ -267,3 +267,15 @@ unittest
 	assert(true.toYesNo == "Yes");
 	assert(false.toYesNo == "No");
 }
+
+bool toBoolean(const string value)
+{
+	return value == "Yes" ? true : false;
+}
+
+///
+unittest
+{
+	assert("Yes".toBoolean == true);
+	assert("No".toBoolean == false);
+}
