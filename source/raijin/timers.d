@@ -175,12 +175,14 @@ private:
 	*/
 	void run()
 	{
+		onTimerStart_();
+
 		if(initialDelay_ != seconds(0))
 		{
 			thread_.sleep(initialDelay_);
 		}
 
-		onTimerStart_();
+		onTimer_();
 
 		MonoTime before = MonoTime.currTime;
 
