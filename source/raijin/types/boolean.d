@@ -1,3 +1,5 @@
+module raijin.types.boolean;
+
 /**
 	Creates a boolean type which can convert boolean like values(numeric, string, etc) to a bool.
 
@@ -100,4 +102,3 @@ unittest
 	Boolean tBoolValue = tValue;
 	assert(tBoolValue == true);
 }
- 

@@ -17,7 +17,7 @@ import std.format;
 import std.traits;
 
 import raijin.utils.string;
-import raijin.utils.type;
+import raijin.types.dynamic;
 
 alias IgnoreNonArgs = Flag!"IgnoreNonArgs";
 alias AllowInvalidArgs = Flag!"allowInvalidArgs";

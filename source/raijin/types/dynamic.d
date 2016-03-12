@@ -1,6 +1,12 @@
+module raijin.types.dynamic;
+
 /**
 	simple type that can store strings, integers, booleans and decimals only.
 */
+
+import std.conv;
+import raijin.utils;
+
 struct DynamicType
 {
 	enum Type { integer, string, decimal, boolean }
