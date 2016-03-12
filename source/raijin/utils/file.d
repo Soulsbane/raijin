@@ -90,6 +90,6 @@ unittest
 {
 	immutable string fileName = "unittest-ensure-test.txt";
 
-	assert(fileName.ensureFileExists.isOpen);
+	assert(fileName.ensureFileExists);
 	assert(fileName.removeFileIfExists);
 }
