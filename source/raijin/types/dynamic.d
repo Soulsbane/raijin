@@ -5,7 +5,7 @@ module raijin.types.dynamic;
 */
 
 import std.conv;
-import raijin.utils;
+import raijin.types.functions;
 
 struct DynamicType
 {

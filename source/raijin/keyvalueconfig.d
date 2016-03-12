@@ -17,7 +17,7 @@ import std.typecons;
 import std.format;
 
 import raijin.types.dynamic;
-import raijin.utils;
+import raijin.types.functions;
 
 private enum DEFAULT_GROUP_NAME = null;
 private enum DEFAULT_CONFIG_FILE_NAME = "app.config";
