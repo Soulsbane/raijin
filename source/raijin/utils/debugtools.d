@@ -123,3 +123,22 @@ unittest
 	assert(concatArgs(1, 2, 3, 4) == "1 2 3 4");
 	assert(concatArgs(true, "blah", 54) == "true blah 54");
 }
+
+/**
+	Prints the line number only along with an optional message.
+
+	Params:
+		msg = Message to print.
+		lineNumber = __LINE__ by default.
+*/
+void printLineNumber(const string msg = string.init, const int lineNumber = __LINE__)
+{
+	debug writefln("%s => %d", msg, lineNumber);
+}
+
+///
+unittest
+{
+	printLineNumber("Printing line number");
+	printLineNumber();
+}
