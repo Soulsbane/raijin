@@ -1,7 +1,8 @@
 /**
 	This module contains a few additons to handling strings.
 
-	Author: Paul Crane
+	Authors:
+		Paul Crane
 */
 
 module raijin.utils.string;

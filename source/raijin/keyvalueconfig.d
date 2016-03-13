@@ -1,7 +1,8 @@
 /**
 	This module manages a config file format in the form of key=value. Much like an ini file but simpler.
 
-	Author: Paul Crane
+	Authors:
+		Paul Crane
 */
 
 module raijin.keyvalueconfig;

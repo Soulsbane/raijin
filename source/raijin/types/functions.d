@@ -1,7 +1,7 @@
 /**
 	Various functions to determine types at runtime.
 
-	Author: Paul Crane
+	Authors: Paul Crane
 */
 
 module raijin.types.functions;

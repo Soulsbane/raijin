@@ -1,7 +1,7 @@
 /**
 	A simple module that handles user input on the command line.
 
-	Author:
+	Authors:
 		Paul Crane
 */
 module raijin.cmdline;

@@ -1,7 +1,7 @@
 /**
 	This module combines the functionality of KeyValueConfig and ConfigPath into one class.
 
-	Author: Paul Crane
+	Authors: Paul Crane
 */
 
 module raijin.appconfig;

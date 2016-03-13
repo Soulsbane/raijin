@@ -1,7 +1,8 @@
 /**
 	Various functions for dealing with path based manipulation and retrieval.
 
-	Author: Paul Crane
+	Authors:
+		Paul Crane
 */
 
 module raijin.utils.path;

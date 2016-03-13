@@ -1,7 +1,8 @@
 /**
 *   Functions for outputing a debug string.
 *
-*	Author: Paul Crane
+*	Authors:
+		Paul Crane
 */
 
 module raijin.utils.debugtools;

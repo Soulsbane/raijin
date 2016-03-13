@@ -1,7 +1,7 @@
 /**
  	Contains a simple struct(DynamicType) that can store strings, integers, booleans and decimals only.
 
-	Author:
+	Authors:
 		Paul Crane
 */
 

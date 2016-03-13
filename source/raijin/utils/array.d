@@ -1,7 +1,8 @@
 /**
 	Various functions for working with arrays.
 
-	Author: Paul Crane
+	Authors:
+		Paul Crane
 */
 module raijin.utils.array;
 
