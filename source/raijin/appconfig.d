@@ -13,9 +13,9 @@ import raijin.keyvalueconfig;
 import raijin.configpath;
 
 /**
-	This class combines the functionality of VariantConfig and configpath into one class.
+	This class combines the functionality of KeyValueConfig and ConfigPath into one class.
 */
-class AppConfig
+struct AppConfig
 {
 private:
 
@@ -44,16 +44,8 @@ private:
 	}
 
 public:
-	/**
-		Used for creating directories in users config directory and setting up the config file app.config.
-	*/
-	this()
-	{
-		configPath_ = new ConfigPath;
 
-		configPath_.createConfigDir("config");
-		loadConfigFile();
-	}
+	@disable this();
 
 	/**
 		Overload that allows setting of organizationName, applicationName and defaultConfigFileData to be used
@@ -67,9 +59,11 @@ public:
 	this(const string organizationName, const string applicationName,
 		const string defaultConfigFileData = string.init) @safe
 	{
-		configPath_ = new ConfigPath(organizationName, applicationName);
+		configPath_ = ConfigPath(organizationName, applicationName);
 
 		configPath_.createConfigDir("config");
+		configPath_.createConfigDir("assets");
+
 		loadConfigFile(defaultConfigFileData);
 	}
 
@@ -85,10 +79,10 @@ public:
 	}
 
 	/**
-		Helper property for accessing VariantConfig methods.
+		Helper property for accessing KeyValueConfig methods.
 
 		Returns:
-			A VariantConfig object.
+			A KeyValueConfig object.
 	*/
 	KeyValueConfig config() @property
 	{
