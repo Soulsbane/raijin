@@ -1,5 +1,8 @@
 /**
 	Add support for creating a repeating timer.
+
+	Author:
+		Paul Crane
 */
 module raijin.timers;
 

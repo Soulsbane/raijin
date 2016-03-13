@@ -1,3 +1,10 @@
+/*
+	Contains a boolean type which can convert boolean like values(numeric, string, etc) to a bool.
+
+	Author:
+		Paul Crane
+**/
+
 module raijin.types.boolean;
 
 /**

@@ -1,12 +1,18 @@
-module raijin.types.dynamic;
-
 /**
-	simple type that can store strings, integers, booleans and decimals only.
+ 	Contains a simple struct(DynamicType) that can store strings, integers, booleans and decimals only.
+
+	Author:
+		Paul Crane
 */
+
+module raijin.types.dynamic;
 
 import std.conv;
 import raijin.types.functions;
 
+/**
+	A simple type that can store strings, integers, booleans and decimals only.
+*/
 struct DynamicType
 {
 	enum Type { integer, string, decimal, boolean }
