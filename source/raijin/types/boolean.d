@@ -77,6 +77,12 @@ public:
 		return boolean_;
 	}
 
+	string toString()
+	{
+		import std.conv : to;
+		return to!string(boolean_);
+	}
+
 	alias toBool this;
 
 private:
@@ -108,4 +114,7 @@ unittest
 	size_t tValue = 1;
 	Boolean tBoolValue = tValue;
 	assert(tBoolValue == true);
+
+	Boolean testToString;
+	assert(testToString == "false");
 }
