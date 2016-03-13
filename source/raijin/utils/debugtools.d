@@ -11,8 +11,6 @@ import std.stdio;
 import std.algorithm;
 import std.path;
 import std.datetime;
-import std.string;
-import std.array;
 
 /**
 *	Wrapper around info, warn and error functions that acts as a namespace.
