@@ -15,7 +15,6 @@ import std.stdio;
 import std.typecons;
 import std.path;
 import std.format;
-import std.traits;
 
 import raijin.utils.string;
 import raijin.types.dynamic;
@@ -23,9 +22,6 @@ import raijin.types.dynamic;
 alias IgnoreNonArgs = Flag!"IgnoreNonArgs";
 alias AllowInvalidArgs = Flag!"allowInvalidArgs";
 alias RequiredArg = Flag!"requiredArg";
-
-alias isBooleanT = std.traits.isBoolean;
-alias isNumericT = std.traits.isNumeric;
 
 /**
 	The type in which each command line argument is stored in.
@@ -218,20 +214,21 @@ public:
 		Returns:
 			The value of the command line argument at index or defaultValue otherwise.
 	*/
-	final T safeGet(T = string)(const size_t index, string defaultValue = string.init) @safe
+	final T safeGet(T = string)(const size_t index, T defaultValue = T.init) @safe
 	{
-		string value;
+		import std.traits : isBoolean, isNumeric;
+		T value = defaultValue;
 
-		if(defaultValue == string.init)
+		if(defaultValue == T.init)
 		{
-			if(isBooleanT!T)
+			if(isBoolean!T)
 			{
-				value = "false";
+				value = to!T("false");
 			}
 
-			else if(isNumericT!T)
+			else if(isNumeric!T)
 			{
-				value = "0";
+				value = to!T("0");
 			}
 			else
 			{
@@ -241,7 +238,7 @@ public:
 
 		if(rawArguments_.length >= index)
 		{
-			value = rawArguments_[index - 1];
+			value = to!T(rawArguments_[index - 1]);
 		}
 
 		return to!T(value);
@@ -492,4 +489,11 @@ unittest
 	assert(args.contains("integer") == true);
 	assert(args.contains("valuez") == false);
 	assert(args["integer"] == 100);
+
+	assert(args.safeGet(1) == "-flag");
+	assert(args.safeGet(8, "defaultValue") == "defaultValue");
+	assert(args.safeGet(8) == "");
+	assert(args.safeGet(8, true) == true);
+	assert(args.safeGet!int(8) == 0);
+	assert(args.safeGet!int(8, 50) == 50);
 }
