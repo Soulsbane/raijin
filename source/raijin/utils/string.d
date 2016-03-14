@@ -257,9 +257,22 @@ unittest
 	Returns:
 		Either a Yes for a true value or No for a false value.
 */
-string toYesNo(const bool value)
+string toYesNo(T)(const T value)
 {
-	return value ? "Yes" : "No";
+	import std.typecons : isIntegral, isBoolean;
+
+	static if(isIntegral!T)
+	{
+		return (value == 1) ? "Yes" : "No";
+	}
+	else static if(isBoolean!T)
+	{
+		return value ? "Yes" : "No";
+	}
+	else
+	{
+		return "No";
+	}
 }
 
 ///
@@ -267,6 +280,9 @@ unittest
 {
 	assert(true.toYesNo == "Yes");
 	assert(false.toYesNo == "No");
+	assert(1.toYesNo == "Yes");
+	assert(0.toYesNo == "No");
+	assert("hellow world".toYesNo == "No");
 }
 
 /**
