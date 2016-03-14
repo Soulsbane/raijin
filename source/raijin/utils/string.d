@@ -280,13 +280,14 @@ unittest
 */
 bool toBoolean(const string value)
 {
-	return (value == "Yes") || (value == "1") || (value == "true") ? true : false;
+	return (value == "Yes") || (value == "yes") || (value == "1") || (value == "true") ? true : false;
 }
 
 ///
 unittest
 {
 	assert("Yes".toBoolean == true);
+	assert("yes".toBoolean == true);
 	assert("No".toBoolean == false);
 	assert("1".toBoolean == true);
 	assert("0".toBoolean == false);
