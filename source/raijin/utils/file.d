@@ -70,9 +70,12 @@ bool removeFileIfExists(const string fileName)
 */
 bool isFileHidden(const string fileName)
 {
-	if(fileName.baseName.startsWith("."))
+	version(Linux)
 	{
-		return true;
+		if(fileName.baseName.startsWith("."))
+		{
+			return true;
+		}
 	}
 
 	version(Windows)
@@ -83,6 +86,7 @@ bool isFileHidden(const string fileName)
 			return true;
 		}
 	}
+	
 	return false;
 }
 
