@@ -33,7 +33,7 @@ struct ConfigPath
 	}
 
 	/**
-		retrieves the path to the users config directory with an optional path appended to the end.
+		Retrieves the path to the users config directory with an optional path appended to the end.
 
 		Params:
 			name = Name of the directory to retrieve.

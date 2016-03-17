@@ -9,7 +9,7 @@ module raijin.utils.array;
 import std.algorithm;
 
 /**
-	Removes the specified element from the array (once).
+	Removes the specified element from the array in place.
 
 	Params:
 		array = The array to remove value from.

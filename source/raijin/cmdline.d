@@ -49,7 +49,7 @@ public:
 	}
 
 	/**
-		Recieves commands sent from processCommands
+		Receives commands sent from processCommands
 
 		Params:
 			command = The command that was sent
