@@ -29,7 +29,8 @@ struct ConfigPath
 	{
 		organizationName_ = organizationName;
 		applicationName_ = applicationName;
-		configDirPath_ = writablePath(StandardPath.Config);
+
+		configDirPath_ = writablePath(StandardPath.config);
 	}
 
 	/**
