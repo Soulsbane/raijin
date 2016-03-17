@@ -111,39 +111,32 @@ public:
 			immutable string command = commands[0];
 			immutable string[] args = commands[1..$];
 
-			if(command == "exit" && isValidCommand("exit")) // Make sure one of the default commands weren't removed before calling quit.
+			// TODO: Fix this mess.
+			if(isValidCommand(command))
 			{
-				quit();
-			}
-			else if(command == "quit" && isValidCommand("quit"))
-			{
-				quit();
-			}
-			else if(command == "list" && isValidCommand("list"))
-			{
-				onListCommands();
-			}
-			else if(command == "clear" && isValidCommand("clear"))
-			{
-				clear();
+				switch(command)
+				{
+					case "exit", "quit":
+						quit();
+						break;
+					case "list":
+						onListCommands();
+						break;
+					case "clear":
+						clear();
+						break;
+					default:
+						if(validCommands_.length > defaultCommandsCount_) // If length is greater the user added a command so process it.
+						{
+							onCommand(command, args);
+						}
+
+						break;
+				}
 			}
 			else
 			{
-				if(validCommands_.length > defaultCommandsCount_) // If length is greater the user added a command so process it.
-				{
-					if(isValidCommand(command))
-					{
-						onCommand(command, args);
-					}
-					else
-					{
-						writeln("Invalid command!");
-					}
-				}
-				else
-				{
-					onCommand(command, args);
-				}
+				writeln("Invalid command!\n");
 			}
 		}
 
