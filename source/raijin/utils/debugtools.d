@@ -38,10 +38,10 @@ struct Log
 		Outputs a message to stdout marked as type warn with function name, line number, time and file name attached.
 
 		Params:
+			msg = The message to be print to stdout.
 			lineNumber = __LINE__
 			fileName = __FILE__
 			funcName = __FUNCTION__
-			msg = The message to be print to stdout.
 	*/
 	static void warn(const string msg = "<None>", const int lineNumber = __LINE__, const string fileName = __FILE__,
 		const string funcName = __FUNCTION__) @trusted
@@ -53,10 +53,10 @@ struct Log
 		Outputs a message to stdout marked as type error with function name, line number, time and file name attached.
 
 		Params:
+			msg = The message to be print to stdout.
 			lineNumber = __LINE__
 			fileName = __FILE__
 			funcName = __FUNCTION__
-			msg = The message to be print to stdout.
 	*/
 	static void error(const string msg = "<None>", const int lineNumber = __LINE__, const string fileName = __FILE__,
 		const string funcName = __FUNCTION__) @trusted
