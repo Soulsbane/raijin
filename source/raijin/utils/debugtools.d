@@ -28,8 +28,8 @@ struct Log
 			funcName = __FUNCTION__
 			msg = The message to be print to stdout.
 	*/
-	static void info(const string fileName = __FILE__, const string funcName = __FUNCTION__,
-		const int lineNumber = __LINE__, const string msg = "<None>") @trusted
+	static void info(const string msg = "<None>", const int lineNumber = __LINE__, const string fileName = __FILE__,
+		const string funcName = __FUNCTION__) @trusted
 	{
 		debug writefln("INFO [%s] - %s[%s](%d): %s", Clock.currTime, fileName.baseName, funcName.findSplitAfter(".")[1], lineNumber, msg);
 	}
@@ -43,8 +43,8 @@ struct Log
 			funcName = __FUNCTION__
 			msg = The message to be print to stdout.
 	*/
-	static void warn(const string fileName = __FILE__, const string funcName = __FUNCTION__,
-		const int lineNumber = __LINE__, const string msg = "<None>") @trusted
+	static void warn(const string msg = "<None>", const int lineNumber = __LINE__, const string fileName = __FILE__,
+		const string funcName = __FUNCTION__) @trusted
 	{
 		debug writefln("WARN [%s] - %s[%s](%d): %s", Clock.currTime, fileName.baseName, funcName.findSplitAfter(".")[1], lineNumber, msg);
 	}
@@ -58,8 +58,8 @@ struct Log
 			funcName = __FUNCTION__
 			msg = The message to be print to stdout.
 	*/
-	static void error(const string fileName = __FILE__, const string funcName = __FUNCTION__,
-		const int lineNumber = __LINE__, const string msg = "<None>") @trusted
+	static void error(const string msg = "<None>", const int lineNumber = __LINE__, const string fileName = __FILE__,
+		const string funcName = __FUNCTION__) @trusted
 	{
 		debug writefln("ERROR [%s] - %s[%s](%d): %s", Clock.currTime, fileName.baseName, funcName.findSplitAfter(".")[1], lineNumber, msg);
 	}
