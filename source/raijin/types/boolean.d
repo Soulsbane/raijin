@@ -72,7 +72,7 @@ public:
 		boolean_ = value;
 	}
 
-	bool toBool() @property
+	bool asBoolean() @property
 	{
 		return boolean_;
 	}
@@ -83,7 +83,7 @@ public:
 		return to!string(boolean_);
 	}
 
-	alias toBool this;
+	alias asBoolean this;
 
 private:
 	bool boolean_;
