@@ -23,7 +23,7 @@ import raijin.utils.path;
 	Returns:
 		Returns the same tuple as $(LINK2 http://dlang.org/phobos/std_process.html#executeShell, std.process.executeShell)
 */
-auto launchApplication(const string fileName, const string[] args...)
+auto launchApplication(const string fileName, const string[] args...) @safe
 {
 	auto result = std.typecons.Tuple!(int, "status", string, "output")(127, "Executable not found.");
 	immutable auto inPath = isInPath(fileName);
