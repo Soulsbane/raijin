@@ -80,6 +80,14 @@ public:
 	}
 
 	/**
+		Called by processCommands when an invalid command is sent.
+	*/
+	void onInvalidCommand(const string command)
+	{
+		writeln("Invalid command '", command, "'. Use 'list' for a list of valid commands.\n");
+	}
+
+	/**
 		Processes commands sent via the command line.
 
 		Params:
@@ -111,7 +119,6 @@ public:
 			immutable string command = commands[0];
 			immutable string[] args = commands[1..$];
 
-			// TODO: Fix this mess.
 			if(isValidCommand(command))
 			{
 				switch(command)
@@ -136,7 +143,7 @@ public:
 			}
 			else
 			{
-				writeln("Invalid command!\n");
+				onInvalidCommand(command);
 			}
 		}
 
@@ -184,6 +191,17 @@ public:
 	final void quit() pure @safe
 	{
 		keepProcessing_ = false;
+	}
+
+	/**
+		Helper property for accessing whether the prompt is set to be shown.
+
+		Returns:
+			true if the prompt will show false otherwise.
+	*/
+	bool showPrompt() @property
+	{
+		return showPrompt_;
 	}
 
 private:
