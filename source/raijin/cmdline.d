@@ -144,6 +144,8 @@ public:
 			{
 				onInvalidCommand(command);
 			}
+
+			thread_.sleep(dur!("msecs")(10)); // Throttle so we don't take up too much CPU
 		}
 
 		onExitProcessCommands();
