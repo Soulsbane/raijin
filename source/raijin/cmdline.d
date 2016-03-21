@@ -114,8 +114,7 @@ public:
 				write(promptMsg_);
 			}
 
-			immutable string input = readln.strip;
-			immutable string[] commands = input.split(' ');
+			immutable string[] commands = readln.strip.split(' ');
 			immutable string command = commands[0];
 			immutable string[] args = commands[1..$];
 
