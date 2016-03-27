@@ -66,7 +66,7 @@ unittest
 {
 	version(Linux)
 	{
-		auto result = launchApplication("ls", "-l");
+		auto result = launchApplication("ls", "-l -h");
 		assert(result.status == 0);
 
 		auto result2 = launchApplication("ls", "-l", "-h");
