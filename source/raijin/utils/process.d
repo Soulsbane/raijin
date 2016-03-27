@@ -68,5 +68,8 @@ unittest
 	{
 		auto result = launchApplication("ls", "-l");
 		assert(result.status == 0);
+
+		auto result2 = launchApplication("ls", "-l", "-h");
+		assert(result2.status == 0);
 	}
 }
