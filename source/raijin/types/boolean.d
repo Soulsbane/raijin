@@ -72,6 +72,17 @@ public:
 		boolean_ = value;
 	}
 
+	string asYesNo()
+	{
+		import raijin.utils.string : toYesNo;
+		return boolean_.toYesNo;
+	}
+
+	size_t asInteger()
+	{
+		return boolean_ == true ? 1 : 0;
+	}
+
 	bool asBoolean() @property
 	{
 		return boolean_;
@@ -94,9 +105,11 @@ unittest
 {
 	Boolean value = 1;
 	assert(value == true);
+	assert(value.asInteger == 1);
 
 	Boolean strValue = "Yes";
 	assert(strValue == true);
+	assert(strValue.asYesNo == "Yes");
 
 	Boolean boolValue = true;
 	boolValue = "No";
