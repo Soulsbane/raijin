@@ -438,6 +438,8 @@ public:
 		return true;
 	}
 
+	alias hasFlag = asBoolean; /// This just makes the function calls intent clearer when you are querying whether the flag was passed.
+
 private:
 	bool checkRequiredArgs() @trusted
 	{
