@@ -476,7 +476,7 @@ unittest
 	args.addCommand("value", "hello world", "Just a silly value.");
 	args.process(arguments);
 
-	assert(args.asBoolean("flag") == true);
+	assert(args.hasFlag("flag"));
 	assert(args["flag"] == true);
 
 	import std.math;
