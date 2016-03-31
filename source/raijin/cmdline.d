@@ -13,6 +13,8 @@ import std.range;
 import core.thread;
 
 alias ShowPrompt = Flag!"showPrompt";
+alias OnCommandDelegate = void delegate(const string command, const string[] args);
+alias VoidDelegate = void delegate();
 
 /**
 	Manages a loop which processes commands via command line input.
@@ -55,7 +57,7 @@ public:
 			command = The command that was sent
 			args = Additional arguments sent with command.
 	*/
-	abstract void onCommand(const string command, const string[] args);
+	void onCommand(const string command, const string[] args) {}
 
 	/**
 		Called by processCommands before commands are handled.
@@ -86,7 +88,57 @@ public:
 	{
 		writeln("Invalid command '", command, "'. Use 'list' for a list of valid commands.\n");
 	}
+	/**
+		Sets a callback to a function instead of having to inherit from class.
 
+		Params:
+			callBackName = Name of the callback to use(valid values are: onTimer, onTimerStart or onTimerStop).
+			callback = The function to be called. Function must take no arguments and have void return type.
+	*/
+	void setCallBack(T)(const string callBackName, T callback)
+	{
+		VoidDelegate voidCall;
+		OnCommandDelegate  onCommandCall;
+
+		if(callBackName == "onCommand")
+		{
+
+			static if(!isDelegate!T)
+			{
+				import std.functional;
+				onCommandCall = toDelegate(callback);
+			}
+			else
+			{
+				onCommandCall = callback;
+			}
+		}
+		else
+		{
+			static if(!isDelegate!T)
+			{
+				import std.functional;
+				voidCall = toDelegate(callback);
+			}
+			else
+			{
+				voidCall = callback;
+			}
+		}
+
+		final switch(callBackName)
+		{
+			case "onCommand":
+				onCommand_ = onCommandCall;
+				break;
+			case "onEnterProcessCommands":
+				onEnterProcessCommands_ = voidCall;
+				break;
+			case "onExitProcessCommands":
+				onExitProcessCommands_ = voidCall;
+				break;
+		}
+	}
 	/**
 		Processes commands sent via the command line.
 
@@ -99,13 +151,15 @@ public:
 		showPrompt_ = showPrompt;
 		promptMsg_ = promptMsg;
 
+		validateCallbacks();
+
 		thread_ = new Thread(&run);
 		thread_.start();
 	}
 
 	private void run()
 	{
-		onEnterProcessCommands();
+		onEnterProcessCommands_();
 
 		while(keepProcessing_)
 		{
@@ -134,7 +188,7 @@ public:
 					default:
 						if(validCommands_.length > defaultCommandsCount_) // If length is greater the user added a command so process it.
 						{
-							onCommand(command, args);
+							onCommand_(command, args);
 						}
 
 						break;
@@ -148,7 +202,7 @@ public:
 			thread_.sleep(dur!("msecs")(10)); // Throttle so we don't take up too much CPU
 		}
 
-		onExitProcessCommands();
+		onExitProcessCommands_();
 	}
 	/**
 		Determines if a command is valid(added via addCommand).
@@ -206,12 +260,34 @@ public:
 	}
 
 private:
+	void validateCallbacks()
+	{
+		if(!onCommand_)
+		{
+			onCommand_ = &onCommand;
+		}
+
+		if(!onEnterProcessCommands_)
+		{
+			onEnterProcessCommands_ = &onEnterProcessCommands;
+		}
+
+		if(!onExitProcessCommands_)
+		{
+			onExitProcessCommands_ = &onExitProcessCommands;
+		}
+	}
+private:
 	bool keepProcessing_ = true;
 	string promptMsg_;
 	ShowPrompt showPrompt_;
 	string[string] validCommands_;
 	size_t defaultCommandsCount_;
 	Thread thread_;
+
+	OnCommandDelegate onCommand_;
+	VoidDelegate onEnterProcessCommands_;
+	VoidDelegate onExitProcessCommands_;
 }
 
 /**
