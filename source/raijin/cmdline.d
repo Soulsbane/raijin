@@ -15,6 +15,7 @@ import core.thread;
 alias ShowPrompt = Flag!"showPrompt";
 alias OnCommandDelegate = void delegate(const string command, const string[] args);
 alias VoidDelegate = void delegate();
+alias OnInvalidCommandDelegate = void delegate(const string command);
 
 /**
 	Manages a loop which processes commands via command line input.
@@ -196,7 +197,7 @@ public:
 			}
 			else
 			{
-				onInvalidCommand(command);
+				onInvalidCommand_(command);
 			}
 
 			thread_.sleep(dur!("msecs")(10)); // Throttle so we don't take up too much CPU
@@ -267,6 +268,11 @@ private:
 			onCommand_ = &onCommand;
 		}
 
+		if(!onInvalidCommand_)
+		{
+			onInvalidCommand_ = &onInvalidCommand;
+		}
+
 		if(!onEnterProcessCommands_)
 		{
 			onEnterProcessCommands_ = &onEnterProcessCommands;
@@ -286,6 +292,7 @@ private:
 	Thread thread_;
 
 	OnCommandDelegate onCommand_;
+	OnInvalidCommandDelegate onInvalidCommand_;
 	VoidDelegate onEnterProcessCommands_;
 	VoidDelegate onExitProcessCommands_;
 }
