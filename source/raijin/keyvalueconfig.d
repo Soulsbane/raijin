@@ -244,8 +244,6 @@ private:
 	*/
 	DynamicType get(T)(const string group, const string key, const T defaultValue) @trusted
 	{
-		import raijin.utils.debugtools;
-
 		if(containsGroup(group))
 		{
 			return getGroupValue(group, key, defaultValue);
