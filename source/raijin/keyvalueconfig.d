@@ -351,13 +351,11 @@ public:
 	DynamicType getGroupValue(T)(const string group, const string key, const T defaultValue) @trusted
 	{
 		DynamicType value = defaultValue;
+		auto found = values_.filter!(a => (a.group == group) && (a.key == key));
 
-		foreach(data; values_)
+		if(!found.empty)
 		{
-			if(data.group == group && data.key == key)
-			{
-				value = data.value;
-			}
+			value = found.front.value;
 		}
 
 		return value;
