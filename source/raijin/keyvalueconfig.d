@@ -419,7 +419,21 @@ public:
 	{
 		auto foundValue = values_.filter!(a => (a.group == group) && (a.key == key));
 
-		foundValue.front.value = value;
+		if(foundValue.empty)
+		{
+			KeyValueData data;
+
+			data.key = key;
+			data.group = group;
+			data.value = value;
+
+			values_ ~= data;
+		}
+		else
+		{
+			foundValue.front.value = value;
+		}
+
 		valuesModified_ = true;
 	}
 
@@ -629,7 +643,10 @@ unittest
 
 	assert(config["another.japan"] == false);
 
+	// Tests for nonexistent keys
 	assert(config.asString("nonexistent", "Value doesn't exist!") == "Value doesn't exist!");
+	config["nonexistent"] = "The value now exists!!!";
+	assert(config.asString("nonexistent", "The value now exists!!!") == "The value now exists!!!");
 
 	writeln("Testing getGroup...");
 
