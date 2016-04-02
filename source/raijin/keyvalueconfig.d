@@ -244,9 +244,11 @@ private:
 	*/
 	DynamicType get(T)(const string group, const string key, const T defaultValue) @trusted
 	{
+		import raijin.utils.debugtools;
+
 		if(containsGroup(group))
 		{
-			return getGroupValue(group, key);
+			return getGroupValue(group, key, defaultValue);
 		}
 		else
 		{
@@ -346,10 +348,19 @@ public:
 		Returns:
 			The value associated with the group and key.
 	*/
-	DynamicType getGroupValue(const string group, const string key) @trusted
+	DynamicType getGroupValue(T)(const string group, const string key, const T defaultValue) @trusted
 	{
-		auto value = values_.filter!(a => (a.group == group) && (a.key == key));//.take(1);
-		return value.front.value;
+		DynamicType value = defaultValue;
+
+		foreach(data; values_)
+		{
+			if(data.group == group && data.key == key)
+			{
+				value = data.value;
+			}
+		}
+
+		return value;
 	}
 
 	/**
@@ -621,6 +632,8 @@ unittest
 	assert(config.contains("number") == false);
 
 	assert(config["another.japan"] == false);
+
+	assert(config.asString("nonexistent", "Value doesn't exist!") == "Value doesn't exist!");
 
 	writeln("Testing getGroup...");
 
