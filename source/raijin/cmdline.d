@@ -13,9 +13,10 @@ import std.range;
 import core.thread;
 
 alias ShowPrompt = Flag!"showPrompt";
-alias OnCommandDelegate = void delegate(const string command, const string[] args);
-alias VoidDelegate = void delegate();
-alias OnInvalidCommandDelegate = void delegate(const string command);
+
+private alias OnCommandDelegate = void delegate(const string command, const string[] args);
+private alias VoidDelegate = void delegate();
+private alias OnInvalidCommandDelegate = void delegate(const string command);
 
 /**
 	Manages a loop which processes commands via command line input.
@@ -121,7 +122,7 @@ public:
 			callBackName = Name of the callback to use(valid values are: onTimer, onTimerStart or onTimerStop).
 			callback = The function to be called. Function must take no arguments and have void return type.
 	*/
-	void setCallBack(const string callBackName, void delegate() callback)
+	void setCallBack(const string callBackName, VoidDelegate callback)
 	{
 		final switch(callBackName)
 		{
@@ -133,7 +134,7 @@ public:
 				break;
 		}
 	}
-	
+
 	/**
 		Processes commands sent via the command line.
 
