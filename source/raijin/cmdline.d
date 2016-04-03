@@ -89,6 +89,7 @@ public:
 	{
 		writeln("Invalid command '", command, "'. Use 'list' for a list of valid commands.\n");
 	}
+
 	/**
 		Sets a callback to a function instead of having to inherit from class.
 
@@ -96,50 +97,43 @@ public:
 			callBackName = Name of the callback to use(valid values are: onTimer, onTimerStart or onTimerStop).
 			callback = The function to be called. Function must take no arguments and have void return type.
 	*/
-	void setCallBack(T)(const string callBackName, T callback)
+	void setCallBack(const string callBackName, OnCommandDelegate callback)
 	{
-		VoidDelegate voidCall;
-		OnCommandDelegate  onCommandCall;
+		onCommand_ = callback;
+	}
 
-		if(callBackName == "onCommand")
-		{
+	/**
+		Sets a callback to a function instead of having to inherit from class.
 
-			static if(!isDelegate!T)
-			{
-				import std.functional;
-				onCommandCall = toDelegate(callback);
-			}
-			else
-			{
-				onCommandCall = callback;
-			}
-		}
-		else
-		{
-			static if(!isDelegate!T)
-			{
-				import std.functional;
-				voidCall = toDelegate(callback);
-			}
-			else
-			{
-				voidCall = callback;
-			}
-		}
+		Params:
+			callBackName = Name of the callback to use(valid values are: onTimer, onTimerStart or onTimerStop).
+			callback = The function to be called. Function must take no arguments and have void return type.
+	*/
+	void setCallBack(const string callBackName, OnInvalidCommandDelegate callback)
+	{
+		onInvalidCommand_ = callback;
+	}
 
+	/**
+		Sets a callback to a function instead of having to inherit from class.
+
+		Params:
+			callBackName = Name of the callback to use(valid values are: onTimer, onTimerStart or onTimerStop).
+			callback = The function to be called. Function must take no arguments and have void return type.
+	*/
+	void setCallBack(const string callBackName, void delegate() callback)
+	{
 		final switch(callBackName)
 		{
-			case "onCommand":
-				onCommand_ = onCommandCall;
-				break;
 			case "onEnterProcessCommands":
-				onEnterProcessCommands_ = voidCall;
+				onEnterProcessCommands_ = callback;
 				break;
 			case "onExitProcessCommands":
-				onExitProcessCommands_ = voidCall;
+				onExitProcessCommands_ = callback;
 				break;
 		}
 	}
+	
 	/**
 		Processes commands sent via the command line.
 
