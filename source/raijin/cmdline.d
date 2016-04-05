@@ -14,9 +14,69 @@ import core.thread;
 
 alias ShowPrompt = Flag!"showPrompt";
 
-private alias OnCommandDelegate = void delegate(const string command, const string[] args);
-private alias VoidDelegate = void delegate();
-private alias OnInvalidCommandDelegate = void delegate(const string command);
+private
+{
+	alias OnCommandDelegate = void delegate(const string command, const string[] args);
+	alias VoidDelegate = void delegate();
+	alias OnInvalidCommandDelegate = void delegate(const string command);
+}
+
+private struct Callback
+{
+private:
+	union
+	{
+		VoidDelegate voidCall;
+		OnCommandDelegate commandCall;
+		OnInvalidCommandDelegate invalidCommandCall;
+	}
+
+	bool isSet_;
+public:
+	Callback opAssign(VoidDelegate callback)
+	{
+		voidCall = callback;
+		isSet_ = true;
+
+		return this;
+	}
+
+	Callback opAssign(OnCommandDelegate callback)
+	{
+		commandCall = callback;
+		isSet_ = true;
+
+		return this;
+	}
+
+	Callback opAssign(OnInvalidCommandDelegate callback)
+	{
+		invalidCommandCall = callback;
+		isSet_ = true;
+
+		return this;
+	}
+
+	void opCall()
+	{
+		voidCall();
+	}
+
+	void opCall(const string command, const string[] args)
+	{
+		commandCall(command, args);
+	}
+
+	void opCall(const string command)
+	{
+		invalidCommandCall(command);
+	}
+
+	bool isSet() @property
+	{
+		return isSet_;
+	}
+}
 
 /**
 	Manages a loop which processes commands via command line input.
@@ -95,42 +155,24 @@ public:
 		Sets a callback to a function instead of having to inherit from class.
 
 		Params:
-			callBackName = Name of the callback to use(valid values are: onTimer, onTimerStart or onTimerStop).
+			name = Name of the callback to use(valid values are: onTimer, onTimerStart or onTimerStop).
 			callback = The function to be called. Function must take no arguments and have void return type.
 	*/
-	void setCallBack(const string callBackName, OnCommandDelegate callback)
+	void setCallBack(T)(const string name, T callback)
 	{
-		onCommand_ = callback;
-	}
-
-	/**
-		Sets a callback to a function instead of having to inherit from class.
-
-		Params:
-			callBackName = Name of the callback to use(valid values are: onTimer, onTimerStart or onTimerStop).
-			callback = The function to be called. Function must take no arguments and have void return type.
-	*/
-	void setCallBack(const string callBackName, OnInvalidCommandDelegate callback)
-	{
-		onInvalidCommand_ = callback;
-	}
-
-	/**
-		Sets a callback to a function instead of having to inherit from class.
-
-		Params:
-			callBackName = Name of the callback to use(valid values are: onTimer, onTimerStart or onTimerStop).
-			callback = The function to be called. Function must take no arguments and have void return type.
-	*/
-	void setCallBack(const string callBackName, VoidDelegate callback)
-	{
-		final switch(callBackName)
+		final switch(name)
 		{
-			case "onEnterProcessCommands":
-				onEnterProcessCommands_ = callback;
+			case "onCommand":
+				onCommand_ = callback;
+				break;
+			case "onInvalidCommand":
+				onInvalidCommand_ = callback;
 				break;
 			case "onExitProcessCommands":
 				onExitProcessCommands_ = callback;
+				break;
+			case "onEnterProcessCommands":
+				onEnterProcessCommands_ = callback;
 				break;
 		}
 	}
@@ -258,22 +300,22 @@ public:
 private:
 	void validateCallbacks()
 	{
-		if(!onCommand_)
+		if(!onCommand_.isSet)
 		{
 			onCommand_ = &onCommand;
 		}
 
-		if(!onInvalidCommand_)
+		if(!onInvalidCommand_.isSet)
 		{
 			onInvalidCommand_ = &onInvalidCommand;
 		}
 
-		if(!onEnterProcessCommands_)
+		if(!onEnterProcessCommands_.isSet)
 		{
 			onEnterProcessCommands_ = &onEnterProcessCommands;
 		}
 
-		if(!onExitProcessCommands_)
+		if(!onExitProcessCommands_.isSet)
 		{
 			onExitProcessCommands_ = &onExitProcessCommands;
 		}
@@ -286,10 +328,10 @@ private:
 	size_t defaultCommandsCount_;
 	Thread thread_;
 
-	OnCommandDelegate onCommand_;
-	OnInvalidCommandDelegate onInvalidCommand_;
-	VoidDelegate onEnterProcessCommands_;
-	VoidDelegate onExitProcessCommands_;
+	Callback onCommand_;
+	Callback onInvalidCommand_;
+	Callback onEnterProcessCommands_;
+	Callback onExitProcessCommands_;
 }
 
 /**
