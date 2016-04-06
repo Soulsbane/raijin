@@ -21,6 +21,19 @@ private
 	alias OnInvalidCommandDelegate = void delegate(const string command);
 }
 
+private string insertOpAssign(T)(const string memberName)
+{
+	import std.format : format;
+
+	return format(q{
+		void opAssign(%s callback)
+		{
+			%s = callback;
+			isSet_ = true;
+		}
+	}, T.stringof, memberName);
+}
+
 private struct Callback
 {
 private:
@@ -33,29 +46,9 @@ private:
 
 	bool isSet_;
 public:
-	Callback opAssign(VoidDelegate callback)
-	{
-		voidCall = callback;
-		isSet_ = true;
-
-		return this;
-	}
-
-	Callback opAssign(OnCommandDelegate callback)
-	{
-		commandCall = callback;
-		isSet_ = true;
-
-		return this;
-	}
-
-	Callback opAssign(OnInvalidCommandDelegate callback)
-	{
-		invalidCommandCall = callback;
-		isSet_ = true;
-
-		return this;
-	}
+	mixin(insertOpAssign!VoidDelegate("voidCall"));
+	mixin(insertOpAssign!OnCommandDelegate("commandCall"));
+	mixin(insertOpAssign!OnInvalidCommandDelegate("invalidCommandCall"));
 
 	void opCall()
 	{
