@@ -43,7 +43,9 @@ LaunchApplicationReturnType  launchApplication(const string fileName, const stri
 */
 LaunchApplicationReturnType launchApplication(const string fileName, const string args) @safe
 {
-	auto result = std.typecons.Tuple!(int, "status", string, "output")(127, "Executable not found.");
+	import std.typecons : Tuple;
+	
+	auto result = Tuple!(int, "status", string, "output")(127, "Executable not found.");
 	immutable auto inPath = isInPath(fileName);
 	immutable string fileNameAndArgs = fileName ~ ' ' ~ args;
 
