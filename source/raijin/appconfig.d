@@ -6,11 +6,8 @@
 
 module raijin.appconfig;
 
-import std.stdio;
-import std.path;
-
-import raijin.keyvalueconfig;
-import raijin.configpath;
+import raijin.keyvalueconfig : KeyValueConfig;
+import raijin.configpath : ConfigPath;
 
 /**
 	This class combines the functionality of KeyValueConfig and ConfigPath into one class.
@@ -30,7 +27,9 @@ private:
 	*/
 	bool loadConfigFile(const string defaultConfigFileData = string.init) @safe
 	{
+		import std.path : buildNormalizedPath;
 		import std.file : exists;
+		import std.stdio : writeln, File;
 
 		immutable string configFilePath = buildNormalizedPath(configPath_.getConfigDir("config"), "app.config");
 
