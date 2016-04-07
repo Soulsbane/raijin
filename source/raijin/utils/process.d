@@ -6,15 +6,13 @@
 */
 module raijin.utils.process;
 
-import std.process;
-import std.file;
-import std.array;
-import std.exception;
+import std.exception : ifThrown;
+import std.typecons : Tuple;
 
-import raijin.utils.path;
+import raijin.utils.path : isInPath;
 
 // BUG: DMD can't infer a return type for both launchApplication functions without this.
-alias LaunchApplicationReturnType = std.typecons.Tuple!(int, "status", string, "output");
+alias LaunchApplicationReturnType = Tuple!(int, "status", string, "output");
 
 /**
 	Small wrapper function that launches an application using std.process.executeShell.
@@ -28,6 +26,7 @@ alias LaunchApplicationReturnType = std.typecons.Tuple!(int, "status", string, "
 */
 LaunchApplicationReturnType  launchApplication(const string fileName, const string[] args...) @safe
 {
+	import std.array : join;
 	return launchApplication(fileName, args.join(' '));
 }
 
@@ -43,8 +42,9 @@ LaunchApplicationReturnType  launchApplication(const string fileName, const stri
 */
 LaunchApplicationReturnType launchApplication(const string fileName, const string args) @safe
 {
-	import std.typecons : Tuple;
-	
+	import std.file : exists;
+	import std.process : executeShell;
+
 	auto result = Tuple!(int, "status", string, "output")(127, "Executable not found.");
 	immutable auto inPath = isInPath(fileName);
 	immutable string fileNameAndArgs = fileName ~ ' ' ~ args;
