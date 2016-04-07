@@ -7,11 +7,11 @@
 module raijin.timers;
 
 import core.thread : Thread;
-import core.time : MonoTime, Duration, seconds, dur;
+import core.time;
 import std.string : chompPrefix;
 import std.traits : isDelegate;
 
-alias dur = dur; // Avoids having to import core.time in the user's program.
+alias dur = core.time.dur; // Avoids having to import core.time in the user's program.
 alias VoidDelegate = void delegate();
 
 /**
