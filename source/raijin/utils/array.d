@@ -6,7 +6,7 @@
 */
 module raijin.utils.array;
 
-import std.algorithm;
+import std.algorithm : countUntil;
 
 /**
 	Removes the specified element from the array in place.
@@ -17,11 +17,12 @@ import std.algorithm;
 */
 void remove(T)(ref T[] array, T value)
 {
+	import std.algorithm : remove;
 	size_t index = array.countUntil(value);
 
 	if(index >= 0)
 	{
-		array = std.algorithm.remove(array, index);
+		array = remove(array, index);
 	}
 }
 

@@ -7,12 +7,10 @@
 
 module raijin.utils.debugtools;
 
-import std.stdio;
-import std.algorithm;
-import std.path;
-import std.datetime;
-import std.string;
-import std.algorithm;
+import std.stdio : writefln, write, writeln;
+import std.algorithm : findSplitAfter;
+import std.path : baseName;
+import std.datetime : Clock;
 
 /**
 *	Wrapper around info, warn and error functions that acts as a namespace.
@@ -104,7 +102,8 @@ unittest
 */
 string concatArgs(T...)(T args)
 {
-	import std.conv;
+	import std.conv : to;
+	import std.string : stripRight;
 
 	string output;
 

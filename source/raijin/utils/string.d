@@ -7,10 +7,10 @@
 
 module raijin.utils.string;
 
-import std.string;
-import std.conv;
-import std.range;
-import std.algorithm;
+import std.string : indexOf, CaseSensitive;
+import std.conv : to;
+import std.range : empty, popFront, front;
+import std.algorithm : canFind, map, equal;
 
 /**
 	Determines if a string has the value specified

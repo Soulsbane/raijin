@@ -7,13 +7,8 @@
 
 module raijin.utils.file;
 
-import std.file;
-import std.path;
-import std.stdio;
-import std.string;
-import std.typecons;
-
-alias AppendMode = Flag!"appendMode";
+import std.file : exists, write, remove;
+import std.string : startsWith;
 
 /**
 	Creates fileName if it dosn't exist.
@@ -29,6 +24,7 @@ bool ensureFileExists(const string fileName, const string defaultData = string.i
 {
 	if(!fileName.exists)
 	{
+		import std.stdio : File;
 		auto f = File(fileName, "w+");
 
 		if(defaultData != string.init)
@@ -72,6 +68,7 @@ bool isFileHidden(const string fileName)
 {
 	version(Linux)
 	{
+		import std.path : baseName;
 		if(fileName.baseName.startsWith("."))
 		{
 			return true;
@@ -86,7 +83,7 @@ bool isFileHidden(const string fileName)
 			return true;
 		}
 	}
-	
+
 	return false;
 }
 

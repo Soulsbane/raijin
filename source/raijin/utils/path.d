@@ -7,12 +7,10 @@
 
 module raijin.utils.path;
 
-import std.process;
-import std.path;
-import std.stdio;
-import std.file;
-import std.algorithm;
-import std.string;
+import std.process : thisExePath, environment;
+import std.path : buildNormalizedPath;
+import std.file : exists, mkdirRecurse, rmdirRecurse, dirName;
+import std.algorithm : splitter;
 
 /**
 	Determines if executableName is in the user's path.
