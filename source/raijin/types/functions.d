@@ -6,9 +6,8 @@
 
 module raijin.types.functions;
 
-import std.typecons;
-import std.traits;
-import std.conv;
+import std.typecons : Flag;
+import std.traits : isIntegral;
 
 alias AllowNumericBooleanValues = Flag!"allowNumericBooleanValues";
 

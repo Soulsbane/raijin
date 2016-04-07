@@ -7,7 +7,7 @@
 
 module raijin.types.dynamic;
 
-import std.conv;
+import std.conv : to;
 import raijin.types.functions;
 
 /**
