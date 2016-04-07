@@ -6,10 +6,8 @@
 */
 module raijin.configpath;
 
-import std.path;
-import std.file;
-
-import standardpaths;
+import std.path : buildNormalizedPath;
+import std.file : mkdirRecurse, rmdirRecurse, exists;
 
 /**
 	Allows for the creation and deletion of directories in the users configuration directory.
@@ -27,6 +25,8 @@ struct ConfigPath
 	*/
 	this(const string organizationName, const string applicationName) @safe
 	{
+		import standardpaths : StandardPath, writablePath;
+
 		organizationName_ = organizationName;
 		applicationName_ = applicationName;
 
