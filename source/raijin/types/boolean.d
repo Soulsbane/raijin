@@ -34,21 +34,10 @@ public:
 		boolean_ = value;
 	}
 
-	this(const Boolean value)
-	{
-		boolean_ = value.boolean_;
-	}
-
 	bool opEquals(const string value)
 	{
 		import raijin.utils.string : toBoolean;
 		return (boolean_ == value.toBoolean);
-	}
-
-	bool opEquals(const size_t value)
-	{
-		bool temp = value == 1 ? true : false;
-		return (boolean_ == temp);
 	}
 
 	bool opEquals(const bool value)
@@ -56,20 +45,18 @@ public:
 		return (boolean_ == value);
 	}
 
-	void opAssign(const string value)
+	Boolean opAssign(string value)
 	{
 		import raijin.utils.string : toBoolean;
+
 		boolean_ = value.toBoolean;
+		return this;
 	}
 
-	void opAssign(const size_t value)
-	{
-		boolean_ = value == 1 ? true : false;
-	}
-
-	void opAssign(const bool value)
+	Boolean opAssign(bool value)
 	{
 		boolean_ = value;
+		return this;
 	}
 
 	string asYesNo()
@@ -125,9 +112,18 @@ unittest
 	assert(compare2 == compare2);
 
 	size_t tValue = 1;
-	Boolean tBoolValue = tValue;
+	Boolean tBoolValue = tValue; // calls this(size_t)
+	Boolean tBoolValue2 = tBoolValue;
 	assert(tBoolValue == true);
+	assert(tBoolValue2 == true);
 
 	Boolean testToString;
 	assert(testToString == "false");
+	assert(testToString.toString == "false");
+
+	Boolean intEquals = 1;
+	assert(intEquals == 1);
+
+	Boolean constructBoolean = Boolean(true);
+	assert(constructBoolean == true);
 }
