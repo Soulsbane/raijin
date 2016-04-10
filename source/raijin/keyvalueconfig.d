@@ -269,7 +269,7 @@ public:
 			auto configfile = File(fileName, "w+");
 			string curGroup;
 
-			foreach(key, data; values_)
+			foreach(data; values_)
 			{
 				if(curGroup != data.group)
 				{
