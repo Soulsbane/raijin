@@ -66,7 +66,7 @@ bool removeFileIfExists(const string fileName)
 */
 bool isFileHidden(const string fileName)
 {
-	version(Linux)
+	version(linux)
 	{
 		import std.path : baseName;
 		if(fileName.baseName.startsWith("."))
@@ -94,4 +94,19 @@ unittest
 
 	assert(fileName.ensureFileExists);
 	assert(fileName.removeFileIfExists);
+
+	assert(fileName.ensureFileExists("data to write"));
+	assert(fileName.removeFileIfExists);
+
+	immutable string hiddenFile = ".ahiddenfile";
+
+	assert(hiddenFile.ensureFileExists);
+	assert(hiddenFile.isFileHidden);
+	assert(hiddenFile.removeFileIfExists);
+
+	immutable string nonHiddenFile = "aNonHiddenfile";
+
+	assert(nonHiddenFile.ensureFileExists);
+	assert(!nonHiddenFile.isFileHidden);
+	assert(nonHiddenFile.removeFileIfExists);
 }
