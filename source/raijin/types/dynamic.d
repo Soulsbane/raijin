@@ -237,6 +237,7 @@ unittest
 	assert(compareInt.asString == "666");
 	assert(compareInt.asBoolean == true);
 	assert(compareInt.asDecimal == 666);
+	assert(compareInt.asInteger == 666);
 
 	DynamicType compareDec = 36.786;
 	assert(compareDec == 36.786);
@@ -246,7 +247,8 @@ unittest
 
 	DynamicType compareBool = false;
 	assert(compareBool == false);
-	import std.stdio;
+	assert(compareBool.asInteger == 0);
+	assert(compareBool.asDecimal == 0.0);
 
 	DynamicType compareBool2 = true;
 	assert(compareBool2 == true);
@@ -255,6 +257,12 @@ unittest
 	DynamicType compareDynString2 = "Hello World";
 	assert(compareDynString1 == compareDynString2);
 	assert(compareDynString1.str == compareDynString2.str);
+
+	DynamicType intStr = "123";
+	assert(intStr.asInteger == 123);
+
+	DynamicType boolStr = "true";
+	assert(boolStr.asBoolean == true);
 
 	DynamicType compareDynBoolean1 = false;
 	DynamicType compareDynBoolean2 = false;
@@ -272,6 +280,7 @@ unittest
 	assert(compareDynDecimal1 == compareDynDecimal2);
 	assert(compareDynDecimal1.decimal == compareDynDecimal2.decimal);
 	assert(!(compareDynDecimal2 == compareDynDecimalString3));
+	assert(compareDynDecimalString3.asDecimal == 45.89);
 
 	DynamicType assignToDynamicType1 = 15;
 	DynamicType assignToDynamicType2 = assignToDynamicType1;
