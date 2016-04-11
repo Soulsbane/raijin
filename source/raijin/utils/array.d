@@ -47,17 +47,17 @@ unittest
 
 	Params:
 		array = The array to insert value into.
-		indexValue = The value to insert after.
-		insertAfterValue = The value to insert.
+		insertAfterValue = The value to insert after.
+		valueToInsert = The value to insert.
 */
-void insertValueInPlace(T)(ref T[] array, T indexValue, T insertAfterValue)
+void insertValueInPlace(T)(ref T[] array, T insertAfterValue, T valueToInsert)
 {
 	import std.array : insertInPlace;
-	size_t index = array.countUntil(indexValue);
+	size_t index = array.countUntil(insertAfterValue);
 
 	if(index >= 0)
 	{
-		array.insertInPlace(++index, insertAfterValue);
+		array.insertInPlace(++index, valueToInsert);
 	}
 }
 
