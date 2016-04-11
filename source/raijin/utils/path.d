@@ -150,4 +150,7 @@ unittest
 	assert(removePathIfExists("my"));
 	assert(ensurePathExists("my/test/dir"));
 	assert(removePathIfExists("my"));
+
+	assert(getAppPath() == dirName(thisExePath()));
+	assert(getAppPath("test") == buildNormalizedPath(dirName(thisExePath()) ~ "/test"));
 }
