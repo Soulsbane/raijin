@@ -110,6 +110,7 @@ public:
 			wait(pipes.pid);
 			timer_.stop();
 			clearLine();
+			writeln;
 		}
 
 		process_ = tryWait(pipes.pid);
