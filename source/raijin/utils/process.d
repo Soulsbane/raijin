@@ -8,8 +8,13 @@ module raijin.utils.process;
 
 import std.exception : ifThrown;
 import std.typecons : Tuple;
+import std.process;
+import std.array : join;
+import std.stdio;
+import core.time : dur;
 
 import raijin.utils.path : isInPath;
+import raijin.timers : RepeatingTimer;
 
 // BUG: DMD can't infer a return type for both launchApplication functions without this.
 alias LaunchApplicationReturnType = Tuple!(int, "status", string, "output");
@@ -26,7 +31,6 @@ alias LaunchApplicationReturnType = Tuple!(int, "status", string, "output");
 */
 LaunchApplicationReturnType  launchApplication(const string fileName, const string[] args...) @safe
 {
-	import std.array : join;
 	return launchApplication(fileName, args.join(' '));
 }
 
@@ -43,7 +47,6 @@ LaunchApplicationReturnType  launchApplication(const string fileName, const stri
 LaunchApplicationReturnType launchApplication(const string fileName, const string args) @safe
 {
 	import std.file : exists;
-	import std.process : executeShell;
 
 	auto result = Tuple!(int, "status", string, "output")(127, "Executable not found.");
 	immutable auto inPath = isInPath(fileName);
@@ -87,4 +90,59 @@ unittest
 		assert(fileNameResult.status == 126);
 		removeFileIfExists("myprocessapp");
 	}
+}
+
+struct ProcessWait
+{
+	alias ProcessReturnType = Tuple!(bool, "terminated", int, "status");
+
+public:
+	void execute(const string[] args...)
+	{
+		timer_ = new RepeatingTimer;
+		timer_.setCallBack("onTimer", &onStatusUpdate);
+
+		auto pipes = pipeProcess(args);
+		timer_.start(dur!("msecs")(500));
+
+		scope(exit)
+		{
+			wait(pipes.pid);
+			timer_.stop();
+			clearLine();
+		}
+
+		process_ = tryWait(pipes.pid);
+	}
+
+	void onStatusUpdate()
+	{
+		if(tickCount_ % 2 == 0)
+		{
+			write("..");
+		}
+		else if(tickCount_ % 3 == 0)
+		{
+			write("...");
+			clearLine();
+		}
+		else
+		{
+			write(".");
+		}
+
+		stdout.flush();
+		++tickCount_;
+	}
+private:
+	void clearLine()
+	{
+		write("\x1B[2K");
+		write("\r");
+	}
+
+private:
+	RepeatingTimer timer_;
+	ProcessReturnType process_;
+	size_t tickCount_ = 1;
 }
