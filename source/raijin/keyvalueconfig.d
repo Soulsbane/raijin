@@ -396,7 +396,7 @@ public:
 	{
 		if(isGroupString(key))
 		{
-			auto groupAndKey = getGroupAndKeyFromString(key);
+			immutable auto groupAndKey = getGroupAndKeyFromString(key);
 			auto group = groupAndKey.group;
 
 			set(group, key, value);
@@ -626,7 +626,7 @@ unittest
 	assert(config.asBoolean("aBool"));
 	assert(config.contains("time"));
 
-	auto number = config["number"];
+	immutable auto number = config["number"];
 
 	assert(number == 12071);
 	assert(config["decimal"] == 3443.443);
@@ -673,7 +673,7 @@ unittest
 		This is a really long sentence to test for a really long value string!
 	";
 
-	bool equalSignValue = config.loadString(noEqualSign);
+	immutable bool equalSignValue = config.loadString(noEqualSign);
 	assert(equalSignValue == false);
 
 	string invalidGroup = "
@@ -684,6 +684,6 @@ unittest
 		another=key value is here
 	";
 
-	bool invalidGroupValue = config.loadString(invalidGroup);
+	immutable bool invalidGroupValue = config.loadString(invalidGroup);
 	assert(invalidGroupValue == false);
 }
