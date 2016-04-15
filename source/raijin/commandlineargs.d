@@ -481,7 +481,7 @@ unittest
 
 	import std.math : feqrel;
 
-	float aFloat = args.asDecimal("aFloat");
+	immutable float aFloat = args.asDecimal("aFloat");
 
 	assert(feqrel(args.asDecimal("aFloat"), 4.44));
 	assert(feqrel(aFloat, 4.44));
