@@ -71,22 +71,22 @@ unittest
 {
 	version(linux)
 	{
-		auto result = launchApplication("ls", "-l -h");
+		immutable auto result = launchApplication("ls", "-l -h");
 		assert(result.status == 0);
 
-		auto result2 = launchApplication("ls", "-l", "-h");
+		immutable auto result2 = launchApplication("ls", "-l", "-h");
 		assert(result2.status == 0);
 
-		auto errorResult = launchApplication("ls2lss", "-l -h");
+		immutable auto errorResult = launchApplication("ls2lss", "-l -h");
 		assert(errorResult.status == 127);
 
-		auto errorResult2 = launchApplication("ls2lss", "-l", "-h");
+		immutable auto errorResult2 = launchApplication("ls2lss", "-l", "-h");
 		assert(errorResult2.status == 127);
 
 		import raijin.utils.file: ensureFileExists, removeFileIfExists;
 
 		ensureFileExists("myprocessapp");
-		auto fileNameResult = launchApplication("./myprocessapp", "-l", "-h");
+		immutable auto fileNameResult = launchApplication("./myprocessapp", "-l", "-h");
 		assert(fileNameResult.status == 126);
 		removeFileIfExists("myprocessapp");
 	}
