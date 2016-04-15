@@ -69,7 +69,6 @@ struct DynamicType
 
 	DynamicType opAssign(DynamicType value)
 	{
-		import std.stdio;
 		type_ = value.type;
 
 		final switch(type_)
@@ -112,7 +111,7 @@ struct DynamicType
 	/// Compare a DynamicType to a double value.
 	bool opEquals(double value) const
 	{
-		import std.math;
+		import std.math : approxEqual;
 		return approxEqual(value, decimal_);
 	}
 
