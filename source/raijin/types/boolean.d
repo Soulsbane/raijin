@@ -70,7 +70,7 @@ public:
 		return boolean_ == true ? 1 : 0;
 	}
 
-	bool asBoolean() @property
+	bool asBoolean() @property const
 	{
 		return boolean_;
 	}
@@ -79,6 +79,11 @@ public:
 	{
 		import std.conv : to;
 		return to!string(boolean_);
+	}
+
+	bool toHash()
+	{
+		return boolean_;
 	}
 
 	alias asBoolean this;
