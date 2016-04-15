@@ -29,7 +29,8 @@ struct Log
 	static void info(const string msg = "<None>", const int lineNumber = __LINE__, const string fileName = __FILE__,
 		const string funcName = __FUNCTION__) @trusted
 	{
-		debug writefln("INFO [%s] - %s[%s](%d): %s", Clock.currTime, fileName.baseName, funcName.findSplitAfter(".")[1], lineNumber, msg);
+		debug writefln("INFO [%s] - %s[%s](%d): %s", Clock.currTime, fileName.baseName, funcName.findSplitAfter(".")[1],
+			lineNumber, msg);
 	}
 
 	/**
@@ -44,7 +45,8 @@ struct Log
 	static void warn(const string msg = "<None>", const int lineNumber = __LINE__, const string fileName = __FILE__,
 		const string funcName = __FUNCTION__) @trusted
 	{
-		debug writefln("WARN [%s] - %s[%s](%d): %s", Clock.currTime, fileName.baseName, funcName.findSplitAfter(".")[1], lineNumber, msg);
+		debug writefln("WARN [%s] - %s[%s](%d): %s", Clock.currTime, fileName.baseName, funcName.findSplitAfter(".")[1],
+			lineNumber, msg);
 	}
 
 	/**
@@ -59,7 +61,8 @@ struct Log
 	static void error(const string msg = "<None>", const int lineNumber = __LINE__, const string fileName = __FILE__,
 		const string funcName = __FUNCTION__) @trusted
 	{
-		debug writefln("ERROR [%s] - %s[%s](%d): %s", Clock.currTime, fileName.baseName, funcName.findSplitAfter(".")[1], lineNumber, msg);
+		debug writefln("ERROR [%s] - %s[%s](%d): %s", Clock.currTime, fileName.baseName, funcName.findSplitAfter(".")[1],
+			lineNumber, msg);
 	}
 }
 
@@ -79,11 +82,8 @@ unittest
 */
 void printArgs(T...)(T args)
 {
-	import std.conv;
-
 	write(concatArgs(args));
 	writeln;
-
 }
 
 ///
