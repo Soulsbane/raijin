@@ -342,6 +342,7 @@ public:
 		Params:
 			group = Name of the group the value is stored in.
 			key = Name of the key the value is stored in.
+			defaultValue = Default value if key and group were not found.
 
 		Returns:
 			The value associated with the group and key.
