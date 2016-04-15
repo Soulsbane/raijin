@@ -14,8 +14,6 @@ import std.file : mkdirRecurse, rmdirRecurse, exists;
 */
 struct ConfigPath
 {
-	@disable this();
-
 	/**
 		Intializes the application name to executables name and setups up config directory using supplied arguments.
 
@@ -24,6 +22,18 @@ struct ConfigPath
 			applicationName = Name of your application.
 	*/
 	this(const string organizationName, const string applicationName) @safe
+	{
+		create(organizationName, applicationName);
+	}
+
+	/**
+		Intializes the application name to executables name and setups up config directory using supplied arguments.
+
+		Params:
+			organizationName = Name of your organization.
+			applicationName = Name of your application.
+	*/
+	void create(const string organizationName, const string applicationName) @safe
 	{
 		import standardpaths : StandardPath, writablePath;
 

@@ -44,11 +44,9 @@ private:
 
 public:
 
-	@disable this();
 
 	/**
-		Overload that allows setting of organizationName, applicationName and defaultConfigFileData to be used
-		when creating directories in users config directory and setting up the config file app.config.
+		Sets up config directory and files.
 
 		Params:
 			organizationName = Name of the organization/company.
@@ -58,14 +56,27 @@ public:
 	this(const string organizationName, const string applicationName,
 		const string defaultConfigFileData = string.init) @safe
 	{
-		configPath_ = ConfigPath(organizationName, applicationName);
+		create(organizationName, applicationName, defaultConfigFileData);
+	}
+
+	/**
+		Sets up config directory and files.
+
+		Params:
+			organizationName = Name of the organization/company.
+			applicationName = Name of the application.
+			defaultConfigFileData = The data app.config should be populated with if app.config isn't found.
+	*/
+	void create(const string organizationName, const string applicationName,
+		const string defaultConfigFileData = string.init) @safe
+	{
+		configPath_.create(organizationName, applicationName);
 
 		configPath_.createConfigDir("config");
 		configPath_.createConfigDir("assets");
 
 		loadConfigFile(defaultConfigFileData);
 	}
-
 	/**
 		Helper property for accessing ConfigPath methods.
 
