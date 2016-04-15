@@ -65,7 +65,7 @@ public:
 		invalidCommandCall(command);
 	}
 
-	bool isSet() @property
+	bool isSet() @property const
 	{
 		return isSet_;
 	}
@@ -112,7 +112,7 @@ public:
 			command = The command that was sent
 			args = Additional arguments sent with command.
 	*/
-	void onCommand(const string command, const string[] args) {}
+	abstract void onCommand(const string command, const string[] args);
 
 	/**
 		Called by processCommands before commands are handled.
@@ -129,7 +129,7 @@ public:
 	*/
 	void onListCommands()
 	{
-		import std.algorithm;
+		import std.algorithm : sort, each;
 		auto keys = sort(validCommands_.keys);
 
 		writeln("Commands:");
@@ -285,7 +285,7 @@ public:
 		Returns:
 			true if the prompt will show false otherwise.
 	*/
-	bool showPrompt() @property
+	bool showPrompt() @property const
 	{
 		return showPrompt_;
 	}
@@ -361,7 +361,7 @@ void clear()
 bool confirmationPrompt(string msg = "Do you wish to continue(y/n): ")
 {
 	write(msg);
-	auto answer = readln();
+	immutable auto answer = readln();
 
 	if(answer.front == 'Y' || answer.front == 'y')
 	{
