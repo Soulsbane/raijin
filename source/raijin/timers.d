@@ -109,7 +109,7 @@ class RepeatingTimer
 
 		static if(!isDelegate!T)
 		{
-			import std.functional;
+			import std.functional : toDelegate;
 			voidCall = toDelegate(callback);
 		}
 		else
@@ -193,7 +193,7 @@ private:
 			thread_.sleep(dur!("msecs")(10)); // Throttle so we don't take up too much CPU
 
 			MonoTime after = MonoTime.currTime;
-			Duration dur = after - before;
+			immutable Duration dur = after - before;
 
 			if(dur >= dur_)
 			{
@@ -285,7 +285,7 @@ class CountdownTimer
 
 		static if(!isDelegate!T)
 		{
-			import std.functional;
+			import std.functional : toDelegate;
 			voidCall = toDelegate(callback);
 		}
 		else
@@ -319,14 +319,14 @@ private:
 	*/
 	void run()
 	{
-		MonoTime before = MonoTime.currTime;
+		immutable MonoTime before = MonoTime.currTime;
 
 		while(running_)
 		{
 			thread_.sleep(dur!("msecs")(10)); // Throttle so we don't take up too much CPU
 
-			MonoTime after = MonoTime.currTime;
-			Duration dur = after - before;
+			immutable MonoTime after = MonoTime.currTime;
+			immutable Duration dur = after - before;
 
 			if(dur >= waitTime_)
 			{
