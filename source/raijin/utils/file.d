@@ -77,7 +77,8 @@ bool isFileHidden(const string fileName)
 
 	version(Windows)
 	{
-		import win32.winnt;
+		import win32.winnt : getAttributes, FILE_ATTRIBUTE_HIDDEN;
+		
 		if (getAttributes(fileName) & FILE_ATTRIBUTE_HIDDEN)
 		{
 			return true;
