@@ -96,7 +96,7 @@ unittest
 {
 	auto path = ConfigPath("DlangUnitOrg", "MyUnitTestApp");
 
-	import std.stdio;
+	import std.stdio : writeln;
 
 	writeln("Testing ConfigPath...");
 	writeln(path.getConfigDir("tests"));
