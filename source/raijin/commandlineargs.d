@@ -479,7 +479,7 @@ unittest
 	assert(args.hasFlag("flag"));
 	assert(args["flag"] == true);
 
-	import std.math;
+	import std.math : feqrel;
 
 	float aFloat = args.asDecimal("aFloat");
 
