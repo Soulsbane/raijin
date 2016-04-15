@@ -152,7 +152,7 @@ string removeLeadingChars(string str, const dchar charToRemove) pure @safe
 	// INFO: Surely there is a phobos function to do this but I couldn't find it.
 	while(!str.empty)
 	{
-		auto c = str.front;
+		immutable auto c = str.front;
 
 		if(c != charToRemove)
 		{
@@ -184,7 +184,7 @@ void removeLeadingCharsInPlace(ref string str, const dchar charToRemove) pure @s
 	// INFO: Surely there is a phobos function to do this but I couldn't find it.
 	while(!str.empty)
 	{
-		auto c = str.front;
+		immutable auto c = str.front;
 
 		if(c != charToRemove)
 		{
