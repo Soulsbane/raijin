@@ -5,7 +5,6 @@ import std.container : Array;
 import std.string : removechars, lineSplitter;
 import std.container : Array;
 import std.regex : Regex, ctRegex, matchFirst;
-import std.parallelism : parallel;
 
 private Regex!char RECORD_FIELD_REGEX = ctRegex!(r"\s+(?P<key>\w+)\s+(?P<value>.*)");
 
