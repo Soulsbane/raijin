@@ -75,6 +75,11 @@ struct RecordCollector(T)
 		}
 	}
 
+	auto getRecords()
+	{
+		return recordArray_;
+	}
+
 private:
 	RecordArray recordArray_;
 }
