@@ -30,7 +30,10 @@ struct RecordCollector(T)
 				{
 					if(field == key)
 					{
-						immutable string generatedCode = "data." ~ field ~ " = value;";
+						import std.conv : to;
+
+						// This generates code in the form of: data.field=to!type(value);
+						immutable string generatedCode = "data." ~ field ~ "=to!" ~ typeof(mixin("data." ~ field)).stringof ~ "(value);";
 						mixin(generatedCode);
 					}
 				}
