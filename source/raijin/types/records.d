@@ -67,14 +67,17 @@ struct RecordCollector(T)
 		}
 	}
 
-	void dump()
+	debug
 	{
-		foreach(entry; recordArray_)
+		void dump()
 		{
-			debug writeln(entry);
+			foreach(entry; recordArray_)
+			{
+				debug writeln(entry);
+			}
 		}
 	}
-
+	
 	auto getRecords()
 	{
 		return recordArray_;
