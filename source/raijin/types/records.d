@@ -18,7 +18,7 @@ private Regex!char RECORD_FIELD_REGEX = ctRegex!(r"\s+(?P<key>\w+)\s+(?P<value>.
 	Manages a record format.
 
 	Example:
-
+		--------------------------------------
 		string records = "
 			{
 				firstName "Albert"
@@ -30,8 +30,6 @@ private Regex!char RECORD_FIELD_REGEX = ctRegex!(r"\s+(?P<key>\w+)\s+(?P<value>.
 				lastName "Hopper"
 			}
 		";
-
-		app.d:
 
 		struct SimpleRecord
 		{
@@ -49,6 +47,7 @@ private Regex!char RECORD_FIELD_REGEX = ctRegex!(r"\s+(?P<key>\w+)\s+(?P<value>.
 				writeln(entry);
 			}
 		}
+		--------------------------------------
 */
 struct RecordCollector(T)
 {

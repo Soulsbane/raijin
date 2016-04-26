@@ -6,10 +6,11 @@
 */
 module raijin.types.callbacks;
 
-/*
+/**
 	A simple interface for holding either a function or delegate to be called later.
 
 	Examples:
+		--------------------------------------
 		alias VoidDelegate = void delegate();
 
 		void func()
@@ -24,6 +25,7 @@ module raijin.types.callbacks;
 			func.set(&func);
 			func();
 		}
+		--------------------------------------
 */
 struct Callback(T)
 {
