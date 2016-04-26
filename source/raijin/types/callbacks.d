@@ -37,6 +37,12 @@ struct Callback(T)
 		}
 	}
 
+	Callback opAssign(T callback)
+	{
+		set(callback);
+		return this;
+	}
+
 	/**
 		Sets the callback used with opCall
 
