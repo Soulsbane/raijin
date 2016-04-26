@@ -112,7 +112,7 @@ public:
 			command = The command that was sent
 			args = Additional arguments sent with command.
 	*/
-	void onCommand(const string command, const string[] args);
+	void onCommand(const string command, const string[] args) {}
 
 	/**
 		Called by processCommands before commands are handled.
