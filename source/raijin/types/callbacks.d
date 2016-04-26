@@ -54,7 +54,7 @@ struct Callback(T)
 		}
 	}
 
-	Callback opAssign(T callback)
+	Callback opAssign(T callback) pure @safe
 	{
 		set(callback);
 		return this;
@@ -65,7 +65,7 @@ struct Callback(T)
 
 		callback = The callback function/delegate to use with opCall.
 	*/
-	void set(T callback)
+	void set(T callback) pure @safe
 	{
 		callback_ = callback;
 	}
@@ -76,7 +76,7 @@ struct Callback(T)
 		Returns:
 			Whether the callback has a valid function/delegate assigned to it
 	*/
-	bool isSet() const
+	bool isSet() pure const @safe
 	{
 		if(callback_)
 		{
@@ -89,7 +89,7 @@ struct Callback(T)
 	/**
 		Starts/Restarts the calling of the assigned function/delegate.
 	*/
-	void start()
+	void start() pure @safe
 	{
 		stopped_ = false;
 	}
@@ -97,11 +97,12 @@ struct Callback(T)
 	/**
 		Stops the calling of the assigned function/delegate.
 	*/
-	void stop()
+	void stop() pure @safe
 	{
 		stopped_ = true;
 	}
 
+private:
 	T callback_;
 	bool stopped_;
 }
