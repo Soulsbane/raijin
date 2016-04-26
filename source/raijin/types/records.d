@@ -92,9 +92,13 @@ struct RecordCollector(T)
 	/**
 		Parses a string into an array of records.
 
-		records = The string of records to process.
+		Params:
+			records = The string of records to process.
+
+		Returns:
+			An $(LINK2 http://dlang.org/phobos/std_container_array.html, std.container.Array) of records.
 	*/
-	void parse(const string records)
+	RecordArray parse(const string records)
 	{
 		import std.algorithm : canFind;
 		auto lines = records.lineSplitter();
@@ -116,6 +120,32 @@ struct RecordCollector(T)
 				strArray.insert(line);
 			}
 		}
+
+		return recordArray_;
+	}
+
+	/**
+		Loads a file of records and parses it.
+
+		Params:
+			fileName = The name of the file to parse.
+			
+		Returns:
+			An $(LINK2 http://dlang.org/phobos/std_container_array.html, std.container.Array) of records.
+	*/
+	RecordArray parseFile(const string fileName)
+	{
+		import std.path : exists;
+		import std.file : readText;
+
+		RecordArray recArray;
+
+		if(fileName.exists)
+		{
+			recArray = parse(fileName.readText);
+		}
+
+		return recArray;
 	}
 
 	debug
