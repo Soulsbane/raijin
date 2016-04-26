@@ -15,7 +15,7 @@ struct Callback(T)
 		callback_ = callback;
 	}
 
-	bool isInitialized() const
+	bool isSet() const
 	{
 		if(callback_)
 		{
