@@ -129,7 +129,7 @@ struct RecordCollector(T)
 
 		Params:
 			fileName = The name of the file to parse.
-			
+
 		Returns:
 			An $(LINK2 http://dlang.org/phobos/std_container_array.html, std.container.Array) of records.
 	*/
@@ -151,7 +151,7 @@ struct RecordCollector(T)
 	debug
 	{
 		/**
-			Outputs each record to stdout.
+			Outputs each record to stdout. $(B This method is only available in debug build).
 		*/
 		void dump()
 		{
