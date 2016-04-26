@@ -11,12 +11,18 @@ module raijin.types.callbacks;
 
 	Examples:
 		--------------------------------------
+		import std.stdio : writeln;
+
 		alias VoidDelegate = void delegate();
 
 		void func()
 		{
-			import std.stdio : writeln;
 			writeln("Called func..");
+		}
+
+		void assignedTo()
+		{
+			writeln("It was assignedTo");
 		}
 
 		void main()
@@ -24,6 +30,9 @@ module raijin.types.callbacks;
 			Callback!VoidDelegate func;
 			func.set(&func);
 			func();
+
+			funcCall = &assignedTo;
+			funcCall();
 		}
 		--------------------------------------
 */
