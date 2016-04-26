@@ -1,3 +1,9 @@
+/**
+	A simple module for working with a record format.
+
+	Authors:
+		Paul Crane
+*/
 module raijin.types.records;
 
 import std.stdio;
@@ -8,12 +14,53 @@ import std.regex : Regex, ctRegex, matchFirst;
 
 private Regex!char RECORD_FIELD_REGEX = ctRegex!(r"\s+(?P<key>\w+)\s+(?P<value>.*)");
 
+/**
+	Manages a record format.
+
+	Example:
+
+		string records = "
+			{
+				firstName "Albert"
+				lastName "Einstein"
+			}
+
+			{
+				firstName "Grace"
+				lastName "Hopper"
+			}
+		";
+
+		app.d:
+
+		struct SimpleRecord
+		{
+			string firstName;
+			string lastName;
+		}
+
+		void main()
+		{
+			RecordCollector!SimpleRecord collector;
+			collector.parse(records);
+
+			foreach(entry; collector.getRecords())
+			{
+				writeln(entry);
+			}
+		}
+*/
 struct RecordCollector(T)
 {
 	alias RecordArray = Array!T;
 	alias StringArray = Array!string;
 
-	T convertToRecord(StringArray strArray)
+	/**
+		Converts the record from a file to its corresponding struct T.
+
+		strArray = The array of lines that contains an actual record.
+	*/
+	private T convertToRecord(StringArray strArray)
 	{
 		T data;
 
@@ -43,6 +90,11 @@ struct RecordCollector(T)
 		return data;
 	}
 
+	/**
+		Parses a string into an array of records.
+
+		records = The string of records to process.
+	*/
 	void parse(const string records)
 	{
 		import std.algorithm : canFind;
@@ -69,6 +121,9 @@ struct RecordCollector(T)
 
 	debug
 	{
+		/**
+			Outputs each record to stdout.
+		*/
 		void dump()
 		{
 			foreach(entry; recordArray_)
@@ -77,7 +132,13 @@ struct RecordCollector(T)
 			}
 		}
 	}
-	
+
+	/**
+		Returns an array of records.
+
+		Returns:
+			An array of records.
+	*/
 	auto getRecords()
 	{
 		return recordArray_;
