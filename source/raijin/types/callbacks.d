@@ -33,6 +33,14 @@ module raijin.types.callbacks;
 
 			funcCall = &assignedTo;
 			funcCall();
+
+			funcCall.stop(); // Calling funcCall() will no longer call the assigned function.
+			writeln("^^^^^^^^^");
+			funcCall();
+
+			funcCall.start(); // Calling resumed for assigned function.
+			writeln("^^^^^^^^^");
+			funcCall();
 		}
 		--------------------------------------
 */
@@ -40,7 +48,7 @@ struct Callback(T)
 {
 	void opCall(Args...)(Args args)
 	{
-		if(callback_)
+		if(callback_ && !stopped_)
 		{
 			callback_(args);
 		}
@@ -78,5 +86,22 @@ struct Callback(T)
 		return false;
 	}
 
+	/**
+		Starts/Restarts the calling of the assigned function/delegate.
+	*/
+	void start()
+	{
+		stopped_ = false;
+	}
+
+	/**
+		Stops the calling of the assigned function/delegate.
+	*/
+	void stop()
+	{
+		stopped_ = true;
+	}
+
 	T callback_;
+	bool stopped_;
 }
