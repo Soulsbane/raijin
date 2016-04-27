@@ -56,10 +56,10 @@ public:
 
 		defaultCommandsCount_ = validCommands_.length;
 
-		onCommand_.set(&onCommand);
-		onInvalidCommand_.set(&onInvalidCommand);
-		onEnterProcessCommands_.set(&onEnterProcessCommands);
-		onExitProcessCommands_.set(&onExitProcessCommands);
+		setCallback("onCommand", &onCommand);
+		setCallback("onInvalidCommand", &onInvalidCommand);
+		setCallback("onEnterProcessCommands", &onEnterProcessCommands);
+		setCallback("onExitProcessCommands", &onExitProcessCommands);
 
 	}
 
@@ -109,16 +109,10 @@ public:
 			name = Name of the callback to use(valid values are: onTimer, onTimerStart or onTimerStop).
 			callback = The function to be called. Function must take no arguments and have void return type.
 	*/
-	/*void setCallBack(T)(const string name, T callback)
+	void setCallback(const string name, VoidDelegate callback)
 	{
 		final switch(name)
 		{
-			case "onCommand":
-				onCommand_ = callback;
-				break;
-			case "onInvalidCommand":
-				onInvalidCommand_ = callback;
-				break;
 			case "onExitProcessCommands":
 				onExitProcessCommands_ = callback;
 				break;
@@ -126,7 +120,41 @@ public:
 				onEnterProcessCommands_ = callback;
 				break;
 		}
-	}*/
+	}
+
+	/**
+		Sets a callback to a function instead of having to inherit from class.
+
+		Params:
+			name = Name of the callback to use(valid values are: onTimer, onTimerStart or onTimerStop).
+			callback = The function to be called. Function must take no arguments and have void return type.
+	*/
+	void setCallback(const string name, OnCommandDelegate callback)
+	{
+		final switch(name)
+		{
+			case "onCommand":
+				onCommand_ = callback;
+				break;
+		}
+	}
+
+	/**
+		Sets a callback to a function instead of having to inherit from class.
+
+		Params:
+			name = Name of the callback to use(valid values are: onTimer, onTimerStart or onTimerStop).
+			callback = The function to be called. Function must take no arguments and have void return type.
+	*/
+	void setCallback(const string name, OnInvalidCommandDelegate callback)
+	{
+		final switch(name)
+		{
+			case "onInvalidCommand":
+				onInvalidCommand_ = callback;
+				break;
+		}
+	}
 
 	/**
 		Processes commands sent via the command line.
