@@ -1,5 +1,7 @@
 module raijin.types.queue;
 
+import std.container : DList;
+
 struct SimpleQueue(T)
 {
 	void push(const T value) pure @safe
@@ -31,4 +33,17 @@ struct SimpleQueue(T)
 	}
 private:
 	DList!T data_;
+}
+
+///
+unittest
+{
+	SimpleQueue!int queue;
+
+	queue.push(1);
+	queue.push(2);
+	queue.push(3);
+	assert(queue.pop() == 1);
+	assert(!queue.empty);
+	assert(queue.back == 2);
 }
