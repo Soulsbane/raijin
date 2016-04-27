@@ -12,6 +12,8 @@ import std.typecons;
 import std.range;
 import core.thread;
 
+import raijin.types.callbacks;
+
 alias ShowPrompt = Flag!"showPrompt";
 
 private
@@ -19,56 +21,6 @@ private
 	alias OnCommandDelegate = void delegate(const string command, const string[] args);
 	alias VoidDelegate = void delegate();
 	alias OnInvalidCommandDelegate = void delegate(const string command);
-}
-
-private string insertOpAssign(T)(const string memberName)
-{
-	import std.format : format;
-
-	return format(q{
-		void opAssign(%s callback)
-		{
-			%s = callback;
-			isSet_ = true;
-		}
-	}, T.stringof, memberName);
-}
-
-private struct Callback
-{
-private:
-	union
-	{
-		VoidDelegate voidCall;
-		OnCommandDelegate commandCall;
-		OnInvalidCommandDelegate invalidCommandCall;
-	}
-
-	bool isSet_;
-public:
-	mixin(insertOpAssign!VoidDelegate("voidCall"));
-	mixin(insertOpAssign!OnCommandDelegate("commandCall"));
-	mixin(insertOpAssign!OnInvalidCommandDelegate("invalidCommandCall"));
-
-	void opCall()
-	{
-		voidCall();
-	}
-
-	void opCall(const string command, const string[] args)
-	{
-		commandCall(command, args);
-	}
-
-	void opCall(const string command)
-	{
-		invalidCommandCall(command);
-	}
-
-	bool isSet() @property const
-	{
-		return isSet_;
-	}
 }
 
 /**
@@ -103,6 +55,12 @@ public:
 		addCommand("quit", "Exits the program.");
 
 		defaultCommandsCount_ = validCommands_.length;
+
+		onCommand_.set(&onCommand);
+		onInvalidCommand_.set(&onInvalidCommand);
+		onEnterProcessCommands_.set(&onEnterProcessCommands);
+		onExitProcessCommands_.set(&onExitProcessCommands);
+
 	}
 
 	/**
@@ -151,7 +109,7 @@ public:
 			name = Name of the callback to use(valid values are: onTimer, onTimerStart or onTimerStop).
 			callback = The function to be called. Function must take no arguments and have void return type.
 	*/
-	void setCallBack(T)(const string name, T callback)
+	/*void setCallBack(T)(const string name, T callback)
 	{
 		final switch(name)
 		{
@@ -168,7 +126,7 @@ public:
 				onEnterProcessCommands_ = callback;
 				break;
 		}
-	}
+	}*/
 
 	/**
 		Processes commands sent via the command line.
@@ -182,7 +140,7 @@ public:
 		showPrompt_ = showPrompt;
 		promptMsg_ = promptMsg;
 
-		validateCallbacks();
+		//validateCallbacks();
 
 		thread_ = new Thread(&run);
 		thread_.start();
@@ -291,29 +249,6 @@ public:
 	}
 
 private:
-	void validateCallbacks()
-	{
-		if(!onCommand_.isSet)
-		{
-			onCommand_ = &onCommand;
-		}
-
-		if(!onInvalidCommand_.isSet)
-		{
-			onInvalidCommand_ = &onInvalidCommand;
-		}
-
-		if(!onEnterProcessCommands_.isSet)
-		{
-			onEnterProcessCommands_ = &onEnterProcessCommands;
-		}
-
-		if(!onExitProcessCommands_.isSet)
-		{
-			onExitProcessCommands_ = &onExitProcessCommands;
-		}
-	}
-private:
 	bool keepProcessing_ = true;
 	string promptMsg_;
 	ShowPrompt showPrompt_;
@@ -321,10 +256,10 @@ private:
 	size_t defaultCommandsCount_;
 	Thread thread_;
 
-	Callback onCommand_;
-	Callback onInvalidCommand_;
-	Callback onEnterProcessCommands_;
-	Callback onExitProcessCommands_;
+	Callback!OnCommandDelegate onCommand_;
+	Callback!OnInvalidCommandDelegate onInvalidCommand_;
+	Callback!VoidDelegate onEnterProcessCommands_;
+	Callback!VoidDelegate  onExitProcessCommands_;
 }
 
 /**
