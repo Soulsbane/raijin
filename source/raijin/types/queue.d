@@ -47,9 +47,9 @@ struct SimpleQueue(T)
 		Retrieves the value at the back of the queue(the first value pushed).
 
 		Returns:
-			The value at the back of the queue.
+			The value at the front of the queue.
 	*/
-	T back() pure const @safe
+	T front() pure const @safe
 	{
 		return data_.back;
 	}
@@ -64,6 +64,9 @@ struct SimpleQueue(T)
 	{
 		return data_.empty;
 	}
+
+	alias enqueue = push;
+	alias dequeue = pop;
 private:
 	DList!T data_;
 }
@@ -78,5 +81,5 @@ unittest
 	queue.push(3);
 	assert(queue.pop() == 1);
 	assert(!queue.empty);
-	assert(queue.back == 2);
+	assert(queue.front == 2);
 }

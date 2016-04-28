@@ -47,9 +47,9 @@ struct SimpleStack(T)
 		Retrieves the value at the back of the stack(the last value pushed) without popping.
 
 		Returns:
-			The value at the back of the stack.
+			The value at the top of the stack.
 	*/
-	T back() pure const @safe
+	T top() pure const @safe
 	{
 		return data_.back;
 	}
@@ -64,6 +64,7 @@ struct SimpleStack(T)
 	{
 		return data_.empty;
 	}
+
 private:
 	DList!T data_;
 }
@@ -78,5 +79,5 @@ unittest
 	stack.push(3);
 	assert(stack.pop() == 3);
 	assert(!stack.empty);
-	assert(stack.back == 2);
+	assert(stack.top == 2);
 }
