@@ -14,7 +14,7 @@ import std.container : DList;
 struct SimpleQueue(T)
 {
 	/**
-		Pushes a value into the queue.
+		Pushes a value onto the queue.
 
 		Params:
 			value = The value to push onto the queue.
@@ -44,7 +44,7 @@ struct SimpleQueue(T)
 	}
 
 	/**
-		Retrieves the value at the back of the queue(the first value pushed).
+		Retrieves the value at the front of the queue(the first value pushed).
 
 		Returns:
 			The value at the front of the queue.

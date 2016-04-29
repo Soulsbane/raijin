@@ -44,7 +44,7 @@ struct SimpleStack(T)
 	}
 
 	/**
-		Retrieves the value at the back of the stack(the last value pushed) without popping.
+		Retrieves the last value pushed without popping.
 
 		Returns:
 			The value at the top of the stack.
