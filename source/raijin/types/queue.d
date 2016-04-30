@@ -65,6 +65,26 @@ struct SimpleQueue(T)
 		return data_.empty;
 	}
 
+	/**
+		Retries the number of items in the queue;
+
+		Returns:
+			The number of items in the queue;
+	*/
+	size_t length()
+	{
+		import std.algorithm : count;
+		return count(data_[]);
+	}
+
+	/**
+		Clears the queue.
+	*/
+	void clear()
+	{
+		data_.clear();
+	}
+
 	alias enqueue = push;
 	alias dequeue = pop;
 private:
@@ -79,7 +99,12 @@ unittest
 	queue.push(1);
 	queue.push(2);
 	queue.push(3);
+
+	assert(queue.length == 3);
 	assert(queue.pop() == 1);
 	assert(!queue.empty);
 	assert(queue.front == 2);
+
+	queue.clear();
+	assert(queue.length == 0);
 }

@@ -65,6 +65,26 @@ struct SimpleStack(T)
 		return data_.empty;
 	}
 
+	/**
+		Retries the number of items in the stack;
+
+		Returns:
+			The number of items in the stack;
+	*/
+	size_t length()
+	{
+		import std.algorithm : count;
+		return count(data_[]);
+	}
+
+	/**
+		Clears the stack.
+	*/
+	void clear()
+	{
+		data_.clear();
+	}
+
 private:
 	DList!T data_;
 }
@@ -77,7 +97,12 @@ unittest
 	stack.push(1);
 	stack.push(2);
 	stack.push(3);
+
+	assert(stack.length == 3);
 	assert(stack.pop() == 3);
 	assert(!stack.empty);
 	assert(stack.top == 2);
+
+	stack.clear();
+	assert(stack.length == 0);
 }
