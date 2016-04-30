@@ -71,7 +71,7 @@ struct SimpleQueue(T)
 		Returns:
 			The number of items in the queue;
 	*/
-	size_t length()
+	size_t length() pure @safe
 	{
 		import std.algorithm : count;
 		return count(data_[]);
@@ -80,7 +80,7 @@ struct SimpleQueue(T)
 	/**
 		Clears the queue.
 	*/
-	void clear()
+	void clear() pure @safe
 	{
 		data_.clear();
 	}
