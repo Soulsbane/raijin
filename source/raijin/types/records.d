@@ -57,7 +57,12 @@ struct RecordCollector(T)
 	/**
 		Converts the record from a file to its corresponding struct T.
 
-		strArray = The array of lines that contains an actual record.
+		Params:
+			strArray = The array of lines that contains an actual record.
+
+		Returns:
+			A struct of type T filled with record values mapped to the struct members.
+
 	*/
 	private T convertToRecord(StringArray strArray)
 	{
