@@ -647,7 +647,7 @@ unittest
 	// Tests for nonexistent keys
 	assert(config.asString("nonexistent", "Value doesn't exist!") == "Value doesn't exist!");
 	config["nonexistent"] = "The value now exists!!!";
-	assert(config.asString("nonexistent", "The value now exists!!!") == "The value now exists!!!");
+	assert(config.asString("nonexistent", "Value doesn't exist!") == "The value now exists!!!");
 
 	writeln("Testing getGroup...");
 
