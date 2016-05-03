@@ -199,6 +199,8 @@ unittest
 		string lastName;
 	}
 
+	writeln("Processing records for NameData:");
+
 	RecordCollector!NameData collector;
 	collector.parse(data);
 
@@ -210,5 +212,36 @@ unittest
 		assert(record.lastName== "Einstein");
 	}
 
-	debug collector.dump();
+	collector.dump();
+	writeln;
+
+	writeln("Processing records for VariedData:");
+
+	immutable string variedData =
+	q{
+		{
+			name "Albert Einstein"
+			id "100"
+		}
+	};
+
+	struct VariedData
+	{
+		string name;
+		size_t id;
+	}
+
+	RecordCollector!VariedData variedCollector;
+	variedCollector.parse(variedData);
+
+	auto variedRecords = variedCollector.getRecords();
+
+	foreach(variedRecord; variedRecords)
+	{
+		assert(variedRecord.name == "Albert Einstein");
+		assert(variedRecord.id == 100);
+	}
+
+	variedCollector.dump();
+	writeln;
 }
