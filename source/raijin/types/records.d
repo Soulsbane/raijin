@@ -181,3 +181,34 @@ struct RecordCollector(T)
 private:
 	RecordArray recordArray_;
 }
+
+///
+unittest
+{
+	immutable string data =
+	q{
+		{
+			firstName "Albert"
+			lastName "Einstein"
+		}
+	};
+
+	struct NameData
+	{
+		string firstName;
+		string lastName;
+	}
+
+	RecordCollector!NameData collector;
+	collector.parse(data);
+
+	auto records = collector.getRecords();
+
+	foreach(record; records)
+	{
+		assert(record.firstName == "Albert");
+		assert(record.lastName== "Einstein");
+	}
+
+	debug collector.dump();
+}
