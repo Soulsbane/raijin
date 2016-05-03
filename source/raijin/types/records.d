@@ -12,7 +12,7 @@ import std.string : removechars, lineSplitter;
 import std.container : Array;
 import std.regex : Regex, ctRegex, matchFirst;
 
-private Regex!char RECORD_FIELD_REGEX = ctRegex!(r"\s+(?P<key>\w+)\s+(?P<value>.*)");
+private Regex!char RECORD_FIELD_REGEX = ctRegex!(r"\s+(?P<key>\w+)\s{1,1}(?P<value>.*)");
 
 /**
 	Manages a record format.
