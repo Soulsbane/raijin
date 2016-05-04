@@ -59,82 +59,67 @@ bool isVowelChar(char vowelChar) pure @safe
 	Pluralizes a string.
 
 	Params:
-		text = The word to pluralize.
+		word = The word to pluralize.
 		pluralizeToWord = The word to use when a value needs to be pluralized
 
 	Returns:
 		The pluralized string.
 */
-string pluralize(const string text, const string pluralizeToWord = string.init) pure @safe
+string alwaysPluralizeWord(const string word, const string pluralizeToWord = null) pure @safe
 {
-	return pluralize(text, 2, pluralizeToWord);
+	return pluralizeWord(word, 2, pluralizeToWord);
 }
 
 /**
 	Pluralizes a string if count is greater than one.
 
 	Params:
-		text = The word to pluralize.
+		word = The word to pluralize.
 		count = The number of words.
 		pluralizeToWord = The word to use when a value needs to be pluralized
 
 	Returns:
 		The pluralized string if more than one of type or singular form otherwise.
 */
-string pluralize(const string text, const size_t count, const string pluralizeToWord = string.init) pure @safe
+string pluralizeWord(const string word, const size_t count = 2, const string pluralizeToWord = null) pure @safe
 {
-	string pluralizedNumber = text[0 .. $ - 1];
-
-	if(count == 1)
+	if(count == 1 || word.length == 0)
 	{
-		pluralizedNumber = text;
-	}
-	else
-	{
-		immutable char lastChar = text[$ - 1];
-		immutable char vowelChar = text[$ - 2];
-
-		if(lastChar == 'y' && !isVowelChar(vowelChar))
-		{
-			if(pluralizeToWord.empty)
-			{
-				pluralizedNumber = pluralizedNumber ~ "ies";
-			}
-			else
-			{
-				pluralizedNumber = pluralizeToWord;
-			}
-		}
-		else
-		{
-			if(pluralizeToWord.empty)
-			{
-				pluralizedNumber = text ~ "s";
-			}
-			else
-			{
-				pluralizedNumber = pluralizeToWord;
-			}
-		}
+		return word;
 	}
 
-	return pluralizedNumber;
+	if(pluralizeToWord !is null)
+	{
+		return pluralizeToWord;
+	}
+
+	switch(word[$ - 1])
+	{
+		case 's':
+		case 'a', 'e', 'i', 'o', 'u':
+			return word ~ `es`;
+		case 'f':
+			return word[0 .. $-1] ~ `ves`;
+		case 'y':
+			return word[0 .. $-1] ~ `ies`;
+		default:
+			return word ~ `s`;
+	}
 }
 
 ///
 unittest
 {
-	assert("fly".pluralize(10) == "flies");
-	assert("fly".pluralize(1) == "fly");
-	assert("book".pluralize(10) == "books");
-	assert("book".pluralize(1) == "book");
-	assert("boy".pluralize(2) == "boys");
-	assert("key".pluralize(2) == "keys");
-	assert("key".pluralize(2, "keyz") == "keyz");
-	assert("key".pluralize(1, "keyz") == "key");
-	assert("fly".pluralize(2, "fliez") == "fliez");
-	assert("cat".pluralize == "cats");
-	assert("cat".pluralize("catz") == "catz");
+	assert("fly".pluralizeWord(10) == "flies");
+	assert("fly".pluralizeWord(1) == "fly");
+	assert("book".pluralizeWord(10) == "books");
+	assert("book".pluralizeWord(1) == "book");
+	assert("boy".pluralizeWord(2, "boys") == "boys");
+	assert("key".pluralizeWord(2, "keyz") == "keyz");
+	assert("key".pluralizeWord(1, "keyz") == "key");
+	assert("fly".pluralizeWord(2, "fliez") == "fliez");
+	assert("cat".pluralizeWord == "cats");
+	assert("cat".alwaysPluralizeWord("catz") == "catz");
 }
 
 /**
