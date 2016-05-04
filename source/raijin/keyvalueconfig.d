@@ -304,9 +304,9 @@ public:
 	*/
 	bool loadFile(const string fileName = DEFAULT_CONFIG_FILE_NAME) @safe
 	{
-		if(exists(fileName))
+		if(fileName.exists)
 		{
-			return processText(readText(fileName));
+			return processText(fileName.readText);
 		}
 		else
 		{
@@ -633,7 +633,7 @@ unittest
 
 	immutable auto number = config["number"];
 
-	assert(number == 12071);
+	assert(number == 12_071);
 	assert(config["decimal"] == 3443.443);
 
 	assert(config.contains("another.world"));
