@@ -196,7 +196,29 @@ unittest
 	cat.inPluralInPlace;
 	assert(cat == "cats");
 
-	//assert("cat".inPluralAlways("catz") == "catz");
+}
+
+/**
+	Pluralizes a string in place.
+
+	Params:
+		word = The word to pluralize.
+		pluralizeToWord = The word to use when a value needs to be pluralized
+
+	Returns:
+		The pluralized string.
+*/
+void inPluralAlwaysInPlace(ref string word, const string pluralizeToWord = null) pure @safe
+{
+	inPluralInPlace(word, 2, pluralizeToWord);
+}
+
+///
+unittest
+{
+	string cat = "cat";
+	cat.inPluralAlwaysInPlace("catz");
+	assert(cat == "catz");
 }
 
 /**
