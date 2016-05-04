@@ -48,6 +48,12 @@ struct Callback(T, ReturnType = void)
 {
 	static if(is(ReturnType == void))
 	{
+		/**
+			Overload used for calling the registered function/delegate.
+
+			Params:
+				args = The arguments to pass to the function/delegate
+		*/
 		void opCall(Args...)(Args args)
 		{
 			if(callback_ && !stopped_)
@@ -58,6 +64,15 @@ struct Callback(T, ReturnType = void)
 	}
 	else
 	{
+		/**
+			Overload used for calling the registered function/delegate.
+
+			Params:
+				args = The arguments to pass to the function/delegate
+
+			Returns:
+				The ReturnType passed to Callback!(T, ReturnType) when it was created.
+		*/
 	 	ReturnType opCall(Args...)(Args args)
 		{
 			ReturnType value;
