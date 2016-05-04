@@ -129,9 +129,6 @@ unittest
 		word = The word to pluralize.
 		count = The number of words.
 		pluralizeToWord = The word to use when a value needs to be pluralized
-
-	Returns:
-		The pluralized string if more than one of type or singular form otherwise.
 */
 void inPluralInPlace(ref string word, const size_t count = 2, const string pluralizeToWord = null) pure @safe
 {
@@ -204,9 +201,6 @@ unittest
 	Params:
 		word = The word to pluralize.
 		pluralizeToWord = The word to use when a value needs to be pluralized
-
-	Returns:
-		The pluralized string.
 */
 void inPluralAlwaysInPlace(ref string word, const string pluralizeToWord = null) pure @safe
 {
