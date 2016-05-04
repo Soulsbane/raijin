@@ -259,7 +259,7 @@ public:
 	{
 		save();
 	}
-	
+
 	/**
 		Saves config values to the config file.
 
@@ -302,7 +302,7 @@ public:
 		Returns:
 			Returns true on a successful load false otherwise.
 	*/
-	bool loadFile(string fileName = DEFAULT_CONFIG_FILE_NAME) @safe
+	bool loadFile(const string fileName = DEFAULT_CONFIG_FILE_NAME) @safe
 	{
 		if(exists(fileName))
 		{
