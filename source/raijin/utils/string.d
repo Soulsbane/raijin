@@ -96,7 +96,7 @@ string inPlural(const string word, const size_t count = 2, const string pluraliz
 	switch(word[$ - 1])
 	{
 		case 's':
-		case 'a', 'e', 'i', 'o', 'u':
+		//case 'a', 'e', 'i', 'o', 'u':
 			return word ~ `es`;
 		case 'f':
 			return word[0 .. $-1] ~ `ves`;
@@ -120,6 +120,8 @@ unittest
 	assert("fly".inPlural(2, "fliez") == "fliez");
 	assert("cat".inPlural == "cats");
 	assert("cat".inPluralAlways("catz") == "catz");
+	assert("half".inPlural(10) == "halves");
+	assert("zoo".inPlural(10) == "zoos");
 }
 
 /**
@@ -148,7 +150,7 @@ void inPluralInPlace(ref string word, const size_t count = 2, const string plura
 	switch(temp[$ - 1])
 	{
 		case 's':
-		case 'a', 'e', 'i', 'o', 'u':
+		//case 'a', 'e', 'i', 'o', 'u':
 			word = word ~ `es`;
 			break;
 		case 'f':
@@ -193,6 +195,13 @@ unittest
 	cat.inPluralInPlace;
 	assert(cat == "cats");
 
+	string half = "half";
+	half.inPluralInPlace(10);
+	assert(half == "halves");
+
+	string zoo = "zoo";
+	zoo.inPluralInPlace(10);
+	assert(zoo == "zoos");
 }
 
 /**
