@@ -85,6 +85,17 @@ struct SimpleStack(T)
 		data_.clear();
 	}
 
+	/**
+		Returns the entire queue array.
+
+		Returns:
+			The entire queue array.
+	*/
+	DList!T all()
+	{
+		return data_;
+	}
+
 private:
 	DList!T data_;
 }
