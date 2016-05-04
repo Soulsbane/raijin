@@ -85,6 +85,11 @@ struct SimpleQueue(T)
 		data_.clear();
 	}
 
+	DList!T all()
+	{
+		return data_;
+	}
+
 	alias enqueue = push;
 	alias dequeue = pop;
 private:
