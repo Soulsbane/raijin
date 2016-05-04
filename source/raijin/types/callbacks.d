@@ -44,13 +44,28 @@ module raijin.types.callbacks;
 		}
 		--------------------------------------
 */
-struct Callback(T)
+struct Callback(T, ReturnType = void)
 {
-	void opCall(Args...)(Args args)
+	static if(is(ReturnType == void))
 	{
-		if(callback_ && !stopped_)
+		void opCall(Args...)(Args args)
 		{
-			callback_(args);
+			if(callback_ && !stopped_)
+			{
+				callback_(args);
+			}
+		}
+	}
+	else
+	{
+	 	ReturnType opCall(Args...)(Args args)
+		{
+			ReturnType value;
+			if(callback_ && !stopped_)
+			{
+				value = callback_(args);
+			}
+			return value;
 		}
 	}
 
@@ -105,4 +120,36 @@ struct Callback(T)
 private:
 	T callback_;
 	bool stopped_;
+}
+
+///
+unittest
+{
+	void voidFunc()
+	{
+		import std.stdio : writeln;
+		writeln("A voidFunc call.");
+	}
+
+	alias VoidCall = void delegate(); // This could be a function. Unittests won't allow function pointers inside its block.
+	Callback!VoidCall voidCall;
+
+	voidCall.set(&voidFunc);
+	voidCall();
+
+	int intFunc()
+	{
+		import std.stdio : writeln;
+
+		writeln("Returning from intFunc");
+		return 0;
+	}
+
+	alias IntCall = int delegate();
+	Callback!(IntCall, int) intCall;
+
+	intCall = &intFunc;
+
+	immutable int value = intCall();
+	assert(value == 0);
 }
