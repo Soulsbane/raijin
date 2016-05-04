@@ -85,6 +85,12 @@ struct SimpleQueue(T)
 		data_.clear();
 	}
 
+	/**
+		Returns the entire queue array.
+
+		Returns:
+			The entire queue array.
+	*/
 	DList!T all()
 	{
 		return data_;
