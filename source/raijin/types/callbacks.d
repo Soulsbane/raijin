@@ -76,10 +76,12 @@ struct Callback(T, ReturnType = void)
 	 	ReturnType opCall(Args...)(Args args)
 		{
 			ReturnType value;
+
 			if(callback_ && !stopped_)
 			{
 				value = callback_(args);
 			}
+			
 			return value;
 		}
 	}
