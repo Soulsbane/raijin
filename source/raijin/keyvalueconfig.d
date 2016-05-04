@@ -255,7 +255,11 @@ private:
 		}
 	}
 public:
-
+	~this()
+	{
+		save();
+	}
+	
 	/**
 		Saves config values to the config file.
 
