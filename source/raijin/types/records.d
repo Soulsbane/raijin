@@ -11,6 +11,7 @@ import std.container : Array;
 import std.string : removechars, lineSplitter;
 import std.container : Array;
 import std.regex : Regex, ctRegex, matchFirst;
+import std.algorithm : each;
 
 private Regex!char RECORD_FIELD_REGEX = ctRegex!(r"\s+(?P<key>\w+)\s{1,1}(?P<value>.*)");
 
@@ -160,10 +161,7 @@ struct RecordCollector(T)
 		*/
 		void dump()
 		{
-			foreach(entry; recordArray_)
-			{
-				debug writeln(entry);
-			}
+			debug recordArray_.each!writeln;
 		}
 	}
 
