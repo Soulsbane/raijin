@@ -97,7 +97,7 @@ struct Callback(T, ReturnType = void)
 		to override the callback already stored. To override use forceOverWrite argument set to true;
 
 		callback = The callback function/delegate to use with opCall.
-		forceOverWrite = If true, thhe callback stored will be overwritten with this call. 
+		forceOverWrite = If true, thhe callback stored will be overwritten with this call.
 	*/
 	void set(T callback, const bool forceOverWrite = false) pure @safe
 	{
@@ -156,8 +156,15 @@ unittest
 	alias VoidCall = void delegate(); // This could be a function. Unittests won't allow function pointers inside its block.
 	Callback!VoidCall voidCall;
 
+	assert(!voidCall.isSet);
 	voidCall.set(&voidFunc);
 	voidCall();
+	assert(voidCall.isSet);
+
+	voidCall.stop();
+	voidCall(); // The function won't be called
+	voidCall.start();
+	voidCall(); // The function can be called again.
 
 	int intFunc()
 	{
