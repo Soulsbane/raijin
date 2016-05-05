@@ -111,6 +111,8 @@ unittest
 	queue.push(2);
 	queue.push(3);
 
+	foreach(value; queue.all) {}
+
 	assert(queue.length == 3);
 	assert(queue.pop() == 1);
 	assert(!queue.empty);

@@ -109,6 +109,9 @@ unittest
 	stack.push(2);
 	stack.push(3);
 
+	foreach(value; stack.all) {}
+
+
 	assert(stack.length == 3);
 	assert(stack.pop() == 3);
 	assert(!stack.empty);
