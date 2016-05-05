@@ -223,6 +223,11 @@ unittest
 		}
 	};
 
+	import raijin.utils.file : ensureFileExists, removeFileIfExists;
+
+	enum fileName = "test-record.dat";
+	fileName.ensureFileExists(variedData);
+
 	struct VariedData
 	{
 		string name;
@@ -230,7 +235,7 @@ unittest
 	}
 
 	RecordCollector!VariedData variedCollector;
-	variedCollector.parse(variedData);
+	variedCollector.parseFile(fileName);
 
 	auto variedRecords = variedCollector.getRecords();
 
@@ -242,4 +247,5 @@ unittest
 
 	variedCollector.dump();
 	writeln;
+	fileName.removeFileIfExists;
 }
