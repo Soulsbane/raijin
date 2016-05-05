@@ -81,7 +81,7 @@ struct Callback(T, ReturnType = void)
 			{
 				value = callback_(args);
 			}
-			
+
 			return value;
 		}
 	}
@@ -93,13 +93,18 @@ struct Callback(T, ReturnType = void)
 	}
 
 	/**
-		Sets the callback used with opCall
+		Sets the callback used with opCall. If the callback already contains a valid function/method this call will fail
+		to override the callback already stored. To override use forceOverWrite argument set to true;
 
 		callback = The callback function/delegate to use with opCall.
+		forceOverWrite = If true, thhe callback stored will be overwritten with this call. 
 	*/
-	void set(T callback) pure @safe
+	void set(T callback, const bool forceOverWrite = false) pure @safe
 	{
-		callback_ = callback;
+		if(forceOverWrite || !isSet())
+		{
+			callback_ = callback;
+		}
 	}
 
 	/**

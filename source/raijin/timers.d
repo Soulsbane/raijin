@@ -11,6 +11,8 @@ import core.time;
 import std.string : chompPrefix;
 import std.traits : isDelegate;
 
+import raijin.types.callbacks;
+
 alias dur = core.time.dur; // Avoids having to import core.time in the user's program.
 alias VoidDelegate = void delegate();
 
@@ -78,20 +80,9 @@ class RepeatingTimer
 		dur_ = dur;
 		initialDelay_ = initialDelay;
 
-		if(!onTimer_)
-		{
-			onTimer_ = &onTimer;
-		}
-
-		if(!onTimerStart_)
-		{
-			onTimerStart_ = &onTimerStart;
-		}
-
-		if(!onTimerStop_)
-		{
-			onTimerStop_ = &onTimerStop;
-		}
+		onTimer_.set(&onTimer);
+		onTimerStart_.set(&onTimerStart);
+		onTimerStop_.set(&onTimerStop);
 
 		thread_.start();
 	}
@@ -213,9 +204,9 @@ private:
 	Duration dur_;
 	Duration initialDelay_;
 
-	VoidDelegate onTimer_;
-	VoidDelegate onTimerStart_;
-	VoidDelegate onTimerStop_;
+	Callback!VoidDelegate onTimer_;
+	Callback!VoidDelegate onTimerStart_;
+	Callback!VoidDelegate onTimerStop_;
 }
 
 /**
@@ -263,11 +254,7 @@ class CountdownTimer
 	void start(const Duration waitTime)
 	{
 		waitTime_ = waitTime;
-
-		if(!onCountdownFinished_)
-		{
-			onCountdownFinished_ = &onCountdownFinished;
-		}
+		onCountdownFinished_.set(&onCountdownFinished);
 
 		thread_.start();
 	}
@@ -358,5 +345,5 @@ private:
 	Thread thread_;
 	Duration waitTime_;
 
-	VoidDelegate onCountdownFinished_;
+	Callback!VoidDelegate onCountdownFinished_;
 }
