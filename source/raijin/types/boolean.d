@@ -81,11 +81,6 @@ public:
 		return to!string(boolean_);
 	}
 
-	bool toHash()
-	{
-		return boolean_;
-	}
-
 	alias asBoolean this;
 
 private:
