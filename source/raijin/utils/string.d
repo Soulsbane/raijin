@@ -55,6 +55,16 @@ bool isVowelChar(char vowelChar) pure @safe
 	return vowels.canFind!(a => a == vowelChar);
 }
 
+///
+unittest
+{
+	assert('a'.isVowelChar);
+	assert('e'.isVowelChar);
+	assert('i'.isVowelChar);
+	assert('o'.isVowelChar);
+	assert('u'.isVowelChar);
+}
+
 /**
 	Pluralizes a string.
 
@@ -122,6 +132,7 @@ unittest
 	assert("cat".inPluralAlways("catz") == "catz");
 	assert("half".inPlural(10) == "halves");
 	assert("zoo".inPlural(10) == "zoos");
+	assert("boss".inPlural(10) == "bosses");
 }
 
 /**
@@ -202,6 +213,10 @@ unittest
 	string zoo = "zoo";
 	zoo.inPluralInPlace(10);
 	assert(zoo == "zoos");
+
+	string boss = "boss";
+	boss.inPluralInPlace(10);
+	assert(boss == "bosses");
 }
 
 /**
