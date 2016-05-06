@@ -34,13 +34,13 @@ public:
 		boolean_ = value;
 	}
 
-	bool opEquals(const string value)
+	bool opEquals(const string value) const
 	{
 		import raijin.utils.string : toBoolean;
 		return (boolean_ == value.toBoolean);
 	}
 
-	bool opEquals(const bool value)
+	bool opEquals(const bool value) const
 	{
 		return (boolean_ == value);
 	}
