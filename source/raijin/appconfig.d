@@ -106,5 +106,28 @@ private:
 
 unittest
 {
-	
+	import std.stdio : writeln;
+
+	writeln;
+	writeln("===Beginning test for appconfig module===");
+
+	string data =
+	q{
+		key=value
+	};
+
+	AppConfig config;
+
+	config.create("DlangUnitOrg", "AppConfigUnitTest", data);
+	writeln(config.path.getAppConfigDir());
+	assert(config.config["key"] == "value");
+
+	config.path.removeAllConfigDirs();
+
+	AppConfig config2 = AppConfig("DlangUnitOrg", "AppConfigUnitTest", data);
+
+	writeln(config2.path.getAppConfigDir());
+	assert(config2.config["key"] == "value");
+
+	config2.path.removeAllConfigDirs();
 }
