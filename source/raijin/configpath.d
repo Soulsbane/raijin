@@ -55,9 +55,9 @@ struct ConfigPath
 	}
 
 	/**
-		Retrieves the path to the users config directory.
+		Retrieves the path to the applicationName's config directory.
 	*/
-	string getBaseConfigDir() pure nothrow @safe const
+	string getAppConfigDir() pure nothrow @safe const
 	{
 		return buildNormalizedPath(configDirPath_, organizationName_, applicationName_);
 	}
@@ -104,6 +104,14 @@ struct ConfigPath
 		return !normalPath.exists;
 	}
 
+	/**
+		Removes all directories under applicationName including applicationName.
+	*/
+	void removeAllConfigDirs()
+	{
+		rmdirRecurse(getAppConfigDir());
+	}
+
 private:
 
 	string organizationName_;
@@ -122,8 +130,9 @@ unittest
 
 	assert(path.createConfigDir("tests"));
 	writeln(path.getConfigDir("tests"));
-	writeln(path.getBaseConfigDir);
+	writeln(path.getAppConfigDir);
 	assert(path.removeConfigDir("tests"));
+	path.removeAllConfigDirs();
 
 	writeln();
 }

@@ -103,3 +103,8 @@ private:
 	KeyValueConfig configFile_;
 	ConfigPath configPath_;
 }
+
+unittest
+{
+	
+}
