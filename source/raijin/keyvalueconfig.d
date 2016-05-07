@@ -402,9 +402,7 @@ public:
 		if(isGroupString(key))
 		{
 			immutable auto groupAndKey = getGroupAndKeyFromString(key);
-			auto group = groupAndKey.group;
-
-			set(group, key, value);
+			set(groupAndKey.group, groupAndKey.key, value);
 		}
 		else
 		{
@@ -436,6 +434,7 @@ public:
 		}
 		else
 		{
+			writeln("Setting data for: ", group, " => ", key, " => ", " => ", value);
 			foundValue.front.value = value;
 		}
 
@@ -598,6 +597,9 @@ private:
 ///
 unittest
 {
+	writeln;
+	writeln("===Beginning test for keyvalueconfig module===");
+	
 	string text = "
 		aBool=true
 		decimal = 3443.443
@@ -622,7 +624,10 @@ unittest
 	KeyValueConfig config;
 
 	immutable bool loaded = config.loadString(text);
+	immutable bool failLoaded = config.loadString("");
+
 	assert(loaded, "Failed to load string!");
+	assert(!failLoaded);
 
 	assert(config.containsGroup("section"));
 	config.removeGroup("section");
@@ -647,6 +652,12 @@ unittest
 	assert(config.contains("number") == false);
 
 	assert(config["another.japan"] == false);
+	config.set("another.japan", true);
+	assert(config["another.japan"] == true);
+	config["another.japan"] = false;
+	assert(config.get("another.japan") == false);
+	assert(config.get("another.nippon", true) == true);
+	assert(config.get("japan", "nippon", true) == true);
 
 	// Tests for nonexistent keys
 	assert(config.asString("nonexistent", "Value doesn't exist!") == "Value doesn't exist!");
@@ -669,8 +680,17 @@ unittest
 	config["aBool"] = true;
 	assert(config["aBool"].asString == "true");
 
+	import raijin.utils.file : removeFileIfExists;
+	immutable fileName = "custom-config-format.dat";
+
+	removeFileIfExists(fileName);
+	assert(!config.loadFile(fileName));
 	debug config.save();
-	debug config.save("custom-config-format.dat");
+	debug config.save(fileName);
+	assert(config.loadFile(fileName));
+
+	removeFileIfExists(fileName);
+	removeFileIfExists(DEFAULT_CONFIG_FILE_NAME);
 
 	string noEqualSign = "
 		equal=sign
@@ -691,4 +711,10 @@ unittest
 
 	immutable bool invalidGroupValue = config.loadString(invalidGroup);
 	assert(invalidGroupValue == false);
+
+	auto groups = config.getGroups();
+
+	writeln("Generating asByte method string:");
+	writeln(generateAsMethodFor!byte("asByte"));
+	writeln;
 }
