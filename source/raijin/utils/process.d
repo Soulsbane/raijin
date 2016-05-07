@@ -136,23 +136,17 @@ public:
 
 	void onStatusUpdate()
 	{
-		if(tickCount_ % 2 == 0)
+		if(tickCount_ > 5)
 		{
-			write("..");
-		}
-		else if(tickCount_ % 3 == 0)
-		{
-			write("...");
 			clearLine();
-		}
-		else
-		{
-			write(".");
+			tickCount_ = 0;
 		}
 
+		write(".");
 		stdout.flush();
 		++tickCount_;
 	}
+
 private:
 	void clearLine()
 	{
