@@ -610,7 +610,7 @@ private:
 unittest
 {
 	writeln;
-	writeln("===Beginning test for keyvalueconfig module===");
+	writeln("<=====================Beginning test for keyvalueconfig module=====================>");
 
 	string text = "
 		aBool=true

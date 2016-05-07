@@ -122,11 +122,12 @@ private:
 ///
 unittest
 {
-	auto path = ConfigPath("DlangUnitOrg", "MyUnitTestApp");
-
 	import std.stdio : writeln;
 
-	writeln("Testing ConfigPath...");
+	writeln;
+	writeln("<=====================Beginning test for configpath module=====================>");
+
+	auto path = ConfigPath("DlangUnitOrg", "MyUnitTestApp");
 
 	assert(path.createConfigDir("tests"));
 	writeln(path.getConfigDir("tests"));

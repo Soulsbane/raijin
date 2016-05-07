@@ -183,6 +183,11 @@ private:
 ///
 unittest
 {
+	import std.stdio : writeln;
+
+	writeln;
+	writeln("<=====================Beginning test for records module=====================>");
+
 	immutable string data =
 	q{
 		{

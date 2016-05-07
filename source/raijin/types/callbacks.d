@@ -147,6 +147,11 @@ private:
 ///
 unittest
 {
+	import std.stdio : writeln;
+
+	writeln;
+	writeln("<=====================Beginning test for callbacks module=====================>");
+
 	void voidFunc()
 	{
 		import std.stdio : writeln;
