@@ -92,6 +92,24 @@ unittest
 	}
 }
 
+/**
+	A simple wrapper around ProcessWait.
+
+	Params:
+		args = The application name followed by the arguments to pass to it.
+*/
+void waitForApplication(const string[] args...)
+{
+	ProcessWait process;
+	process.execute(args);
+}
+
+///
+unittest
+{
+	waitForApplication("ls");
+}
+
 struct ProcessWait
 {
 	alias ProcessReturnType = Tuple!(bool, "terminated", int, "status");
