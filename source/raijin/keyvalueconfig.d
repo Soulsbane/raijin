@@ -257,7 +257,10 @@ private:
 public:
 	~this()
 	{
-		save();
+		if(autoSave_)
+		{
+			save();
+		}
 	}
 
 	/**
@@ -299,11 +302,15 @@ public:
 
 		Params:
 			fileName = The name of the file to be processed/loaded.
+			autoSave = Enable saving on object destruction. Set ot true by default.
+
 		Returns:
 			Returns true on a successful load false otherwise.
 	*/
-	bool loadFile(const string fileName = DEFAULT_CONFIG_FILE_NAME) @safe
+	bool loadFile(const string fileName = DEFAULT_CONFIG_FILE_NAME, bool autoSave = true) @safe
 	{
+		autoSave_ = autoSave;
+
 		if(fileName.exists)
 		{
 			return processText(fileName.readText);
@@ -319,12 +326,16 @@ public:
 
 		Params:
 			text = The string to process.
+			autoSave = Enable saving on object destruction. Set ot true by default.
+
 		Returns:
 			Returns true on a successful load false otherwise.
 	*/
 
-	bool loadString(const string text) @safe
+	bool loadString(const string text, bool autoSave = true) @safe
 	{
+		autoSave_ = autoSave;
+
 		if(text.length)
 		{
 			return processText(text);
@@ -592,6 +603,7 @@ public:
 private:
 	KeyValueData[] values_;
 	bool valuesModified_;
+	bool autoSave_;
 }
 
 ///
@@ -599,7 +611,7 @@ unittest
 {
 	writeln;
 	writeln("===Beginning test for keyvalueconfig module===");
-	
+
 	string text = "
 		aBool=true
 		decimal = 3443.443
@@ -623,8 +635,8 @@ unittest
 
 	KeyValueConfig config;
 
-	immutable bool loaded = config.loadString(text);
-	immutable bool failLoaded = config.loadString("");
+	immutable bool loaded = config.loadString(text, false);
+	immutable bool failLoaded = config.loadString("", false);
 
 	assert(loaded, "Failed to load string!");
 	assert(!failLoaded);
@@ -684,10 +696,10 @@ unittest
 	immutable fileName = "custom-config-format.dat";
 
 	removeFileIfExists(fileName);
-	assert(!config.loadFile(fileName));
+	assert(!config.loadFile(fileName, false));
 	debug config.save();
 	debug config.save(fileName);
-	assert(config.loadFile(fileName));
+	assert(config.loadFile(fileName, false));
 
 	removeFileIfExists(fileName);
 	removeFileIfExists(DEFAULT_CONFIG_FILE_NAME);
@@ -698,7 +710,7 @@ unittest
 		This is a really long sentence to test for a really long value string!
 	";
 
-	immutable bool equalSignValue = config.loadString(noEqualSign);
+	immutable bool equalSignValue = config.loadString(noEqualSign, false);
 	assert(equalSignValue == false);
 
 	string invalidGroup = "
@@ -709,7 +721,7 @@ unittest
 		another=key value is here
 	";
 
-	immutable bool invalidGroupValue = config.loadString(invalidGroup);
+	immutable bool invalidGroupValue = config.loadString(invalidGroup, false);
 	assert(invalidGroupValue == false);
 
 	auto groups = config.getGroups();
