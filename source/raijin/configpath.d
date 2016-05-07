@@ -67,8 +67,11 @@ struct ConfigPath
 
 		Params:
 			name = Name of the directory to create.
+
+		Returns:
+			True if the directory was created false otherwise.
 	*/
-	void createConfigDir(const string name = string.init) @trusted
+	bool createConfigDir(const string name = string.init) @trusted
 	{
 		immutable string normalPath = buildNormalizedPath(getConfigDir(name));
 
@@ -76,6 +79,8 @@ struct ConfigPath
 		{
 			mkdirRecurse(normalPath);
 		}
+
+		return normalPath.exists;
 	}
 
 	/**
@@ -83,8 +88,11 @@ struct ConfigPath
 
 		Params:
 			name = Name of the directory to remove.
+
+		Returns:
+			True if the directory was removed false otherwise;
 	*/
-	void removeConfigDir(const string name) @trusted
+	bool removeConfigDir(const string name) @trusted
 	{
 		immutable string normalPath = buildNormalizedPath(getConfigDir(name));
 
@@ -92,6 +100,8 @@ struct ConfigPath
 		{
 			rmdirRecurse(normalPath);
 		}
+
+		return !normalPath.exists;
 	}
 
 private:
@@ -109,8 +119,11 @@ unittest
 	import std.stdio : writeln;
 
 	writeln("Testing ConfigPath...");
+
+	assert(path.createConfigDir("tests"));
 	writeln(path.getConfigDir("tests"));
 	writeln(path.getBaseConfigDir);
+	assert(path.removeConfigDir("tests"));
 
 	writeln();
 }
