@@ -69,6 +69,11 @@ struct Log
 ///
 unittest
 {
+	import std.stdio : writeln;
+
+	writeln;
+	writeln("<=====================Beginning test for debugtools module=====================>");
+
 	Log.info("This is a info test");
 	Log.warn("This is a warn test");
 	Log.error("This is a error test");
