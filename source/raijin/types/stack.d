@@ -120,3 +120,49 @@ unittest
 	stack.clear();
 	assert(stack.length == 0);
 }
+
+/**
+	Allows a stack to have a max capacity of elements. Default capacity is 10.
+
+	Examples:
+		CapacityStack!(int, 2) stack;
+		stack.push(1);
+		stack.push(2);
+		stack.push(3); // No values will be pushed onto the stack without a push first.
+*/
+struct CapacityStack(T, alias capacity = 10)
+{
+	/**
+		Pushes a value onto the stack.
+
+		Params:
+			value = The value to push onto the stack.
+	*/
+	void push(const T value) pure @safe
+	{
+		if(stack_.length < maxCapacity_)
+		{
+			stack_.push(value);
+		}
+	}
+
+	SimpleStack!T stack_;
+	alias stack_ this;
+
+private:
+	size_t maxCapacity_ = capacity;
+}
+
+///
+unittest
+{
+	CapacityStack!(int, 3) cap;
+
+	cap.push(22);
+	cap.push(342);
+	cap.push(858);
+	cap.push(1);
+	assert(cap.top == 858);
+	cap.pop();
+	assert(cap.top == 342);
+}
