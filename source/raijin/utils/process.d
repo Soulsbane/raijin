@@ -110,11 +110,22 @@ unittest
 	waitForApplication("ls");
 }
 
+/// Provides a progress indicator while waiting for the spawned process to complete.
 struct ProcessWait
 {
 	alias ProcessReturnType = Tuple!(bool, "terminated", int, "status");
 
 public:
+
+	/**
+		Executes an process that will wait using a progress indicator until the process exits.
+
+		Params:
+			args = The args to pass to the process where the first argument is the process name.
+
+		Returns:
+			The same value as $(LINK2 http://dlang.org/phobos/std_process.html#.wait, std.process.wait).
+	*/
 	auto execute(const string[] args...)
 	{
 		timer_ = new RepeatingTimer;
