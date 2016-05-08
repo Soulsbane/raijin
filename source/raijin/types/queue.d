@@ -121,3 +121,50 @@ unittest
 	queue.clear();
 	assert(queue.length == 0);
 }
+
+/**
+	Allows a queue to have a max capacity of elements. Default capacity is 10.
+
+	Examples:
+		CapacityQueue!(int, 2) queue;
+		queue.push(1);
+		queue.push(2);
+		queue.push(3); // No values will be pushed onto the queue without a push first.
+*/
+struct CapacityQueue(T, alias capacity = 10)
+{
+	/**
+		Pushes a value onto the queue.
+
+		Params:
+			value = The value to push onto the queue.
+	*/
+	void push(const T value) pure @safe
+	{
+		if(queue_.length < maxCapacity_)
+		{
+			queue_.push(value);
+		}
+	}
+
+	SimpleQueue!T queue_;
+	alias queue_ this;
+
+private:
+
+	size_t maxCapacity_ = capacity;
+}
+
+///
+unittest
+{
+	CapacityQueue!(int, 3) cap;
+	
+	cap.push(22);
+	cap.push(342);
+	cap.push(858);
+	cap.push(1);
+	assert(cap.front == 22);
+	cap.pop();
+	assert(cap.front == 342);
+}
