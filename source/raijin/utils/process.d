@@ -143,6 +143,7 @@ public:
 		return exitStatus;
 	}
 
+private:
 	void onStatusUpdate()
 	{
 		if(tickCount_ > 5)
@@ -156,7 +157,6 @@ public:
 		++tickCount_;
 	}
 
-private:
 	void clearLine()
 	{
 		write("\x1B[2K");
