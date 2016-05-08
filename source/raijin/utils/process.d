@@ -97,11 +97,16 @@ unittest
 
 	Params:
 		args = The application name followed by the arguments to pass to it.
+
+		Returns:
+			The same value as $(LINK2 http://dlang.org/phobos/std_process.html#.wait, std.process.wait).
 */
-void waitForApplication(const string[] args...)
+auto waitForApplication(const string[] args...)
 {
 	ProcessWait process;
-	process.execute(args);
+	auto exitStatus = process.execute(args);
+
+	return exitStatus;
 }
 
 ///
