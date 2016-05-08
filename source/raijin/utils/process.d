@@ -115,7 +115,7 @@ struct ProcessWait
 	alias ProcessReturnType = Tuple!(bool, "terminated", int, "status");
 
 public:
-	void execute(const string[] args...)
+	auto execute(const string[] args...)
 	{
 		timer_ = new RepeatingTimer;
 		timer_.setCallBack("onTimer", &onStatusUpdate);
@@ -123,15 +123,13 @@ public:
 		auto pipes = pipeProcess(args);
 		timer_.start(dur!("msecs")(500));
 
-		scope(exit)
-		{
-			wait(pipes.pid);
-			timer_.stop();
-			clearLine();
-			writeln;
-		}
+		auto exitStatus = wait(pipes.pid);
 
-		process_ = tryWait(pipes.pid);
+		timer_.stop();
+		clearLine();
+		writeln;
+
+		return exitStatus;
 	}
 
 	void onStatusUpdate()
