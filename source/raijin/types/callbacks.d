@@ -108,6 +108,17 @@ struct Callback(T, ReturnType = void)
 	}
 
 	/**
+		Gets the underlying delegate/function.
+
+		Returns:
+			The underlying delegate/function.
+	*/
+	T get()
+	{
+		return callback_;
+	}
+
+	/**
 		Returns whether the callback has a valid function/delegate assigned to it.
 
 		Returns:
