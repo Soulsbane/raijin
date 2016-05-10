@@ -197,4 +197,5 @@ unittest
 
 	immutable int value = intCall();
 	assert(value == 0);
+	assert(intCall.get()() == 0);
 }
