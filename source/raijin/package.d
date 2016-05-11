@@ -2,6 +2,7 @@ module raijin;
 
 public
 {
+	import raijin.patterns;
 	import raijin.utils;
 	import raijin.types;
 	import raijin.appconfig;
