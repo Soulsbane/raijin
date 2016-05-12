@@ -84,4 +84,41 @@ unittest
 	writeln("Removing all slots.");
 	signals.disconnectAll();
 	signals.emit();
+
+	alias NotifyDelegate = void delegate();
+	alias NotifyDelegateArg = void delegate(string value);
+
+	class TestDelegates
+	{
+		this()
+		{
+			signals_.connect(&aVoidDel);
+			signals_.connect(&aVoidDel2);
+			signals_.emit();
+			signals_.disconnect(&aVoidDel2);
+			signals_.emit();
+			signals_.disconnectAll();
+			signals_.emit();
+		}
+
+		void aVoidDel()
+		{
+			writeln("Calling TestDelegates.aVoidDel");
+		}
+
+		void aVoidDel2()
+		{
+			writeln("Calling TestDelegates.aVoidDel2");
+		}
+
+		void aArgDel()
+		{
+			writeln("Calling TestDelegates.aArgDel");
+		}
+
+	private:
+		Signals!NotifyDelegate signals_;
+	}
+
+	auto test = new TestDelegates;
 }
