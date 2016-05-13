@@ -108,16 +108,20 @@ unittest
 string concatArgs(T...)(T args)
 {
 	import std.conv : to;
-	import std.string : stripRight;
 
 	string output;
 
-	foreach(arg; args)
+	foreach(index, arg; args)
 	{
-		output ~= to!string(arg) ~ " ";
+		output ~= to!string(arg);
+
+		static if(index != args.length - 1)
+		{
+			output ~= " ";
+		}
 	}
 
-	return output.stripRight;
+	return output;
 
 }
 
