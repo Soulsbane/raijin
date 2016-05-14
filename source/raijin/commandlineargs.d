@@ -499,3 +499,82 @@ unittest
 	assert(args.safeGet!int(8) == 0);
 	assert(args.safeGet!int(8, 50) == 50);
 }
+
+struct SafeIndexArgs
+{
+	this(string[] args)
+	{
+		args_ = args;
+		popFront(); // Remove program name
+	}
+
+	@property bool empty() const
+	{
+		return args_.length == 0;
+	}
+
+	@property size_t length() @safe const
+	{
+		return args_.length;
+	}
+
+	@property ref string front()
+	{
+		return args_[0];
+	}
+
+	void popFront()
+	{
+		args_ = args_[1..$];
+	}
+
+	@property ref string back()
+	{
+		return args_[length - 1];
+	}
+
+	void popBack()
+	{
+		args_ = args_[0..$ - 1];
+	}
+
+	string opIndex(size_t index)
+	{
+		return args_[index];
+	}
+
+	T get(T = string)(const size_t index, const T defaultValue = T.init) @safe
+	{
+		import std.traits : isBoolean, isNumeric;
+		import std.conv : to;
+
+		T value = defaultValue;
+
+		if(defaultValue == T.init)
+		{
+			if(isBoolean!T)
+			{
+				value = to!T("false");
+			}
+
+			else if(isNumeric!T)
+			{
+				value = to!T("0");
+			}
+			else
+			{
+				value = defaultValue;
+			}
+		}
+
+		if(args_.length >= index)
+		{
+			value = to!T(args_[index - 1]);
+		}
+
+		return to!T(value);
+	}
+
+private:
+	string[] args_;
+}
