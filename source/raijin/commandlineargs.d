@@ -592,7 +592,7 @@ struct SafeIndexArgs
 	*/
 	T get(T = string)(const size_t index, const T defaultValue = T.init) @safe
 	{
-		import std.traits : isBoolean, isNumeric;
+		import std.traits : isBoolean, isIntegral, isFloatingPoint;
 		import std.conv : to;
 
 		T value = defaultValue;
@@ -603,10 +603,13 @@ struct SafeIndexArgs
 			{
 				value = to!T("false");
 			}
-
-			else if(isNumeric!T)
+			else if(isIntegral!T)
 			{
 				value = to!T("0");
+			}
+			else if(isFloatingPoint!T)
+			{
+				value = to!T("0.0");
 			}
 			else
 			{
