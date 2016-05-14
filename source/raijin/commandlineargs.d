@@ -500,6 +500,7 @@ unittest
 	assert(args.safeGet!int(8, 50) == 50);
 }
 
+/// Provides a safer way of getting command line arguments by index.
 struct SafeIndexArgs
 {
 	this(string[] args)
@@ -508,41 +509,87 @@ struct SafeIndexArgs
 		popFront(); // Remove program name
 	}
 
+	/**
+		Determines whether or not zero args were passed.
+
+		Returns:
+			true if no arguments were passed false otherwise.
+	*/
 	@property bool empty() const
 	{
 		return args_.length == 0;
 	}
 
+	/**
+		Provides the number of arguments which were passed.
+
+		Returns:
+			The number of arguments passed.
+	*/
 	@property size_t length() @safe const
 	{
 		return args_.length;
 	}
 
+	/**
+		The first argument that was passed.
+
+		Returns:
+			The first argument that was passed.
+	*/
 	@property ref string front()
 	{
 		return args_[0];
 	}
 
+	/**
+		Removes the first argument that was passed.
+	*/
 	void popFront()
 	{
 		args_ = args_[1..$];
 	}
 
+	/**
+		The last argument that was passed.
+
+		Returns:
+			The last argument that was passed.
+	*/
 	@property ref string back()
 	{
 		return args_[length - 1];
 	}
 
+	/**
+		Removes the last argument that was passed.
+	*/
 	void popBack()
 	{
 		args_ = args_[0..$ - 1];
 	}
 
+	/**
+		Allows arguments to be accessed via an index.
+
+		Returns:
+			The value found at the passed index.
+	*/
 	string opIndex(size_t index)
 	{
 		return args_[index];
 	}
 
+	/**
+		Retrieves the raw value passed via the command line in a safe way.
+
+		Params:
+			index = The integer value denoting the number of the argument passed.
+			defaultValue = Default value to use if the index is out of range.
+
+		Returns:
+			The value of the command line argument at index or defaultValue otherwise.
+	*/
 	T get(T = string)(const size_t index, const T defaultValue = T.init) @safe
 	{
 		import std.traits : isBoolean, isNumeric;
