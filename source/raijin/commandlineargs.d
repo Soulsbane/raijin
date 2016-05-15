@@ -15,6 +15,7 @@ import std.stdio;
 import std.typecons;
 import std.path;
 import std.format;
+import std.container;
 
 import raijin.utils.string;
 import raijin.types.dynamic;
@@ -505,79 +506,7 @@ struct SafeIndexArgs
 {
 	this(string[] args)
 	{
-		args_ = args;
-		popFront(); // Remove program name
-	}
-
-	/**
-		Determines whether or not zero args were passed.
-
-		Returns:
-			true if no arguments were passed false otherwise.
-	*/
-	@property bool empty() const
-	{
-		return args_.length == 0;
-	}
-
-	/**
-		Provides the number of arguments which were passed.
-
-		Returns:
-			The number of arguments passed.
-	*/
-	@property size_t length() @safe const
-	{
-		return args_.length;
-	}
-
-	/**
-		The first argument that was passed.
-
-		Returns:
-			The first argument that was passed.
-	*/
-	@property ref string front()
-	{
-		return args_[0];
-	}
-
-	/**
-		Removes the first argument that was passed.
-	*/
-	void popFront()
-	{
-		args_ = args_[1..$];
-	}
-
-	/**
-		The last argument that was passed.
-
-		Returns:
-			The last argument that was passed.
-	*/
-	@property ref string back()
-	{
-		return args_[length - 1];
-	}
-
-	/**
-		Removes the last argument that was passed.
-	*/
-	void popBack()
-	{
-		args_ = args_[0..$ - 1];
-	}
-
-	/**
-		Allows arguments to be accessed via an index.
-
-		Returns:
-			The value found at the passed index.
-	*/
-	string opIndex(size_t index)
-	{
-		return args_[index];
+		args_ = make!Array(args[1..$]); // Initialize and remove program name from arguments.
 	}
 
 	/**
@@ -619,12 +548,13 @@ struct SafeIndexArgs
 
 		if(args_.length >= index)
 		{
+			// We have to subtract index by one here since the array is 0 based but length is only the number of values passed.
 			value = to!T(args_[index - 1]);
 		}
 
 		return to!T(value);
 	}
 
-private:
-	string[] args_;
+	Array!string args_;
+	alias args_ this; // Allows usage of Array members outside of SafeIndexArgs.
 }
