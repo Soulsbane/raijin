@@ -206,46 +206,6 @@ public:
 	}
 
 	/**
-		Retrieves the raw value passed via the command line in a safe way.
-
-		Params:
-			index = The integer value denoting the number of the argument passed.
-			defaultValue = Default value to use if the index is out of range.
-
-		Returns:
-			The value of the command line argument at index or defaultValue otherwise.
-	*/
-	final T safeGet(T = string)(const size_t index, T defaultValue = T.init) @safe
-	{
-		import std.traits : isBoolean, isNumeric;
-		T value = defaultValue;
-
-		if(defaultValue == T.init)
-		{
-			if(isBoolean!T)
-			{
-				value = to!T("false");
-			}
-
-			else if(isNumeric!T)
-			{
-				value = to!T("0");
-			}
-			else
-			{
-				value = defaultValue;
-			}
-		}
-
-		if(rawArguments_.length >= index)
-		{
-			value = to!T(rawArguments_[index - 1]);
-		}
-
-		return to!T(value);
-	}
-
-	/**
 		Returns the name of the program.
 
 		Returns:
@@ -492,13 +452,6 @@ unittest
 	assert(args.contains("integer") == true);
 	assert(args.contains("valuez") == false);
 	assert(args["integer"] == 100);
-
-	assert(args.safeGet(1) == "-flag");
-	assert(args.safeGet(8, "defaultValue") == "defaultValue");
-	assert(args.safeGet(8) == "");
-	assert(args.safeGet(8, true) == true);
-	assert(args.safeGet!int(8) == 0);
-	assert(args.safeGet!int(8, 50) == 50);
 }
 
 /// Provides a safer way of getting command line arguments by index.
