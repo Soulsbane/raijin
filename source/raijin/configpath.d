@@ -49,9 +49,9 @@ struct ConfigPath
 		Params:
 			name = Name of the directory to retrieve.
 	*/
-	string getConfigDir(const string name) pure nothrow @safe const
+	string getConfigDir(T...)(T args) pure nothrow @safe const
 	{
-		return buildNormalizedPath(configDirPath_, organizationName_, applicationName_, name);
+		return buildNormalizedPath(configDirPath_, organizationName_, applicationName_, args);
 	}
 
 	/**
@@ -71,9 +71,9 @@ struct ConfigPath
 		Returns:
 			True if the directory was created false otherwise.
 	*/
-	bool createConfigDir(const string name = string.init) @trusted
+	bool createConfigDir(T...)(T args) @trusted
 	{
-		immutable string normalPath = buildNormalizedPath(getConfigDir(name));
+		immutable string normalPath = getConfigDir(args);
 
 		if(!exists(normalPath))
 		{
@@ -92,9 +92,9 @@ struct ConfigPath
 		Returns:
 			True if the directory was removed false otherwise;
 	*/
-	bool removeConfigDir(const string name) @trusted
+	bool removeConfigDir(T...)(T args) @trusted
 	{
-		immutable string normalPath = buildNormalizedPath(getConfigDir(name));
+		immutable string normalPath = getConfigDir(args);
 
 		if(exists(normalPath))
 		{
