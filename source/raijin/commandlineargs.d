@@ -521,35 +521,17 @@ struct SafeIndexArgs
 	*/
 	T get(T = string)(const size_t index, const T defaultValue = T.init) @safe
 	{
-		import std.traits : isBoolean, isIntegral, isFloatingPoint;
+		import std.traits : isFloatingPoint;
 		import std.conv : to;
 		import std.math : isNaN;
 
 		T value = defaultValue;
 
-		if(defaultValue == T.init)
+		static if(isFloatingPoint!T)
 		{
-			static if(isBoolean!T)
+			if(isNaN(defaultValue))
 			{
-				value = false;
-			}
-			static if(isIntegral!T)
-			{
-				value = 0;
-			}
-			else
-			{
-				value = defaultValue;
-			}
-		}
-		else
-		{
-			static if(isFloatingPoint!T)
-			{
-				if(isNaN(defaultValue))
-				{
-					value = 0.0;
-				}
+				value = 0.0;
 			}
 		}
 
@@ -583,6 +565,7 @@ unittest
 	assert(args.get!bool(2, false) == true);
 
 	import std.math : approxEqual;
+
 	assert(approxEqual(args.get!double(3, 3.5), 4.44));
 	assert(approxEqual(args.get!double(4, 3.5), 3.5));
 	assert(approxEqual(args.get!double(4), 0.0));
