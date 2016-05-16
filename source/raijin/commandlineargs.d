@@ -523,26 +523,33 @@ struct SafeIndexArgs
 	{
 		import std.traits : isBoolean, isIntegral, isFloatingPoint;
 		import std.conv : to;
+		import std.math : isNaN;
 
 		T value = defaultValue;
 
 		if(defaultValue == T.init)
 		{
-			if(isBoolean!T)
+			static if(isBoolean!T)
 			{
-				value = to!T("false");
+				value = false;
 			}
-			else if(isIntegral!T)
+			static if(isIntegral!T)
 			{
-				value = to!T("0");
-			}
-			else if(isFloatingPoint!T)
-			{
-				value = to!T("0.0");
+				value = 0;
 			}
 			else
 			{
 				value = defaultValue;
+			}
+		}
+		else
+		{
+			static if(isFloatingPoint!T)
+			{
+				if(isNaN(defaultValue))
+				{
+					value = 0.0;
+				}
 			}
 		}
 
@@ -552,9 +559,31 @@ struct SafeIndexArgs
 			value = to!T(args_[index - 1]);
 		}
 
-		return to!T(value);
+		return value;
 	}
 
 	Array!string args_;
 	alias args_ this; // Allows usage of Array members outside of SafeIndexArgs.
+}
+
+///
+unittest
+{
+	auto arguments = ["testapp", "-flag", "true", "4.44"];
+	SafeIndexArgs args = SafeIndexArgs(arguments);
+
+	assert(args.get(1) == "-flag");
+	assert(args.get(8, "defaultValue") == "defaultValue");
+	assert(args.get(8) == "");
+	assert(args.get(8, true) == true);
+	assert(args.get!int(8) == 0);
+	assert(args.get!int(8, 50) == 50);
+	assert(args.get!bool(8) == false);
+	assert(args.get!bool(8, true) == true);
+	assert(args.get!bool(2, false) == true);
+
+	import std.math : approxEqual;
+	assert(approxEqual(args.get!double(3, 3.5), 4.44));
+	assert(approxEqual(args.get!double(4, 3.5), 3.5));
+	assert(approxEqual(args.get!double(4), 0.0));
 }
