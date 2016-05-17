@@ -46,34 +46,22 @@ module raijin.types.callbacks;
 */
 struct Callback(T, ReturnType = void)
 {
-	static if(is(ReturnType == void))
-	{
-		/**
-			Overload used for calling the registered function/delegate.
+	/**
+		An overload for calling the registered function/delegate.
 
-			Params:
-				args = The arguments to pass to the function/delegate
-		*/
-		void opCall(Args...)(Args args)
+		Params:
+			args = The arguments to pass to the function/delegate
+	*/
+	ReturnType opCall(Args...)(Args args)
+	{
+		static if(is(ReturnType == void))
 		{
 			if(callback_ && !stopped_)
 			{
 				callback_(args);
 			}
 		}
-	}
-	else
-	{
-		/**
-			Overload used for calling the registered function/delegate.
-
-			Params:
-				args = The arguments to pass to the function/delegate
-
-			Returns:
-				The ReturnType passed to Callback!(T, ReturnType) when it was created.
-		*/
-	 	ReturnType opCall(Args...)(Args args)
+		else
 		{
 			ReturnType value;
 
