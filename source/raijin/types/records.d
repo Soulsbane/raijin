@@ -175,9 +175,9 @@ struct RecordCollector(T)
 	{
 		return recordArray_;
 	}
-
-private:
+	
 	RecordArray recordArray_;
+	alias recordArray_ this;
 }
 
 ///
