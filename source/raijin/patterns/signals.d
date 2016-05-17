@@ -99,6 +99,8 @@ unittest
 			signals_.emit();
 			signals_.disconnectAll();
 			signals_.emit();
+			signals_.connect(&aArgDel);
+			signals_.emit();
 		}
 
 		void aVoidDel()
