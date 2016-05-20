@@ -47,7 +47,7 @@ struct ConfigPath
 		Retrieves the path to the users config directory with an optional path appended to the end.
 
 		Params:
-			name = Name of the directory to retrieve.
+			args = Name of the directory to retrieve.
 	*/
 	string getConfigDir(T...)(T args) pure nothrow @safe const
 	{
@@ -66,7 +66,7 @@ struct ConfigPath
 		Creates a directory in the users config directory.
 
 		Params:
-			name = Name of the directory to create.
+			args = Name of the directory to create.
 
 		Returns:
 			True if the directory was created false otherwise.
@@ -87,7 +87,7 @@ struct ConfigPath
 		Removes a directory from the users config directory.
 
 		Params:
-			name = Name of the directory to remove.
+			args = Name of the directory to remove.
 
 		Returns:
 			True if the directory was removed false otherwise;
