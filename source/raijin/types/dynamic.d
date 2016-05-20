@@ -196,6 +196,21 @@ struct DynamicType
 		}
 	}
 
+	size_t toHash() const nothrow @trusted
+	{
+		final switch(type_)
+		{
+			case Type.integer:
+				return typeid(integer_).getHash(&integer_);
+			case Type.string:
+				return typeid(str_).getHash(&str_);
+			case Type.decimal:
+				return typeid(decimal_).getHash(&decimal_);
+			case Type.boolean:
+				return typeid(boolean_).getHash(&boolean_);
+		}
+	}
+
 	string toString()
 	{
 		return asString();
@@ -297,6 +312,22 @@ unittest
 
 	DynamicType propBoolean = true;
 	assert(propBoolean.boolean == true);
+
+	string[DynamicType] hashInt;
+	hashInt[propInteger] = "an integer";
+	assert(hashInt[propInteger] == "an integer");
+
+	string[DynamicType] hashStr;
+	hashStr[propStr] = "an string";
+	assert(hashStr[propStr] == "an string");
+
+	string[DynamicType] hashDec;
+	hashDec[propDec] = "an decimal";
+	assert(hashDec[propDec] == "an decimal");
+	
+	string[DynamicType] hashBoolean;
+	hashBoolean[propBoolean] = "an boolean";
+	assert(hashBoolean[propBoolean] == "an boolean");
 }
 
 /**
