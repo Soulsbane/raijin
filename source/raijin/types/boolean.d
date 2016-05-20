@@ -81,6 +81,11 @@ public:
 		return to!string(boolean_);
 	}
 
+	size_t toHash() const nothrow @trusted
+	{
+		return typeid(boolean_).getHash(&boolean_);
+	}
+
 	alias asBoolean this;
 
 private:
@@ -126,4 +131,8 @@ unittest
 
 	Boolean constructBoolean = Boolean(true);
 	assert(constructBoolean == true);
+
+	string[Boolean] hash;
+	hash[intEquals] = "a true";
+	assert(hash[intEquals] == "a true");
 }
