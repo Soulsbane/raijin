@@ -1,0 +1,13 @@
+name "raijin"
+version "~develop"
+description "Assorted functions/classes that are otherwise missing/wrappers from phobos."
+authors "Paul Crane"
+copyright "Copyright © 2016, Paul Crane"
+license "BSL-1.0"
+dependency "standardpaths" version=">=0.0.0"
+targetType "library"
+sourcePaths "source/"
+importPaths "source/"
+configuration "library" {
+	targetType "library"
+}
