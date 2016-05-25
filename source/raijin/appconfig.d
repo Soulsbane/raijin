@@ -117,6 +117,7 @@ private:
 	ConfigPath configPath_;
 }
 
+///
 unittest
 {
 	import std.stdio : writeln;
