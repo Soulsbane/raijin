@@ -77,6 +77,19 @@ public:
 
 		loadConfigFile(defaultConfigFileData);
 	}
+
+	auto opDispatch(string functionName, T...)(T args)
+	{
+		static if(__traits(hasMember, ConfigPath, functionName))
+		{
+			return mixin("configPath_." ~ functionName ~ "(args)");
+		}
+		else
+		{
+			return mixin("configFile_." ~ functionName ~ "(args)");
+		}
+	}
+
 	/**
 		Helper property for accessing ConfigPath methods.
 
@@ -107,7 +120,7 @@ private:
 unittest
 {
 	import std.stdio : writeln;
-	
+
 	writeln;
 	writeln("<=====================Beginning test for appconfig module=====================>");
 
@@ -127,7 +140,10 @@ unittest
 	AppConfig config2 = AppConfig("DlangUnitOrg", "AppConfigUnitTest", data);
 
 	writeln(config2.path.getAppConfigDir());
+	writeln(config2.getAppConfigDir()); // Sugar! Uses opDispatch.
+
 	assert(config2.config["key"] == "value");
+	assert(config2.asString("key") == "value"); // Sugar! Uses opDispatch.
 
 	config2.path.removeAllConfigDirs();
 }
