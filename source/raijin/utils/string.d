@@ -63,6 +63,8 @@ unittest
 	assert('i'.isVowelChar);
 	assert('o'.isVowelChar);
 	assert('u'.isVowelChar);
+	assert('b'.isVowelChar == false);
+	assert('z'.isVowelChar == false);
 }
 
 /**
