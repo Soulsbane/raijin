@@ -49,9 +49,9 @@ unittest
 	Returns:
 *		true if the character is a vowel false otherwise.
 */
-bool isVowelChar(char vowelChar) pure @safe
+bool isVowelChar(const char vowelChar) pure @safe
 {
-	const string vowels = "aeiou";
+	immutable string vowels = "aeiou";
 	return vowels.canFind!(a => a == vowelChar);
 }
 
