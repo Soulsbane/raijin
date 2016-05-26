@@ -77,9 +77,9 @@ unittest
 	Returns:
 		The pluralized string.
 */
-string inPluralAlways(const string word, const string pluralizeToWord = null) pure @safe
+string pluralize(const string word, const string pluralizeToWord = null) pure @safe
 {
-	return inPlural(word, 2, pluralizeToWord);
+	return pluralize(word, 2, pluralizeToWord);
 }
 
 /**
@@ -93,7 +93,7 @@ string inPluralAlways(const string word, const string pluralizeToWord = null) pu
 	Returns:
 		The pluralized string if more than one of type or singular form otherwise.
 */
-string inPlural(const string word, const size_t count = 2, const string pluralizeToWord = null) pure @safe
+string pluralize(const string word, const size_t count, const string pluralizeToWord = null) pure @safe
 {
 	if(count == 1 || word.length == 0)
 	{
@@ -122,19 +122,19 @@ string inPlural(const string word, const size_t count = 2, const string pluraliz
 ///
 unittest
 {
-	assert("fly".inPlural(10) == "flies");
-	assert("fly".inPlural(1) == "fly");
-	assert("book".inPlural(10) == "books");
-	assert("book".inPlural(1) == "book");
-	assert("boy".inPlural(2, "boys") == "boys");
-	assert("key".inPlural(2, "keyz") == "keyz");
-	assert("key".inPlural(1, "keyz") == "key");
-	assert("fly".inPlural(2, "fliez") == "fliez");
-	assert("cat".inPlural == "cats");
-	assert("cat".inPluralAlways("catz") == "catz");
-	assert("half".inPlural(10) == "halves");
-	assert("zoo".inPlural(10) == "zoos");
-	assert("boss".inPlural(10) == "bosses");
+	assert("fly".pluralize(10) == "flies");
+	assert("fly".pluralize(1) == "fly");
+	assert("book".pluralize(10) == "books");
+	assert("book".pluralize(1) == "book");
+	assert("boy".pluralize(2, "boys") == "boys");
+	assert("key".pluralize(2, "keyz") == "keyz");
+	assert("key".pluralize(1, "keyz") == "key");
+	assert("fly".pluralize(2, "fliez") == "fliez");
+	assert("cat".pluralize == "cats");
+	assert("cat".pluralize("catz") == "catz");
+	assert("half".pluralize(10) == "halves");
+	assert("zoo".pluralize(10) == "zoos");
+	assert("boss".pluralize(10) == "bosses");
 }
 
 /**
@@ -145,79 +145,52 @@ unittest
 		count = The number of words.
 		pluralizeToWord = The word to use when a value needs to be pluralized
 */
-void inPluralInPlace(ref string word, const size_t count = 2, const string pluralizeToWord = null) pure @safe
+void pluralizeInPlace(ref string word, const size_t count, const string pluralizeToWord = null) pure @safe
 {
-	string temp = word;
-
-	if(count == 1 || word.length == 0)
-	{
-		return;
-	}
-
-	if(pluralizeToWord !is null)
-	{
-		word = pluralizeToWord;
-		return;
-	}
-
-	switch(temp[$ - 1])
-	{
-		case 's':
-		//case 'a', 'e', 'i', 'o', 'u':
-			word = word ~ `es`;
-			break;
-		case 'f':
-			word = temp[0 .. $-1] ~ `ves`;
-			break;
-		case 'y':
-			word = temp[0 .. $-1] ~ `ies`;
-			break;
-		default:
-			word = word ~ `s`;
-	}
+	word = word.pluralize(count, pluralizeToWord);
 }
 
 ///
 unittest
 {
 	string fly = "fly";
-	fly.inPluralInPlace(10);
+	fly.pluralizeInPlace(10);
 	assert(fly == "flies");
 
 	string fly2 = "fly";
-	fly2.inPluralInPlace(1);
+	fly2.pluralizeInPlace(1);
 	assert(fly2 == "fly");
 
 	string book = "book";
-	book.inPluralInPlace(10);
+	book.pluralizeInPlace(10);
 	assert(book == "books");
 
 	string book2 = "book";
-	book2.inPluralInPlace(1);
+	book2.pluralizeInPlace(1);
 	assert(book2 == "book");
 
 	string boys = "boy";
-	boys.inPluralInPlace(2, "boys");
+	boys.pluralizeInPlace(2, "boys");
 	assert(boys == "boys");
 
 	string fliez = "fly";
-	fliez.inPluralInPlace(2, "fliez");
+	fliez.pluralizeInPlace(2, "fliez");
 	assert(fliez == "fliez");
 
 	string cat = "cat";
-	cat.inPluralInPlace;
+	cat.pluralizeInPlace;
 	assert(cat == "cats");
 
 	string half = "half";
-	half.inPluralInPlace(10);
+	half.pluralizeInPlace(10);
 	assert(half == "halves");
 
 	string zoo = "zoo";
-	zoo.inPluralInPlace(10);
+	zoo.pluralizeInPlace(10);
 	assert(zoo == "zoos");
 
 	string boss = "boss";
-	boss.inPluralInPlace(10);
+	boss.pluralizeInPlace(10);
 	assert(boss == "bosses");
 }
 
@@ -228,16 +201,16 @@ unittest
 		word = The word to pluralize.
 		pluralizeToWord = The word to use when a value needs to be pluralized
 */
-void inPluralAlwaysInPlace(ref string word, const string pluralizeToWord = null) pure @safe
+void pluralizeInPlace(ref string word, const string pluralizeToWord = null) pure @safe
 {
-	inPluralInPlace(word, 2, pluralizeToWord);
+	pluralizeInPlace(word, 2, pluralizeToWord);
 }
 
 ///
 unittest
 {
 	string cat = "cat";
-	cat.inPluralAlwaysInPlace("catz");
+	cat.pluralizeInPlace("catz");
 	assert(cat == "catz");
 }
 
