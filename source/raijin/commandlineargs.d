@@ -313,7 +313,6 @@ public:
 		auto elements = arguments[1 .. $]; // INFO: Remove program name.
 
 		programName_ = arguments[0];
-		rawArguments_ = elements;
 
 		if(elements.length > 0)
 		{
@@ -420,7 +419,6 @@ private:
 
 private:
 	static ArgValues[string] values_;
-	static string[] rawArguments_;
 	static string programName_;
 	static string programVersion_;
 }
