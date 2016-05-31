@@ -11,7 +11,7 @@ import std.file : exists, write, remove;
 import std.string : startsWith;
 
 /**
-	Creates fileName if it dosn't exist.
+	Creates fileName if it doesn't exist.
 
 	Params:
 		fileName = Name of the file to create or open.
@@ -56,6 +56,22 @@ bool removeFileIfExists(const string fileName)
 }
 
 /**
+	Removes the filename and recreates it.
+
+	Params:
+		fileName = Name of the file to recreate.
+		defaultData = Data that should be writen after the file is created.
+
+	Returns:
+		True if the file was created false otherwise
+*/
+bool recreateFile(const string fileName, const string defaultData = string.init)
+{
+	removeFileIfExists(fileName);
+	return ensureFileExists(fileName, defaultData);
+}
+
+/**
  	Determines if fileName is hidden.
 
  	Params:
@@ -78,7 +94,7 @@ bool isFileHidden(const string fileName)
 	version(Windows)
 	{
 		import win32.winnt : getAttributes, FILE_ATTRIBUTE_HIDDEN;
-		
+
 		if (getAttributes(fileName) & FILE_ATTRIBUTE_HIDDEN)
 		{
 			return true;
