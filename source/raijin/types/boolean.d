@@ -102,6 +102,7 @@ unittest
 	Boolean strValue = "Yes";
 	assert(strValue == true);
 	assert(strValue.asYesNo == "Yes");
+	assert(strValue == "Yes");
 
 	Boolean boolValue = true;
 	boolValue = "No";
