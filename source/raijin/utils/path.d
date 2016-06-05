@@ -54,7 +54,7 @@ string isInPath(const string executableName) @safe
 	Returns:
 		true if path was created false otherwise.
 */
-bool ensurePathExists(const string path) @trusted
+bool ensurePathExists(const string path)
 {
 	if(!path.exists)
 	{
@@ -73,7 +73,7 @@ bool ensurePathExists(const string path) @trusted
 	Returns:
 		true if path was created false otherwise.
 */
-bool ensurePathExists(T...)(T args) @trusted
+bool ensurePathExists(T...)(T args)
 {
 	immutable string path = buildNormalizedPath(args);
 
@@ -91,7 +91,7 @@ bool ensurePathExists(T...)(T args) @trusted
 	Params:
 		path = path to create.
 */
-bool removePathIfExists(const string path) @trusted
+bool removePathIfExists(const string path)
 {
 	if(path.exists)
 	{
@@ -107,7 +107,7 @@ bool removePathIfExists(const string path) @trusted
 	Params:
 		args = Variable number of strings that compose the path.
 */
-bool removePathIfExists(T...)(T args) pure nothrow @safe
+bool removePathIfExists(T...)(T args)
 {
 	immutable string path = buildNormalizedPath(args);
 
