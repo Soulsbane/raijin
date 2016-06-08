@@ -78,6 +78,8 @@ public:
 		loadConfigFile(defaultConfigFileData);
 	}
 
+	//INFO: Because ConfigPath and KeyValueConfig have different member names we can enable a little syntactic super for
+	// calling their methods without using their properties.
 	auto opDispatch(string functionName, T...)(T args)
 	{
 		static if(__traits(hasMember, ConfigPath, functionName))
