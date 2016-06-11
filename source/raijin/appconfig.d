@@ -8,6 +8,9 @@ module raijin.appconfig;
 
 import raijin.keyvalueconfig : KeyValueConfig;
 import raijin.configpath : ConfigPath;
+import std.path : buildNormalizedPath;
+import std.file : exists;
+import std.stdio : writeln, File;
 
 /**
 	This class combines the functionality of KeyValueConfig and ConfigPath into one class.
@@ -27,23 +30,25 @@ private:
 	*/
 	bool loadConfigFile(const string defaultConfigFileData = string.init) @safe
 	{
-		import std.path : buildNormalizedPath;
-		import std.file : exists;
-		import std.stdio : writeln, File;
-
 		immutable string configFilePath = buildNormalizedPath(configPath_.getConfigDir("config"), "app.config");
 
-		if(!configFilePath.exists)
+		debug
 		{
-			auto f = File(configFilePath , "w+"); // Create an empty config file and insert default data.
-			f.writeln(defaultConfigFileData);
+			return configFile_.loadString(defaultConfigFileData);
 		}
+		else
+		{
+			if(!configFilePath.exists)
+			{
+				auto f = File(configFilePath , "w+"); // Create an empty config file and insert default data.
+				f.writeln(defaultConfigFileData);
+			}
 
-		return configFile_.loadFile(configFilePath);
+			return configFile_.loadFile(configFilePath);
+		}
 	}
 
 public:
-
 
 	/**
 		Sets up config directory and files.
@@ -136,7 +141,7 @@ unittest
 
 	config.create("DlangUnitOrg", "AppConfigUnitTest", data);
 	writeln(config.path.getAppConfigDir());
-	assert(config.config["key"] == "value");
+	assert(config.asString("key") == "value");
 
 	config.path.removeAllConfigDirs();
 
