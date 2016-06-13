@@ -102,6 +102,34 @@ private string argTypesToString(const string type)
 }
 
 /**
+	Ensures that the defaultValue will have a value if it's of a floating point type.
+
+	Params:
+		defaultValue = The value to initialize.
+
+	Returns:
+		The converted value.
+*/
+T initDefaultValue(T = string)(T defaultValue = T.init)
+{
+	import std.traits : isFloatingPoint;
+	import std.conv : to;
+	import std.math : isNaN;
+
+	T value = defaultValue;
+
+	static if(isFloatingPoint!T)
+	{
+		if(isNaN(defaultValue))
+		{
+			value = 0.0;
+		}
+	}
+
+	return value;
+}
+
+/**
 	Handles the processing of command line arguments.
 */
 class CommandLineArgs
@@ -470,21 +498,34 @@ struct SafeIndexArgs
 		Returns:
 			The value of the command line argument at index or defaultValue otherwise.
 	*/
-	T get(T = string)(const size_t index, const T defaultValue = T.init) @safe
+	T get(T = string)(const size_t index, T defaultValue = T.init) @safe
 	{
-		import std.traits : isFloatingPoint;
-		import std.conv : to;
-		import std.math : isNaN;
+		T value = defaultValue.initDefaultValue();
 
-		T value = defaultValue;
-
-		static if(isFloatingPoint!T)
+		if(args_.length >= index)
 		{
-			if(isNaN(defaultValue))
-			{
-				value = 0.0;
-			}
+			// We have to subtract index by one here since the array is 0 based but length is only the number of values passed.
+			value = to!T(args_[index - 1]);
+			currentIndex_ = index;
 		}
+
+		return value;
+	}
+
+	/**
+		Retrieves next value after a previous call to get! in a safe way.
+
+		Params:
+			defaultValue = Default value to use if the next index after a get! call is out of range.
+
+		Returns:
+			The value of the command line argument at index or defaultValue otherwise.
+			The next index after a get! call or defaultValue otherwise.
+	*/
+	T peek(T = string)(T defaultValue = T.init) @safe
+	{
+		size_t index = currentIndex_ + 1;
+		T value = defaultValue.initDefaultValue();
 
 		if(args_.length >= index)
 		{
@@ -496,6 +537,8 @@ struct SafeIndexArgs
 	}
 
 	Array!string args_;
+	private size_t currentIndex_;
+
 	alias args_ this; // Allows usage of Array members outside of SafeIndexArgs.
 
 	/// Gets the value and converts it to a bool.
@@ -541,6 +584,9 @@ unittest
 	assert(args.get!bool(8) == false);
 	assert(args.get!bool(8, true) == true);
 	assert(args.get!bool(2, false) == true);
+	assert(args.get!string(1) == "-flag");
+	assert(args.peek!bool(false) == true);
+	assert(args.peek(false) == true); // Make sure peek doesn't modify currentIndex_;
 
 	import std.math : approxEqual;
 
