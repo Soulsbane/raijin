@@ -505,7 +505,15 @@ struct SafeIndexArgs
 		if(args_.length >= index)
 		{
 			// We have to subtract index by one here since the array is 0 based but length is only the number of values passed.
-			value = to!T(args_[index - 1]);
+			if(index == 0)
+			{
+				return value;
+			}
+			else
+			{
+				value = to!T(args_[index - 1]);
+			}
+
 			currentIndex_ = index;
 		}
 
