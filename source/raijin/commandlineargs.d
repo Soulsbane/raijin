@@ -544,34 +544,21 @@ struct SafeIndexArgs
 		return value;
 	}
 
+	///TODO: Add next method.
+
 	Array!string args_;
 	private size_t currentIndex_;
 
 	alias args_ this; // Allows usage of Array members outside of SafeIndexArgs.
 
 	/// Gets the value and converts it to a bool.
-	alias asBool = get!bool;
-
-	/// Gets the value and converts it to a int.
-	alias asInt = get!int;
-
-	/// Gets the value and converts it to a float.
-	alias asFloat = get!float;
-
-	/// Gets the value and converts it to a real.
-	alias asReal = get!real;
+	alias asBoolean = get!bool;
 
 	/// Gets the value and converts it to a long.
-	alias asLong = get!long;
-
-	/// Gets the value and converts it to a byte.
-	alias asByte = get!byte;
-
-	/// Gets the value and converts it to a short.
-	alias asShort = get!short;
+	alias asInteger = get!long;
 
 	/// Gets the value and converts it to a double.
-	alias asDouble = get!double;
+	alias asDecimal = get!double;
 
 	/// Gets the value and converts it to a string.
 	alias asString = get!string;
@@ -601,5 +588,5 @@ unittest
 	assert(approxEqual(args.get!double(3, 3.5), 4.44));
 	assert(approxEqual(args.get!double(4, 3.5), 3.5));
 	assert(approxEqual(args.get!double(4), 0.0));
-	assert(approxEqual(args.asDouble(3, 3.5), 4.44)); //Syntatic sugar
+	assert(approxEqual(args.asDecimal(3, 3.5), 4.44)); //Syntatic sugar
 }
