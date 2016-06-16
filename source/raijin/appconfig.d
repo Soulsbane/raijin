@@ -7,11 +7,11 @@
 module raijin.appconfig;
 
 import raijin.types.dynamic;
+import raijin.utils.file;
 import raijin.keyvalueconfig;
 import raijin.configpath : ConfigPath;
 import std.path : buildNormalizedPath;
 import std.file : exists;
-import std.stdio : writeln, File;
 
 /**
 	This class combines the functionality of KeyValueConfig and ConfigPath into one class.
@@ -29,24 +29,13 @@ private:
 		Returns:
 			true of the config file was successfully loaded false otherwise.
 	*/
-	bool loadConfigFile(const string defaultConfigFileData = string.init) @safe
+	bool loadConfigFile(const string defaultConfigFileData = string.init)
 	{
 		immutable string configFilePath = buildNormalizedPath(configPath_.getConfigDir("config"), "app.config");
 
-		debug
-		{
-			return configFile_.loadString(defaultConfigFileData);
-		}
-		else
-		{
-			if(!configFilePath.exists)
-			{
-				auto f = File(configFilePath , "w+"); // Create an empty config file and insert default data.
-				f.writeln(defaultConfigFileData);
-			}
 
-			return configFile_.loadFile(configFilePath);
-		}
+		ensureFileExists(configFilePath, defaultConfigFileData);
+		return configFile_.loadFile(configFilePath);
 	}
 
 public:
@@ -60,7 +49,7 @@ public:
 			defaultConfigFileData = The data app.config should be populated with if app.config isn't found.
 	*/
 	this(const string organizationName, const string applicationName,
-		const string defaultConfigFileData = string.init) @safe
+		const string defaultConfigFileData = string.init)
 	{
 		create(organizationName, applicationName, defaultConfigFileData);
 	}
@@ -74,7 +63,7 @@ public:
 			defaultConfigFileData = The data app.config should be populated with if app.config isn't found.
 	*/
 	void create(const string organizationName, const string applicationName,
-		const string defaultConfigFileData = string.init) @safe
+		const string defaultConfigFileData = string.init)
 	{
 		configPath_.create(organizationName, applicationName);
 
