@@ -263,12 +263,20 @@ public
 	}
 
 	/**
+		Saves config values to the config file used when loading(loadFile).
+	*/
+	void save()
+	{
+		save(saveToFileName_);
+	}
+
+	/**
 		Saves config values to the config file.
 
 		Params:
 			fileName = Name of the file which values will be stored. "app.config" by default.
 	*/
-	void save(string fileName = DEFAULT_CONFIG_FILE_NAME) @trusted
+	void save(string fileName) @trusted
 	{
 		if(fileName != string.init && valuesModified_)
 		{
@@ -309,6 +317,7 @@ public
 	bool loadFile(const string fileName = DEFAULT_CONFIG_FILE_NAME, bool autoSave = true) @safe
 	{
 		autoSave_ = autoSave;
+		saveToFileName_ = fileName;
 
 		if(fileName.exists)
 		{
@@ -603,6 +612,7 @@ private:
 	KeyValueData[] values_;
 	bool valuesModified_;
 	bool autoSave_;
+	string saveToFileName_;
 }
 
 ///
