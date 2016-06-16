@@ -6,7 +6,8 @@
 
 module raijin.appconfig;
 
-import raijin.keyvalueconfig : KeyValueConfig;
+import raijin.types.dynamic;
+import raijin.keyvalueconfig;
 import raijin.configpath : ConfigPath;
 import std.path : buildNormalizedPath;
 import std.file : exists;
@@ -95,6 +96,16 @@ public:
 		{
 			return mixin("configFile_." ~ functionName ~ "(args)");
 		}
+	}
+
+	DynamicType opIndex(const string key)
+	{
+		return configFile_.get(key);
+	}
+
+	void opIndexAssign(T)(T value, const string key)
+	{
+		configFile_.set(key, value);
 	}
 
 	/**

@@ -62,8 +62,6 @@ private string generateAsMethodFor(T)(const string functionName) @safe
 */
 struct KeyValueConfig
 {
-private:
-
 	/**
 		Processes the text found in config file into an array of KeyValueData structures.
 
@@ -184,6 +182,7 @@ private:
 		return tuple!("group", "key")(group, key);
 	}
 
+public
 	/**
 		Retrieves the value T associated with key where T is the designated type to be converted to.
 
@@ -254,7 +253,7 @@ private:
 			return value;
 		}
 	}
-public:
+
 	~this()
 	{
 		if(autoSave_)
@@ -362,7 +361,7 @@ public:
 		Returns:
 			The value associated with the group and key.
 	*/
-	DynamicType getGroupValue(T)(const string group, const string key, const T defaultValue) @trusted
+	private DynamicType getGroupValue(T)(const string group, const string key, const T defaultValue) @trusted
 	{
 		DynamicType value = defaultValue;
 		auto found = values_.filter!(a => (a.group == group) && (a.key == key));
@@ -385,7 +384,7 @@ public:
 			Returns an array containing KeyValueData structs.
 
 	*/
-	auto getGroup(const string group) @trusted
+	private auto getGroup(const string group) @trusted
 	{
 		return values_.filter!(a => a.group == group);
 	}
@@ -396,7 +395,7 @@ public:
 		Returns:
 			An array containing every group.
 	*/
-	auto getGroups()
+	private auto getGroups()
 	{
 		return values_.filter!(a => a.group != "");
 	}
