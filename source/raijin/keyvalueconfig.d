@@ -274,7 +274,7 @@ public
 		Saves config values to the config file.
 
 		Params:
-			fileName = Name of the file which values will be stored. "app.config" by default.
+			fileName = Name of the file which values will be stored. 
 	*/
 	void save(string fileName) @trusted
 	{
