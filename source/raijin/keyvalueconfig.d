@@ -274,7 +274,7 @@ public
 		Saves config values to the config file.
 
 		Params:
-			fileName = Name of the file which values will be stored. 
+			fileName = Name of the file which values will be stored.
 	*/
 	void save(string fileName) @trusted
 	{
@@ -453,7 +453,6 @@ public
 		}
 		else
 		{
-			writeln("Setting data for: ", group, " => ", key, " => ", " => ", value);
 			foundValue.front.value = value;
 		}
 
