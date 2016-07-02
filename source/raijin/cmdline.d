@@ -28,7 +28,7 @@ private
 
 	Examples:
 		--------------------
-		class MyCommand : CommandProcessor
+		class MyCommandLoop : CommandLoop
 		{
 			// All on<name> commands can be overriden.
 			override void onCommand(const string command, const string[] args)
@@ -38,13 +38,13 @@ private
 			}
 		}
 
-		auto cmd = new MyCommand;
+		auto cmd = new MyCommandLoop;
 
 		cmd.addCommand("test", "this is a test");
 		cmd.processCommands();
 		--------------------
 */
-class CommandProcessor
+class CommandLoop
 {
 public:
 	this()
@@ -289,6 +289,8 @@ private:
 	Callback!VoidDelegate onEnterProcessCommands_;
 	Callback!VoidDelegate  onExitProcessCommands_;
 }
+
+alias CommandProcessor = CommandLoop;
 
 /**
 	Pauses the program until the enter key is pressed
