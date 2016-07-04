@@ -10,6 +10,8 @@ import std.stdio;
 import std.string;
 import std.typecons;
 import std.range;
+import std.conv;
+import std.regex;
 import core.thread;
 
 import raijin.types.callbacks;
@@ -297,7 +299,25 @@ private alias CommandFuncCallback = void function(const string commandName, stri
 
 struct Command
 {
+	private bool validate(const size_t amount) const
+	{
+		switch(operator)
+		{
+			case ">=":
+				return (amount >= requiredNumArgs);
+			case ">":
+				return (amount > requiredNumArgs);
+			case "<=":
+				return (amount <= requiredNumArgs);
+			case "<":
+				return (amount < requiredNumArgs);
+			default:
+				return (amount == requiredNumArgs);
+		}
+	}
+
 	private size_t requiredNumArgs;
+	private string operator;
 	private string requiredType;
 	private string name;
 	Callback!CommandDelegateCallback func;
@@ -340,11 +360,9 @@ struct Commander
 			if(commandName in commands_)
 			{
 				Command command = commands_[commandName];
-				size_t requiredNumArgs = command.requiredNumArgs;
-
 				immutable size_t size = arguments_.length - 1; // Remove the actual command.
 
-				if(size == requiredNumArgs)
+				if(command.validate(size)) // Validate with new code here.
 				{
 					command.func(commandName, arguments_[1..$]);
 				}
@@ -362,9 +380,9 @@ struct Commander
 		}
 	}
 
-	void addCommand(const string name, const size_t requiredNumArgs)
+	void addCommand(const string name, const string requirements)
 	{
-		addCommand(name, requiredNumArgs, &onCommand);
+		addCommand(name, requirements, &onCommand);
 	}
 
 	/**
@@ -375,7 +393,7 @@ struct Commander
 			requiredNumArgs = The number of addtional arguments a command needs before successfully being processed.
 			func = The function to call when a command is successfully processed.
 	*/
-	void addCommand(T)(const string name, const size_t requiredNumArgs, T func)
+	void addCommand(T)(const string name, const string requirements, T func)
 	{
 		Command command;
 
@@ -390,7 +408,13 @@ struct Commander
 			command.func = toDelegate(func);
 		}
 
-		command.requiredNumArgs = requiredNumArgs;
+		auto pattern = ctRegex!(r"(?P<operator>.*)(?P<amount>\d+)");
+		auto re = matchFirst(requirements, pattern);
+		immutable size_t requiredAmount = re["amount"].to!size_t;
+		immutable string operator = re["operator"];
+
+		command.requiredNumArgs = requiredAmount;
+		command.operator = operator;
 		command.name = name;
 
 		commands_[name] = command;
