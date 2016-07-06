@@ -318,7 +318,6 @@ struct Command
 
 	private size_t requiredNumArgs;
 	private string operator;
-	private string requiredType;
 	private string name;
 	Callback!CommandDelegateCallback func;
 }
