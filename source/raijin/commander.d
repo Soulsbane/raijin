@@ -32,7 +32,7 @@ mixin template Commander(string modName = __MODULE__)
 	{
 		alias helper(alias T) = T;
 
-		auto getAttribute(alias mem, T)()
+		private auto getAttribute(alias mem, T)()
 		{
 			foreach(attr; __traits(getAttributes, mem))
 			{
@@ -43,7 +43,7 @@ mixin template Commander(string modName = __MODULE__)
 			}
 		}
 
-		void processHelp(alias member)(string memberName, string[] args)
+		private void processHelp(alias member)(string memberName, string[] args)
 		{
 			if(args.length)
 			{
@@ -102,7 +102,7 @@ mixin template Commander(string modName = __MODULE__)
 			}
 		}
 
-		bool processCommand(alias member)(string[] args)
+		private bool processCommand(alias member)(string[] args)
 		{
 			ParameterTypeTuple!member params;
 			alias argumentNames = ParameterIdentifierTuple!member;
