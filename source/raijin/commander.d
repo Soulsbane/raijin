@@ -101,7 +101,7 @@ mixin template Commander(string modName = __MODULE__)
 			}
 			else
 			{
-				writefln("%16s -- %s", memberName, getAttribute!(member, CommandHelp).value);
+				writefln("%16s - %s", memberName, getAttribute!(member, CommandHelp).value);
 				helpOptionFound = true;
 			}
 
@@ -137,7 +137,7 @@ mixin template Commander(string modName = __MODULE__)
 					member(params);
 				}
 				else
-				{
+				{ //TODO:  Perhaps Add support for returning the result later.
 					writeln(to!string(member(params)));
 				}
 
@@ -167,6 +167,7 @@ mixin template Commander(string modName = __MODULE__)
 			bool helpOptionFound;
 			bool commandFound;
 			string invalidHelpOption;
+			bool headerShown;
 
 			if(args.length)
 			{
@@ -193,7 +194,14 @@ mixin template Commander(string modName = __MODULE__)
 						}
 						else
 						{
+							if(!headerShown)
+							{
+								writeln("The following options are available:");
+								writeln;
+							}
+
 							helpOptionFound = processHelp!member(memberName, args);
+							headerShown = true;
 						}
 					}
 					else if(memberName == name)
