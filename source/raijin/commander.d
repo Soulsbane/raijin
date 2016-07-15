@@ -120,7 +120,17 @@ mixin template Commander(string modName = __MODULE__)
 				{
 					if(idx < args.length)
 					{
-						arg = to!(typeof(arg))(args[idx]); //FIXME:  Need to catch exception that could be thrown here.
+						try
+						{
+							arg = to!(typeof(arg))(args[idx]); //FIXME:  Need to catch exception that could be thrown here.
+						}
+						catch(ConvException ex)
+						{
+							writeln(ex.msg);
+							writeln("See --help <command> for correct usuage.");
+							
+							return false;
+						}
 					}
 					else static if(!is(defaultArguments[idx] == void))
 					{
