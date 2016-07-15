@@ -43,8 +43,10 @@ mixin template Commander(string modName = __MODULE__)
 			}
 		}
 
-		private void processHelp(alias member)(string memberName, string[] args)
+		private bool processHelp(alias member)(string memberName, string[] args)
 		{
+			bool helpOptionFound;
+
 			if(args.length)
 			{
 				if(memberName == args[0])
@@ -94,12 +96,16 @@ mixin template Commander(string modName = __MODULE__)
 								hasDefaultValue ? ": [default=" ~ defaultValue ~ "]" : "");
 						}
 					}
+					helpOptionFound = true;
 				}
 			}
 			else
 			{
 				writefln("%16s -- %s", memberName, getAttribute!(member, CommandHelp).value);
+				helpOptionFound = true;
 			}
+
+			return helpOptionFound;
 		}
 
 		private bool processCommand(alias member)(string[] args)
@@ -157,6 +163,9 @@ mixin template Commander(string modName = __MODULE__)
 		{
 			string name;
 			string[] args = arguments[1 .. $];
+			bool helpOptionFound;
+			bool commandFound;
+			string invalidHelpOption;
 
 			if(args.length)
 			{
@@ -174,12 +183,39 @@ mixin template Commander(string modName = __MODULE__)
 				{
 					if(name == "--help")
 					{
-						processHelp!member(memberName, args);
+						if(args.length)
+						{
+							if(memberName == args[0])
+							{
+								helpOptionFound = processHelp!member(memberName, args);
+							}
+						}
+						else
+						{
+							helpOptionFound = processHelp!member(memberName, args);
+						}
 					}
 					else if(memberName == name)
 					{
-						return processCommand!member(args);
+						commandFound = processCommand!member(args);
 					}
+				}
+			}
+
+			if(commandFound && helpOptionFound)
+			{
+				return true;
+			}
+			else
+			{
+				if(!helpOptionFound && args.length)
+				{
+					return false;
+				}
+
+				if(!commandFound && arguments.length)
+				{
+					return false;
 				}
 			}
 
