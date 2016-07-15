@@ -157,7 +157,8 @@ mixin template Commander(string modName = __MODULE__)
 				arguments = The arguments sent from the commandline.
 
 			Returns:
-				A true value is command was found and it's required arguments were found. False otherwise.
+				A true value if command/helpoption was found and its required arguments were found. Note that no
+				arguments will also return a true value and should be checked in user's program. False otherwise.
 		*/
 		bool process()(string[] arguments)
 		{
