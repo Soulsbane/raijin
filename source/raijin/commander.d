@@ -43,10 +43,8 @@ mixin template Commander(string modName = __MODULE__)
 			}
 		}
 
-		private bool processHelp(alias member)(string memberName, string[] args)
+		private void processHelp(alias member)(string memberName, string[] args)
 		{
-			bool helpOptionFound;
-
 			if(args.length)
 			{
 				if(memberName == args[0])
@@ -96,19 +94,15 @@ mixin template Commander(string modName = __MODULE__)
 								hasDefaultValue ? ": [default=" ~ defaultValue ~ "]" : "");
 						}
 					}
-					helpOptionFound = true;
 				}
 			}
 			else
 			{
 				writefln("%16s - %s", memberName, getAttribute!(member, CommandHelp).value);
-				helpOptionFound = true;
 			}
-
-			return helpOptionFound;
 		}
 
-		private bool processCommand(alias member)(string[] args)
+		private void processCommand(alias member)(string[] args)
 		{
 			ParameterTypeTuple!member params;
 			alias argumentNames = ParameterIdentifierTuple!member;
@@ -128,8 +122,6 @@ mixin template Commander(string modName = __MODULE__)
 						{
 							writeln(ex.msg);
 							writeln("See --help <command> for correct usuage.");
-							
-							return false;
 						}
 					}
 					else static if(!is(defaultArguments[idx] == void))
@@ -150,13 +142,10 @@ mixin template Commander(string modName = __MODULE__)
 				{ //TODO:  Perhaps Add support for returning the result later.
 					writeln(to!string(member(params)));
 				}
-
-				return true;
 			}
 			catch(Exception e)
 			{
 				stderr.writefln(e.msg);
-				return false;
 			}
 		}
 
@@ -170,13 +159,10 @@ mixin template Commander(string modName = __MODULE__)
 				A true value if command/helpoption was found and its required arguments were found. Note that no
 				arguments will also return a true value and should be checked in user's program. False otherwise.
 		*/
-		bool process()(string[] arguments)
+		void process()(string[] arguments)
 		{
 			string name;
 			string[] args = arguments[1 .. $];
-			bool helpOptionFound;
-			bool commandFound;
-			string invalidHelpOption;
 			bool headerShown;
 
 			if(args.length)
@@ -199,7 +185,7 @@ mixin template Commander(string modName = __MODULE__)
 						{
 							if(memberName == args[0])
 							{
-								helpOptionFound = processHelp!member(memberName, args);
+								processHelp!member(memberName, args);
 							}
 						}
 						else
@@ -210,35 +196,16 @@ mixin template Commander(string modName = __MODULE__)
 								writeln;
 							}
 
-							helpOptionFound = processHelp!member(memberName, args);
+							processHelp!member(memberName, args);
 							headerShown = true;
 						}
 					}
 					else if(memberName == name)
 					{
-						commandFound = processCommand!member(args);
+						processCommand!member(args);
 					}
 				}
 			}
-
-			if(commandFound && helpOptionFound)
-			{
-				return true;
-			}
-			else
-			{
-				if(!helpOptionFound && args.length)
-				{
-					return false;
-				}
-
-				if(!commandFound && arguments.length)
-				{
-					return false;
-				}
-			}
-
-			return true;
 		}
 	}
 }
