@@ -102,7 +102,7 @@ mixin template Commander(string modName = __MODULE__)
 			}
 		}
 
-		private void processCommand(alias member)(string[] args)
+		private void processCommand(alias member)(string memberName, string[] args)
 		{
 			ParameterTypeTuple!member params;
 			alias argumentNames = ParameterIdentifierTuple!member;
@@ -121,7 +121,7 @@ mixin template Commander(string modName = __MODULE__)
 						catch(ConvException ex)
 						{
 							writeln(ex.msg);
-							writeln("See --help <command> for correct usuage.");
+							writeln("See --help ", memberName, " for correct usage.");
 						}
 					}
 					else static if(!is(defaultArguments[idx] == void))
@@ -140,7 +140,7 @@ mixin template Commander(string modName = __MODULE__)
 				}
 				else
 				{ //TODO:  Perhaps Add support for returning the result later.
-					writeln(to!string(member(params)));
+					debug writeln(to!string(member(params)));
 				}
 			}
 			catch(Exception e)
@@ -202,7 +202,7 @@ mixin template Commander(string modName = __MODULE__)
 					}
 					else if(memberName == name)
 					{
-						processCommand!member(args);
+						processCommand!member(memberName, args);
 					}
 				}
 			}
