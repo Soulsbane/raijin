@@ -1,6 +1,7 @@
 module raijin.commander;
 
 import std.stdio;
+import std.string;
 
 struct CommandHelp
 {
@@ -179,7 +180,7 @@ mixin template Commander(string modName = __MODULE__)
 
 				static if(is(typeof(member) == function) && hasUDA!(member, CommandHelp))
 				{
-					if(name == "--help")
+					if(name.removechars("-") == "help")
 					{
 						if(args.length)
 						{
