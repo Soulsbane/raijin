@@ -23,6 +23,7 @@ mixin template Commander(string modName = __MODULE__)
 
 			void main(string[] arguments)
 			{
+				mixin Commander;
 				Commander commands;
 				commands.process(arguments);
 			}
