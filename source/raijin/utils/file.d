@@ -15,8 +15,10 @@ import std.file: exists, mkdirRecurse;
 import std.algorithm;
 import std.array;
 import std.typetuple;
+import std.typecons;
 
 import raijin.utils;
+alias OverwriteExtractedFiles = Flag!"OverwriteExtractedFiles";
 
 /**
 	Creates fileName if it doesn't exist.
@@ -167,7 +169,7 @@ private template GeneratorFileNames(string[] list)
 		// Each file will be will be created in this format: ./myawesomeapp/resty/template.lua
 		extractImportFiles!filesList("myawesomeapp");
 */
-void extractImportFiles(alias list, T = string)(const string path)
+void extractImportFiles(alias list, T = string)(const string path, OverwriteExtractedFiles overwite = OverwriteExtractedFiles.yes)
 {
 	foreach(name; GeneratorFileNames!(list))
 	{
@@ -184,7 +186,11 @@ void extractImportFiles(alias list, T = string)(const string path)
 			content = cast(T)import(name);
 		}
 
-		removeFileIfExists(pathWithFileName);
+		if(overwite)
+		{
+			removeFileIfExists(pathWithFileName);
+		}
+
 		ensurePathExists(filePath);
 		ensureFileExists(pathWithFileName, content);
 	}
