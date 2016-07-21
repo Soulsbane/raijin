@@ -167,15 +167,25 @@ private template GeneratorFileNames(string[] list)
 		// Each file will be will be created in this format: ./myawesomeapp/resty/template.lua
 		extractImportFiles!filesList("myawesomeapp");
 */
-void extractImportFiles(alias list)(const string path) //TODO: Add a parameter for overwriting files to be disabled.
+void extractImportFiles(alias list, T = string)(const string path)
 {
 	foreach(name; GeneratorFileNames!(list))
 	{
 		immutable string filePath = dirName(buildNormalizedPath(path, name));
 		immutable string pathWithFileName = buildNormalizedPath(path, name);
+		T content;
+
+		static if(is(T : string))
+		{
+			content = import(name);
+		}
+		else
+		{
+			content = cast(T)import(name);
+		}
 
 		removeFileIfExists(pathWithFileName);
 		ensurePathExists(filePath);
-		ensureFileExists(pathWithFileName, import(name));
+		ensureFileExists(pathWithFileName, content);
 	}
 }
