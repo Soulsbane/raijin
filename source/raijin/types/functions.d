@@ -6,8 +6,9 @@
 
 module raijin.types.functions;
 
-import std.typecons : Flag;
-import std.traits : isIntegral;
+import std.typecons;
+import std.traits;
+import std.conv;
 
 alias AllowNumericBooleanValues = Flag!"allowNumericBooleanValues";
 
@@ -168,4 +169,33 @@ unittest
 	assert("13".isInteger == true);
 	assert("13.333333".isInteger == false);
 	assert("zzzz".isInteger == false);
+}
+
+/**
+	Uses std.conv.to but catches the exception and returns the defaultValue.
+
+	Params:
+		value = The value to convert
+		defaultValue = The value to return if conversion attempt fails.
+
+	Returns:
+		The converted value if conversion succeeded or the defaultValue if it fails.
+*/
+T convertTo(T, U, S)(S value, U defaultValue)
+{
+	try
+	{
+		return value.to!T;
+	}
+	catch(ConvException ex)
+	{
+		return defaultValue;
+	}
+}
+
+///
+unittest
+{
+	assert("10".convertTo!int(10) == 10);
+	assert("true".convertTo!int(10) == 10);
 }
