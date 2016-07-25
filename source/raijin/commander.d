@@ -118,7 +118,7 @@ mixin template Commander(string modName = __MODULE__)
 					{
 						try
 						{
-							arg = to!(typeof(arg))(args[idx]); //FIXME:  Need to catch exception that could be thrown here.
+							arg = to!(typeof(arg))(args[idx]);
 						}
 						catch(ConvException ex)
 						{
