@@ -9,4 +9,5 @@ public
 	import raijin.types.queue;
 	import raijin.types.records;
 	import raijin.types.stack;
+	import raijin.types.structoptions;
 }
