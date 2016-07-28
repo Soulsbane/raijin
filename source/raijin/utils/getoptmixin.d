@@ -1,12 +1,17 @@
 module raijin.utils.getoptmixin;
 
 import std.getopt;
+import std.traits;
+import std.stdio;
 
 ///The attribute used for marking members
 struct GetOptDescription
 {
 	string value;
 }
+
+//FIXME: According to what I've read only the enum <name> part is needed; but it fails unless it's assigned a value.
+enum GetOptRequired = "GetOptRequireds";
 
 mixin template GetOptMixin(T)
 {
@@ -22,13 +27,14 @@ mixin template GetOptMixin(T)
 		}
 
 		//The actual generated string.
-		auto helpInformation = getopt(arguments, std.getopt.config.passThrough, "name", "The name of the program",
+		auto helpInformation = getopt(arguments, "name", "The name of the program",
 			&options.name, "id", "The id of the program", &options.id);
 	*/
 
 	string wrapped()
 	{
-		string getOptCode = "auto helpInformation = getopt(arguments, std.getopt.config.passThrough, ";
+		//string getOptCode = "auto helpInformation = getopt(arguments, std.getopt.config.passThrough, ";
+		string getOptCode = "auto helpInformation = getopt(arguments,";
 
 		foreach(field; __traits(allMembers, T))
 		{
@@ -38,7 +44,14 @@ mixin template GetOptMixin(T)
 			{
 				static if(is(typeof(attr) == GetOptDescription))
 				{
-					getOptCode = getOptCode ~ "\"" ~ field ~ "\", \"" ~  attr.value ~ "\", &options." ~ field ~ ", ";
+					static if(hasUDA!(mixin("options." ~ field), GetOptRequired))
+					{
+						getOptCode = getOptCode ~ "std.getopt.config.required," ~ "\"" ~ field ~ "\", \"" ~  attr.value ~ "\", &options." ~ field ~ ", ";
+					}
+					else
+					{
+						getOptCode = getOptCode ~ "\"" ~ field ~ "\", \"" ~  attr.value ~ "\", &options." ~ field ~ ", ";
+					}
 				}
 			}
 		}
@@ -62,7 +75,8 @@ mixin template GetOptMixin(T)
 
 		struct VariedData
 		{
-			@GetOptDescription("The name of the program")
+			//Sets the description in --help for command and makes this command a std.getopt.command.required argument.
+			@GetOptDescription("The name of the program") @GetOptRequired
 			string name;
 			@GetOptDescription("The id of the program")
 			size_t id;
@@ -81,11 +95,18 @@ mixin template GetOptMixin(T)
 */
 void insertGetOptCode(T)(string[] arguments, ref T options)
 {
-	mixin GetOptMixin!T;
-
-	if(helpInformation.helpWanted)
+	try
 	{
-		defaultGetoptPrinter("The following options are available:",
-		helpInformation.options);
+		mixin GetOptMixin!T;
+
+		if(helpInformation.helpWanted)
+		{
+			defaultGetoptPrinter("The following options are available:",
+			helpInformation.options);
+		}
+	}
+	catch(GetOptException ex)
+	{
+		writeln(ex.msg);
 	}
 }
