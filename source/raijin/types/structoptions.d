@@ -209,3 +209,42 @@ struct StructOptions(T)
 	alias asString = as!string;
 	alias asBoolean = as!bool;
 }
+
+///
+unittest
+{
+	struct VariedData
+	{
+		string name;
+		size_t id;
+	}
+
+	immutable string data =
+	q{
+			name = Paul
+			id = 50
+	};
+
+	StructOptions!VariedData options;
+	options.loadString(data);
+
+	assert(options.as("name", "onamae") == "Paul");
+	assert(options.as("foo", "bar") == "bar");
+
+	assert(options.contains("id"));
+	assert(options.asInteger("id", 10) == 50);
+	assert(options.asInteger("id") == 50);
+
+	assert(options.name == "Paul");
+	
+	options.name = "Bob";
+	assert(options.name == "Bob");
+
+	options.set("name", "Kyle");
+	assert(options.name == "Kyle");
+
+	options["name"] = "Jim";
+	assert(options.name == "Jim");
+
+	assert(options.as!long("id", 1) == 50); // Can be infered but we'll explicitly send it here.
+}
