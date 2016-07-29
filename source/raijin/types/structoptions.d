@@ -1,4 +1,6 @@
-
+/**
+	A key value configuration format using compile time reflection and structs.
+*/
 module raijin.types.structoptions;
 
 import std.traits;
@@ -61,7 +63,6 @@ struct StructOptions(T)
 								.stringof ~ "(value);";
 
 							mixin(generatedCode);
-							writeln(generatedCode);
 						}
 					}
 				}

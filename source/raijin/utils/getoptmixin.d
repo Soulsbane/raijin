@@ -12,6 +12,7 @@ struct GetOptDescription
 
 //FIXME: According to what I've read only the enum <name> part is needed; but it fails unless it's assigned a value.
 enum GetOptRequired = "GetOptRequireds";
+enum GetOptPassThru = "GetOptPassThru";
 
 mixin template GetOptMixin(T)
 {
@@ -33,8 +34,14 @@ mixin template GetOptMixin(T)
 
 	string wrapped()
 	{
-		//string getOptCode = "auto helpInformation = getopt(arguments, std.getopt.config.passThrough, ";
-		string getOptCode = "auto helpInformation = getopt(arguments,";
+		static if(hasUDA!(T, GetOptPassThru))
+		{
+			string getOptCode = "auto helpInformation = getopt(arguments, std.getopt.config.passThrough, ";
+		}
+		else
+		{
+			string getOptCode = "auto helpInformation = getopt(arguments,";
+		}
 
 		foreach(field; __traits(allMembers, T))
 		{
@@ -101,8 +108,7 @@ void insertGetOptCode(T)(string[] arguments, ref T options)
 
 		if(helpInformation.helpWanted)
 		{
-			defaultGetoptPrinter("The following options are available:",
-			helpInformation.options);
+			defaultGetoptPrinter("The following options are available:", helpInformation.options);
 		}
 	}
 	catch(GetOptException ex)
