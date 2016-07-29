@@ -3,6 +3,7 @@ module raijin.utils.getoptmixin;
 import std.getopt;
 import std.traits;
 import std.stdio;
+import std.format;
 
 ///The attribute used for marking members
 struct GetOptDescription
@@ -53,11 +54,15 @@ mixin template GetOptMixin(T)
 				{
 					static if(hasUDA!(mixin("options." ~ field), GetOptRequired))
 					{
-						getOptCode = getOptCode ~ "std.getopt.config.required," ~ "\"" ~ field ~ "\", \"" ~  attr.value ~ "\", &options." ~ field ~ ", ";
+						getOptCode ~= format(q{
+							std.getopt.config.required, "%s", "%s", &options.%s,
+						}, field, attr.value, field);
 					}
 					else
 					{
-						getOptCode = getOptCode ~ "\"" ~ field ~ "\", \"" ~  attr.value ~ "\", &options." ~ field ~ ", ";
+						getOptCode ~= format(q{
+							"%s", "%s", &options.%s,
+						}, field, attr.value, field);
 					}
 				}
 			}
