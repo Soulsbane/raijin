@@ -12,7 +12,7 @@ struct GetOptDescription
 }
 
 //FIXME: According to what I've read only the enum <name> part is needed; but it fails unless it's assigned a value.
-enum GetOptRequired = "GetOptRequireds";
+enum GetOptRequired = "GetOptRequired";
 enum GetOptPassThru = "GetOptPassThru";
 
 mixin template GetOptMixin(T)
