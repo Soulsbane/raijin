@@ -16,6 +16,9 @@ import std.stdio;
 
 private enum DEFAULT_CONFIG_FILE_NAME = "app.config";
 
+/**
+	Used for the creation of key/value configuration format.
+*/
 struct StructOptions(T)
 {
 	~this()
@@ -26,6 +29,16 @@ struct StructOptions(T)
 		}
 	}
 
+	/**
+		Loads a config fileName(app.config by default).
+
+		Params:
+			fileName = The name of the file to be processed/loaded. Will use app.config if no argument is passed.
+			autoSave = Enable saving on object destruction. Set to true by default.
+
+		Returns:
+			Returns true on a successful load false otherwise.
+	*/
 	bool loadFile(const string fileName = DEFAULT_CONFIG_FILE_NAME, const bool autoSave = true)
 	{
 		if(fileName.exists)
@@ -37,9 +50,18 @@ struct StructOptions(T)
 		{
 			return false;
 		}
-
 	}
 
+	/**
+		Similar to loadFile but loads and processes the passed string instead.
+
+		Params:
+			text = The string to process.
+			autoSave = Enable saving on object destruction. Set to true by default.
+
+		Returns:
+			Returns true on a successful load false otherwise.
+	*/
 	bool loadString(const string text)
 	{
 		if(text.length)
@@ -76,6 +98,9 @@ struct StructOptions(T)
 		}
 	}
 
+	/**
+		Saves config values to the config file to app.config or the user supplied name.
+	*/
 	void save()
 	{
 		if(configFileName_.length)
@@ -93,6 +118,16 @@ struct StructOptions(T)
 		}
 	}
 
+	/**
+		Retrieves the value  associated with key where T is the designated type to be converted to.
+
+		Params:
+			key = Name of the key to get.
+			defaultValue = The defaultValue to use should the key not exist.
+
+		Returns:
+			The value associated with key.
+	*/
 	S as(S)(const string key, const S defaultValue = S.init)
 	{
 		S value = defaultValue;
@@ -116,6 +151,13 @@ struct StructOptions(T)
 		return value;
 	}
 
+	/**
+		Sets a config value.
+
+		Params:
+			key = Name of the key to set.
+			value = The value of key.
+	*/
 	void set(S)(const string key, const S value)
 	{
 		foreach(field; __traits(allMembers, T))
@@ -130,6 +172,15 @@ struct StructOptions(T)
 		}
 	}
 
+	/**
+		Determines if the key is found in the config file.
+
+		Params:
+			key = Name of the key to get the value of
+
+		Returns:
+			true if the config file contains the key false otherwise.
+	*/
 	bool contains(const string key) const
 	{
 		foreach(field; __traits(allMembers, T))
