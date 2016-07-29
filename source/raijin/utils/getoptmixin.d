@@ -105,7 +105,7 @@ mixin template GetOptMixin(T)
 			writeln("after data.id => ", data.id);
 		}
 */
-void insertGetOptCode(T)(string[] arguments, ref T options)
+void generateGetOptCode(T)(string[] arguments, ref T options)
 {
 	try
 	{
