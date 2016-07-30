@@ -158,6 +158,7 @@ private template GeneratorFileNames(string[] list)
 	Params:
 		list = Must be an enum string list of filenames that will be imported and written later using the same name.
 		path = The path where the files should be exported to.
+		overwrite = Whether to overwrite existing files.
 
 	Examples:
 		enum filesList =
@@ -169,7 +170,7 @@ private template GeneratorFileNames(string[] list)
 		// Each file will be will be created in this format: ./myawesomeapp/resty/template.lua
 		extractImportFiles!filesList("myawesomeapp");
 */
-void extractImportFiles(alias list, T = string)(const string path, OverwriteExtractedFiles overwite = OverwriteExtractedFiles.yes)
+void extractImportFiles(alias list, T = string)(const string path, OverwriteExtractedFiles overwrite = OverwriteExtractedFiles.yes)
 {
 	foreach(name; GeneratorFileNames!(list))
 	{

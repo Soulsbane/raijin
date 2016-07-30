@@ -1,3 +1,6 @@
+/**
+	Allows command line arguments to be mapped to a function using the types passed using the Commander mixin.
+*/
 module raijin.commander;
 
 import std.stdio;
@@ -9,6 +12,7 @@ struct CommandHelp
 	string[] argDocs;
 }
 
+///
 mixin template Commander(string modName = __MODULE__)
 {
 	import std.traits, std.conv, std.stdio;

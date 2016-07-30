@@ -57,7 +57,6 @@ struct StructOptions(T)
 
 		Params:
 			text = The string to process.
-			autoSave = Enable saving on object destruction. Set to true by default.
 
 		Returns:
 			Returns true on a successful load false otherwise.
@@ -236,7 +235,7 @@ unittest
 	assert(options.asInteger("id") == 50);
 
 	assert(options.name == "Paul");
-	
+
 	options.name = "Bob";
 	assert(options.name == "Bob");
 

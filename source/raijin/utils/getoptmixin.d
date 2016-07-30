@@ -1,3 +1,6 @@
+/**
+	Enables the autogeneration of getopt commandline parameters based on a passed structs members.
+*/
 module raijin.utils.getoptmixin;
 
 import std.getopt;
@@ -17,7 +20,7 @@ enum GetOptPassThru = "GetOptPassThru";
 
 mixin template GetOptMixin(T)
 {
-	/*
+	/**
 		Using the example struct below this string mixin generates this code.
 
 		struct VariedData
