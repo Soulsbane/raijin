@@ -195,6 +195,7 @@ mixin template Commander(string modName = __MODULE__)
 							if(!headerShown)
 							{
 								writeln("The following options are available:");
+								writeln("For additional help for a command use help <command>.");
 								writeln;
 							}
 
