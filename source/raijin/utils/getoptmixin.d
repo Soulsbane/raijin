@@ -103,7 +103,7 @@ mixin template GetOptMixin(T)
 
 			data.name = "Paul Crane";
 			data.id = 13;
-			insertGetOptCode!VariedData(arguments, data);
+			generateGetOptCode!VariedData(arguments, data);
 
 			writeln("after data.id => ", data.id);
 		}
