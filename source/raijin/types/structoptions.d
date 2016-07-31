@@ -206,6 +206,7 @@ struct StructOptions(T)
 	alias asDecimal = as!double;
 	alias asString = as!string;
 	alias asBoolean = as!bool;
+	alias get = as;
 }
 
 ///
@@ -227,7 +228,7 @@ unittest
 	options.loadString(data);
 
 	assert(options.as("name", "onamae") == "Paul");
-	assert(options.as("foo", "bar") == "bar");
+	assert(options.get("foo", "bar") == "bar");
 
 	assert(options.contains("id"));
 	assert(options.asInteger("id", 10) == 50);
