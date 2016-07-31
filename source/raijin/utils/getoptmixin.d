@@ -7,6 +7,9 @@ import std.getopt;
 import std.traits;
 import std.stdio;
 import std.format;
+import std.string;
+import std.range;
+
 
 ///The attribute used for marking members
 struct GetOptDescription
@@ -44,7 +47,7 @@ mixin template GetOptMixin(T)
 		}
 		else
 		{
-			string getOptCode = "auto helpInformation = getopt(arguments,";
+			string getOptCode = "auto helpInformation = getopt(arguments, ";
 		}
 
 		foreach(field; __traits(allMembers, T))
@@ -71,7 +74,14 @@ mixin template GetOptMixin(T)
 			}
 		}
 
-		getOptCode = getOptCode[0..$ - 2] ~ ");"; // Remove the extra , and space
+		getOptCode = getOptCode.stripRight;
+
+		if(getOptCode.back == ',')
+		{
+			getOptCode.popBack;
+			getOptCode ~= ");";
+		}
+
 		return getOptCode;
 	}
 
