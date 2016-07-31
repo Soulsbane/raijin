@@ -110,7 +110,6 @@ struct StructOptions(T)
 			foreach(field; __traits(allMembers, T))
 			{
 				keyValueData ~= field ~ " = " ~ mixin("to!string(data_." ~ field ~ ")") ~ "\n";
-				//writeln(field, " = ", mixin("data_." ~ field));
 			}
 
 			configFile.write(keyValueData);
