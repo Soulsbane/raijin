@@ -8,8 +8,18 @@ import std.math;
 import std.conv;
 import std.range;
 
+///Handles the creation of a progressbar.
 struct ProgressBar
 {
+	/**
+		Initializes and creates the initial progressbar.
+
+		Params:
+			total = The number of items that are being processed.
+			prefix = The text printed at the left side of the progressbar.
+			suffix = The text printed at the right side of the progressbar.
+			barLength = How wide the bar should be.
+	*/
 	void create(const size_t total, const string prefix = "Progress", const string suffix = "Complete",
 		const size_t barLength = 100)
 	{
@@ -21,6 +31,12 @@ struct ProgressBar
 		update(0);
 	}
 
+	/**
+		Updates the progressbar.
+
+		Params:
+			iteration = The current item being processed. Ex. 34 of 83. The 34 portion.
+	*/
 	void update(size_t iteration)
 	{
 		immutable auto filledLength = to!size_t(round(barLength_ * iteration / to!float(total_)));
