@@ -3,8 +3,9 @@ module raijin;
 public
 {
 	import raijin.patterns;
-	import raijin.utils;
+	import raijin.terminal;
 	import raijin.types;
+	import raijin.utils;
 	import raijin.appconfig;
 	import raijin.commandlineargs;
 	import raijin.cmdline;
