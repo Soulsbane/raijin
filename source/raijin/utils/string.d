@@ -7,7 +7,7 @@
 
 module raijin.utils.string;
 
-import std.string : indexOf, CaseSensitive;
+import std.string : indexOf, CaseSensitive, startsWith;
 import std.conv : to;
 import std.range : empty, popFront, front;
 import std.algorithm : canFind, map, equal;
@@ -434,4 +434,35 @@ unittest
 	assert(formatNumber(100) == "100");
 	assert(formatNumber(1000) == "1,000");
 	assert(formatNumber(1000000) == "1,000,000");
+}
+
+/**
+	Check a string for multiple starting values.
+
+	Params:
+		text = The string to search.
+		checkValues = The values to check for.
+
+	Returns:
+		True if one of the values is found false otherwise.
+*/
+bool startsWithOr(T...)(string text, T checkValues)
+{
+	foreach(value; checkValues)
+	{
+		if(text.startsWith(value))
+		{
+			return true;
+		}
+	}
+
+	return false;
+}
+
+///
+unittest
+{
+	assert("--flag".startsWithOr("--help", "--flag") == true);
+	assert("--help".startsWithOr("--help", "--flag") == true);
+	assert("--none".startsWithOr("--help", "--flag") == false);
 }
