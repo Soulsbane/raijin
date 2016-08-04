@@ -48,10 +48,17 @@ struct ProgressBar
 
 		if(iteration == total_)
 		{
+			clearLine();
 			writeln;
-			stdout.flush();
 		}
 	}
+
+	void clearLine()
+	{
+		stdout.flush();
+		write("\33[2K\r");
+	}
+
 private:
 	size_t total_;
 	size_t barLength_;
