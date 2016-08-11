@@ -5,7 +5,7 @@
 		Paul Crane
 */
 module raijin.types.callbacks;
-
+import std.traits;
 /**
 	A simple interface for holding either a function or delegate to be called later.
 
@@ -44,7 +44,7 @@ module raijin.types.callbacks;
 		}
 		--------------------------------------
 */
-struct Callback(T, ReturnType = void)
+struct Callback(T)
 {
 	/**
 		An overload for calling the registered function/delegate.
@@ -52,9 +52,9 @@ struct Callback(T, ReturnType = void)
 		Params:
 			args = The arguments to pass to the function/delegate
 	*/
-	ReturnType opCall(Args...)(Args args)
+	ReturnType!T opCall(Args...)(Args args)
 	{
-		static if(is(ReturnType == void))
+		static if(is(ReturnType!T == void))
 		{
 			if(callback_ && !stopped_)
 			{
@@ -63,7 +63,7 @@ struct Callback(T, ReturnType = void)
 		}
 		else
 		{
-			ReturnType value;
+			ReturnType!T value;
 
 			if(callback_ && !stopped_)
 			{
@@ -179,7 +179,7 @@ unittest
 	}
 
 	alias IntCall = int delegate();
-	Callback!(IntCall, int) intCall;
+	Callback!IntCall intCall;
 
 	intCall = &intFunc;
 
