@@ -1,7 +1,0 @@
-dependencies:
-  override:
-    - source "$(curl -fsS  --retry 3 https://dlang.org/install.sh | bash -s dmd --activate)"
-    - curl -fsSL --retry 3 http://code.dlang.org/files/dub-${DUB}-linux-x86_64.tar.gz | tar -C ~/dmd2/linux/bin64 -zxf
-test:
-  override:
-    - dub test
