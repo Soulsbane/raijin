@@ -199,3 +199,17 @@ unittest
 	assert("10".convertTo!int(10) == 10);
 	assert("true".convertTo!int(10) == 10);
 }
+
+/**
+	A simple wrapper around __traits(identifier, type)
+
+	Params:
+		symbol = The symbol to identify.
+
+	Returns:
+		Returns the identifier for that symbol as a string literal.
+*/
+template IdentifierOf(alias symbol)
+{
+	enum IdentifierOf = __traits(identifier, symbol);
+}
