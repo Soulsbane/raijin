@@ -7,7 +7,7 @@
 
 module raijin.utils.string;
 
-import std.string : indexOf, CaseSensitive, startsWith;
+import std.string;
 import std.conv : to;
 import std.range : empty, popFront, front;
 import std.algorithm : canFind, map, equal;
@@ -434,4 +434,32 @@ unittest
 	assert(formatNumber(100) == "100");
 	assert(formatNumber(1000) == "1,000");
 	assert(formatNumber(1000000) == "1,000,000");
+}
+
+/**
+	Checks a string for the presense of only whitespace.
+
+	Params:
+		text = The string to check.
+
+	Returns:
+		True of the string only contains whitespaces false otherwise.
+*/
+bool containsOnlySpaces(const string text)
+{
+	return text.length == text.countchars(" ") ? true : false;
+}
+
+///
+unittest
+{
+	string spaces = "   ";
+	string spaces1 = "1   ";
+	string spacesx = "x   ";
+	string mixed = " xall   s";
+
+	assert(spaces.containsOnlySpaces);
+	assert(!spaces1.containsOnlySpaces);
+	assert(!spacesx.containsOnlySpaces);
+	assert(!mixed.containsOnlySpaces);
 }
