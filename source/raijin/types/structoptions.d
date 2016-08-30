@@ -192,7 +192,7 @@ struct StructOptions(T)
 		return false;
 	}
 
-	void opIndexAssign(T)(T value, const string key) @trusted
+	void opIndexAssign(T)(T value, const string key)
 	{
 		set(key, value);
 	}
