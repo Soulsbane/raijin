@@ -181,7 +181,7 @@ unittest
 	Returns:
 		The converted value if conversion succeeded or the defaultValue if it fails.
 */
-T convertTo(T, U, S)(S value, U defaultValue)
+T convertTo(T, S)(S value,  T defaultValue)
 {
 	try
 	{
@@ -197,7 +197,9 @@ T convertTo(T, U, S)(S value, U defaultValue)
 unittest
 {
 	assert("10".convertTo!int(10) == 10);
-	assert("true".convertTo!int(10) == 10);
+	assert("true".convertTo!int(12) == 12);
+	assert("true".convertTo!bool(false) == true);
+	assert("falsy".convertTo!bool(false) == false);
 }
 
 /**
