@@ -187,7 +187,7 @@ void extractImportFiles(alias list, T = string)(const string path, OverwriteExtr
 			content = cast(T)import(name);
 		}
 
-		if(overwite)
+		if(overwrite)
 		{
 			removeFileIfExists(pathWithFileName);
 		}
