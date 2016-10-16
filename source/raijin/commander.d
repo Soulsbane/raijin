@@ -15,7 +15,7 @@ struct CommandHelp
 ///
 mixin template Commander(string modName = __MODULE__)
 {
-	import std.traits, std.conv, std.stdio;
+	import std.traits, std.conv, std.stdio, std.typetuple;
 	/**
 		Handles commands sent via the commandline.
 
@@ -185,6 +185,8 @@ mixin template Commander(string modName = __MODULE__)
 
 				static if(is(typeof(member) == function) && hasUDA!(member, CommandHelp))
 				{
+					Parameters!member params;
+
 					if(name.removechars("-") == "help")
 					{
 						if(args.length)
@@ -209,7 +211,22 @@ mixin template Commander(string modName = __MODULE__)
 					}
 					else if(memberName == name)
 					{
-						processCommand!member(memberName, args);
+						if(params.length == args.length)
+						{
+							processCommand!member(memberName, args);
+						}
+						else
+						{
+							foreach (overload; __traits(getOverloads, mod, memberName))
+							{
+								ParameterTypeTuple!overload overLoadedParams;
+
+								if(overLoadedParams.length == args.length)
+								{
+									processCommand!overload(memberName, args);
+								}
+							}
+						}
 					}
 				}
 			}
