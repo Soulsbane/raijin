@@ -59,7 +59,7 @@ mixin template Commander(string modName = __MODULE__)
 
 					foreach(argName; ParameterIdentifierTuple!member)
 					{
-						writef(" %s", argName);
+						writef(" <%s>", argName);
 					}
 
 					writefln("\n\t%s", getAttribute!(member, CommandHelp).value);
