@@ -185,14 +185,13 @@ mixin template Commander(string modName = __MODULE__)
 
 				static if(is(typeof(member) == function) && hasUDA!(member, CommandHelp))
 				{
-					Parameters!member params;
-
 					if(name.removechars("-") == "help")
 					{
 						if(args.length)
 						{
 							if(memberName == args[0])
 							{
+								//TODO: Insert check for function overloads.
 								processHelp!member(memberName, args);
 							}
 						}
@@ -204,22 +203,25 @@ mixin template Commander(string modName = __MODULE__)
 								writeln("For additional help for a command use help <command>.");
 								writeln;
 							}
-
+							//TODO: Insert check for function overloads.
 							processHelp!member(memberName, args);
 							headerShown = true;
 						}
 					}
 					else if(memberName == name)
 					{
-						if(params.length == args.length)
+						immutable Parameters!member params;
+
+						if(params.length == args.length) // We found the exact function now call it.
 						{
 							processCommand!member(memberName, args);
 						}
 						else
 						{
+							// The function name was matched but it had the wrong number of arguments so check for function overloads.
 							foreach (overload; __traits(getOverloads, mod, memberName))
 							{
-								ParameterTypeTuple!overload overLoadedParams;
+								immutable ParameterTypeTuple!overload overLoadedParams;
 
 								if(overLoadedParams.length == args.length)
 								{
