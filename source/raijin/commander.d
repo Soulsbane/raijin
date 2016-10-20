@@ -192,18 +192,14 @@ mixin template Commander(string modName = __MODULE__)
 							if(memberName == args[0])
 							{
 								//TODO: Cleanup the output it's a little busy at the moment.
-								processHelp!member(memberName, args);
 
 								// Make sure and output all function overloads of the command also.
 								foreach (overload; __traits(getOverloads, mod, memberName))
 								{
 									immutable ParameterTypeTuple!overload overLoadedParams;
 
-									if(overLoadedParams.length == args.length)
-									{
-										writeln;
-										processHelp!overload(memberName, args);
-									}
+									writeln;
+									processHelp!overload(memberName, args);
 								}
 							}
 						}
