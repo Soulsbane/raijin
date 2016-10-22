@@ -64,7 +64,7 @@ mixin template Commander(string modName = __MODULE__)
 
 					writefln("\n\t%s", getAttribute!(member, CommandHelp).value);
 
-					if(ParameterTypeTuple!member.length)
+					if(Parameters!member.length)
 					{
 						writeln("Arguments:");
 					}
@@ -91,12 +91,12 @@ mixin template Commander(string modName = __MODULE__)
 
 						if(argDoc.length)
 						{
-							writefln("\t%s (%s): %s %s", argName, ParameterTypeTuple!member[idx].stringof, argDoc,
+							writefln("\t%s (%s): %s %s", argName, Parameters!member[idx].stringof, argDoc,
 								hasDefaultValue ? "[default=" ~ defaultValue ~ "]" : "");
 						}
 						else
 						{
-							writefln("\t%s (%s) %s", argName, ParameterTypeTuple!member[idx].stringof,
+							writefln("\t%s (%s) %s", argName, Parameters!member[idx].stringof,
 								hasDefaultValue ? ": [default=" ~ defaultValue ~ "]" : "");
 						}
 					}
@@ -110,7 +110,7 @@ mixin template Commander(string modName = __MODULE__)
 
 		private void processCommand(alias member)(string memberName, string[] args)
 		{
-			ParameterTypeTuple!member params;
+			Parameters!member params;
 			alias argumentNames = ParameterIdentifierTuple!member;
 			alias defaultArguments = ParameterDefaultValueTuple!member;
 
@@ -196,7 +196,7 @@ mixin template Commander(string modName = __MODULE__)
 								// Make sure and output all function overloads of the command also.
 								foreach (overload; __traits(getOverloads, mod, memberName))
 								{
-									immutable ParameterTypeTuple!overload overLoadedParams;
+									immutable Parameters!overload overLoadedParams;
 
 									writeln;
 									processHelp!overload(memberName, args);
@@ -229,7 +229,7 @@ mixin template Commander(string modName = __MODULE__)
 							// The function name was matched but it had the wrong number of arguments so check for function overloads.
 							foreach (overload; __traits(getOverloads, mod, memberName))
 							{
-								immutable ParameterTypeTuple!overload overLoadedParams;
+								immutable Parameters!overload overLoadedParams;
 
 								if(overLoadedParams.length == args.length)
 								{
