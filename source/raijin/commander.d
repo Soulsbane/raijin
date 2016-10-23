@@ -5,6 +5,7 @@ module raijin.commander;
 
 import std.stdio;
 import std.string;
+import raijin;
 
 struct CommandHelp
 {
@@ -76,9 +77,9 @@ mixin template Commander(string modName = __MODULE__)
 						string defaultValue;
 						bool hasDefaultValue;
 
-						static if(!is(ParameterDefaultValueTuple!member[idx] == void))
+						static if(!is(ParameterDefaults!member[idx] == void))
 						{
-							defaultValue = to!string(ParameterDefaultValueTuple!member[idx]);
+							defaultValue = to!string(ParameterDefaults!member[idx]);
 							hasDefaultValue = true;
 						}
 
@@ -112,7 +113,7 @@ mixin template Commander(string modName = __MODULE__)
 		{
 			Parameters!member params;
 			alias argumentNames = ParameterIdentifierTuple!member;
-			alias defaultArguments = ParameterDefaultValueTuple!member;
+			alias defaultArguments = ParameterDefaults!member;
 
 			try
 			{
@@ -132,6 +133,7 @@ mixin template Commander(string modName = __MODULE__)
 					}
 					else static if(!is(defaultArguments[idx] == void))
 					{
+						Log.info("");
 						arg = defaultArguments[idx];
 					}
 					else
@@ -218,24 +220,22 @@ mixin template Commander(string modName = __MODULE__)
 					}
 					else if(memberName == name)
 					{
-						immutable Parameters!member params;
+						bool found;
 
-						if(params.length == args.length) // We found the exact function now call it.
+						foreach (overload; __traits(getOverloads, mod, memberName))
+						{
+							immutable Parameters!overload overLoadedParams;
+
+							if(overLoadedParams.length == args.length)
+							{
+								found = true;
+								processCommand!overload(memberName, args);
+							}
+						}
+						 // Failed to find the function so call with defaults so we can generate a detailed error.
+						if(!found)
 						{
 							processCommand!member(memberName, args);
-						}
-						else
-						{
-							// The function name was matched but it had the wrong number of arguments so check for function overloads.
-							foreach (overload; __traits(getOverloads, mod, memberName))
-							{
-								immutable Parameters!overload overLoadedParams;
-
-								if(overLoadedParams.length == args.length)
-								{
-									processCommand!overload(memberName, args);
-								}
-							}
 						}
 					}
 				}
