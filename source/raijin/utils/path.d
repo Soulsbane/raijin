@@ -8,8 +8,8 @@
 module raijin.utils.path;
 
 import std.process : environment;
-import std.path : buildNormalizedPath, thisExePath;
-import std.file : exists, mkdirRecurse, rmdirRecurse, dirName;
+import std.path : buildNormalizedPath, thisExePath, dirName;
+import std.file : exists, mkdirRecurse, rmdirRecurse;
 import std.algorithm : splitter;
 
 /**
