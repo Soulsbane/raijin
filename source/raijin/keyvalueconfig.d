@@ -161,6 +161,7 @@ struct KeyValueConfig
 		{
 			return false;
 		}
+
 		return true;
 	}
 
@@ -176,8 +177,8 @@ struct KeyValueConfig
 	auto getGroupAndKeyFromString(const string value) pure @safe
 	{
 		auto groupAndKey = value.findSplit(".");
-		auto group = groupAndKey[0].strip();
-		auto key = groupAndKey[2].strip();
+		immutable auto group = groupAndKey[0].strip();
+		immutable auto key = groupAndKey[2].strip();
 
 		return tuple!("group", "key")(group, key);
 	}
