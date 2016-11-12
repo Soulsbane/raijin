@@ -266,7 +266,7 @@ public
 	/**
 		Saves config values to the config file used when loading(loadFile).
 	*/
-	void save()
+	void save() @trusted
 	{
 		save(saveToFileName_);
 	}
