@@ -529,7 +529,7 @@ public
 	{
 		if(isGroupString(key))
 		{
-			auto groupAndKey = getGroupAndKeyFromString(key);
+			immutable auto groupAndKey = getGroupAndKeyFromString(key);
 
 			valuesModified_ = true;
 			return remove(groupAndKey.group, groupAndKey.key);
