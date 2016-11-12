@@ -390,7 +390,7 @@ public
 			group = Name of the the group to retrieve.
 
 		Returns:
-			Returns an array containing KeyValueData structs.
+			Returns an array containing all the key/values associated with group.
 
 	*/
 	private auto getGroup(const string group) @trusted
