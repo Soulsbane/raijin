@@ -469,17 +469,15 @@ public
 		Returns:
 			true if the config file contains the key false otherwise.
 	*/
-	bool contains(const string key) @trusted
+	bool contains(const string key) @safe
 	{
 		if(isGroupString(key))
 		{
-			auto groupAndKey = getGroupAndKeyFromString(key);
+			immutable auto groupAndKey = getGroupAndKeyFromString(key);
 			return contains(groupAndKey.group, groupAndKey.key);
 		}
-		else
-		{
-			return contains(DEFAULT_GROUP_NAME, key);
-		}
+
+		return contains(DEFAULT_GROUP_NAME, key);
 	}
 
 	/**
@@ -499,10 +497,8 @@ public
 			auto groupValues = getGroup(group);
 			return groupValues.canFind!(a => a.key == key);
 		}
-		else
-		{
-			return false; // The group wasn't found so no point in checking for a group and value.
-		}
+
+		return false; // The group wasn't found so no point in checking for a group and value.
 	}
 
 	/**
