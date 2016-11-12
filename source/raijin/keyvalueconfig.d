@@ -393,7 +393,7 @@ public
 			Returns an array containing all the key/values associated with group.
 
 	*/
-	private auto getGroup(const string group) @trusted
+	auto getGroup(const string group) @trusted
 	{
 		return values_.filter!(a => a.group == group);
 	}
@@ -404,7 +404,7 @@ public
 		Returns:
 			An array containing every group.
 	*/
-	private auto getGroups()
+	auto getGroups() @trusted
 	{
 		return values_.filter!(a => a.group != "");
 	}
