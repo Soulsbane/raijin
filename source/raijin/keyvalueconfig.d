@@ -279,7 +279,7 @@ public
 	*/
 	void save(string fileName) @trusted
 	{
-		if(fileName != string.init && valuesModified_)
+		if(fileName.length && valuesModified_)
 		{
 			auto configfile = File(fileName, "w+");
 			string curGroup;
@@ -289,6 +289,7 @@ public
 				if(curGroup != data.group)
 				{
 					curGroup = data.group;
+
 					if(curGroup != DEFAULT_GROUP_NAME)
 					{
 						configfile.writeln("[", curGroup, "]");
