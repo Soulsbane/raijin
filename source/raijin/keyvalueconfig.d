@@ -588,7 +588,8 @@ public
 	*/
 	DynamicType opIndex(const string key) @trusted
 	{
-		return get(key);
+		immutable string defaultValue;
+		return get(key, defaultValue);
 	}
 
 	/**
