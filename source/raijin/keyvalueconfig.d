@@ -370,7 +370,7 @@ public
 		Returns:
 			The value associated with the group and key.
 	*/
-	private DynamicType getGroupValue(T)(const string group, const string key, const T defaultValue) @trusted
+	DynamicType getGroupValue(T)(const string group, const string key, const T defaultValue = T.init) @trusted
 	{
 		DynamicType value = defaultValue;
 		auto found = values_.filter!(a => (a.group == group) && (a.key == key));
