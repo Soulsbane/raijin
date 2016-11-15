@@ -133,7 +133,6 @@ mixin template Commander(string modName = __MODULE__)
 					}
 					else static if(!is(defaultArguments[idx] == void))
 					{
-						Log.info("");
 						arg = defaultArguments[idx];
 					}
 					else
