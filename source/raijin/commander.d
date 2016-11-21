@@ -3,10 +3,6 @@
 */
 module raijin.commander;
 
-import std.stdio;
-import std.string;
-import raijin;
-
 struct CommandHelp
 {
 	string value;
@@ -48,6 +44,8 @@ mixin template Commander(string modName = __MODULE__)
 					return attr;
 				}
 			}
+
+			assert(0);
 		}
 
 		private void processHelp(alias member)(string memberName, string[] args)
