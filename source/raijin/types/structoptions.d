@@ -197,9 +197,6 @@ struct StructOptions(T)
 		set(key, value);
 	}
 
-	string configFileName_;
-	bool autoSave_;
-	T data_;
 	alias data_ this;
 
 	alias asInteger = as!long;
@@ -207,6 +204,11 @@ struct StructOptions(T)
 	alias asString = as!string;
 	alias asBoolean = as!bool;
 	alias get = as;
+
+private:
+	string configFileName_;
+	bool autoSave_;
+	T data_;
 }
 
 ///
