@@ -20,6 +20,7 @@ struct GetOptDescription
 //FIXME: According to what I've read only the enum <name> part is needed; but it fails unless it's assigned a value.
 enum GetOptRequired = "GetOptRequired";
 enum GetOptPassThru = "GetOptPassThru";
+//TODO: Add support for other getopt options: http://dlang.org/phobos/std_getopt.html#.config
 
 mixin template GetOptMixin(T)
 {
