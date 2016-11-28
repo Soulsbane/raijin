@@ -98,7 +98,19 @@ struct StructOptions(T)
 	}
 
 	/**
-		Saves config values to the config file to app.config or the user supplied name.
+		Saves config values to the config file to fileName.
+
+		Params:
+			fileName = The name of the file to save to.
+	*/
+	void save(const string fileName)
+	{
+		configFileName_ = fileName;
+		save();
+	}
+
+	/**
+		Saves config values to the config file.
 	*/
 	void save()
 	{
