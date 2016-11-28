@@ -205,10 +205,11 @@ struct StructOptions(T)
 	alias asBoolean = as!bool;
 	alias get = as;
 
+	T data_;
+
 private:
 	string configFileName_;
 	bool autoSave_;
-	T data_;
 }
 
 ///
