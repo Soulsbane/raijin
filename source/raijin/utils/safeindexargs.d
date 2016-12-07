@@ -110,6 +110,7 @@ struct SafeIndexArgs
 	private size_t currentIndex_;
 
 	alias args_ this; // Allows usage of Array members outside of SafeIndexArgs.
+	alias as = get;
 
 	/// Gets the value and converts it to a bool.
 	alias asBoolean = get!bool;
@@ -151,6 +152,7 @@ unittest
 	assert(approxEqual(args.get!double(4, 3.5), 3.5));
 	assert(approxEqual(args.get!double(4), 0.0));
 	assert(approxEqual(args.asDecimal(3, 3.5), 4.44)); //Syntatic sugar
+	assert(approxEqual(args.as!float(3, 3.5), 4.44)); // Or just use as! for the exact type.
 
 	string[] zeroArgs;
 	SafeIndexArgs safeZeroArgs = SafeIndexArgs(zeroArgs);
