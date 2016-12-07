@@ -8,5 +8,6 @@ public
 	import raijin.utils.getoptmixin;
 	import raijin.utils.path;
 	import raijin.utils.process;
+	import raijin.utils.safeindexargs;
 	import raijin.utils.string;
 }
