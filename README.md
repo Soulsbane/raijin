@@ -1,6 +1,6 @@
 ##Summary
 
-This is a multipurpose library for the D Programming Language(DLang). It is very much in its early stages and should not be considered stable. Function names, number of parameters to a function etc can change at any time.
+Raijin is a testbed for various DLang functions, classes etc. It is very much in state of constant flux and should not be considered stable. Function names, number of parameters to a function etc can change at any time. Most of the functionality will be broken off into there own module at some point whey they are stable enough.
 
 ##Documentation
 Documentation can be found [here.](http://soulsbane.github.io/projects/docs/raijin/)
