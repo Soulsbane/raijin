@@ -132,7 +132,7 @@ unittest
 	auto arguments = ["testapp", "-flag", "true", "4.44"];
 	SafeIndexArgs args = SafeIndexArgs(arguments);
 
-	/*assert(args.get(1) == "-flag");
+	assert(args.get(1) == "-flag");
 	assert(args.get(8, "defaultValue") == "defaultValue");
 	assert(args.get(8) == "");
 	assert(args.get(8, true) == true);
@@ -150,11 +150,15 @@ unittest
 	assert(approxEqual(args.get!double(3, 3.5), 4.44));
 	assert(approxEqual(args.get!double(4, 3.5), 3.5));
 	assert(approxEqual(args.get!double(4), 0.0));
-	assert(approxEqual(args.asDecimal(3, 3.5), 4.44)); //Syntatic sugar*/
+	assert(approxEqual(args.asDecimal(3, 3.5), 4.44)); //Syntatic sugar
 
 	string[] zeroArgs;
 	SafeIndexArgs safeZeroArgs = SafeIndexArgs(zeroArgs);
 
 	assert(safeZeroArgs.get(1) == string.init);
 	assert(safeZeroArgs.get(0) == string.init);
+
+	assert(safeZeroArgs.peek() == string.init);
+	assert(safeZeroArgs.get(1) == string.init);
+	assert(safeZeroArgs.peek() == string.init);
 }
