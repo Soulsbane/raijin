@@ -5,7 +5,11 @@
 module raijin.utils.safeindexargs;
 
 import std.container;
-import std.conv;
+import std.traits : isFloatingPoint;
+import std.math : isNaN;
+
+import raijin.utils.debugtools;
+import raijin.types.functions;
 
 /**
 	Ensures that the defaultValue will have a value if it's of a floating point type.
@@ -16,11 +20,8 @@ import std.conv;
 	Returns:
 		The converted value.
 */
-T initDefaultValue(T = string)(T defaultValue = T.init)
+T initDefaultValue(T = string)(const T defaultValue = T.init)
 {
-	import std.traits : isFloatingPoint;
-	import std.conv : to;
-	import std.math : isNaN;
 
 	T value = defaultValue;
 
@@ -44,7 +45,14 @@ struct SafeIndexArgs
 	{
 		if(args.length > 0)
 		{
-			args_ = make!Array(args[1..$]); // Initialize and remove program name from arguments.
+			if(args.length == 1)
+			{
+				args_ = make!Array(args[0..1]); // Initialize and remove program name from arguments.
+			}
+			else
+			{
+				args_ = make!Array(args[1..$]); // Initialize and remove program name from arguments.
+			}
 		}
 	}
 
@@ -58,26 +66,34 @@ struct SafeIndexArgs
 		Returns:
 			The value of the command line argument at index or defaultValue otherwise.
 	*/
-	T get(T = string)(const size_t index, T defaultValue = T.init) @safe
+	T get(T = string)(const size_t index, const T defaultValue = T.init) @safe
 	{
 		T value = defaultValue.initDefaultValue();
 
-		if(args_.length >= index)
+		switch(args_.length)
 		{
-			// We have to subtract index by one here since the array is 0 based but length is only the number of values passed.
-			if(index == 0)
-			{
+			case 0:
 				return value;
-			}
-			else
-			{
-				value = to!T(args_[index - 1]);
-			}
 
-			currentIndex_ = index;
+			case 1:
+				if(index == 0)
+				{
+					currentIndex_ = 0;
+					return convertTo!T(args_[0], value);
+				}
+
+				return value;
+
+			default:
+				if(args_.length >= index)
+				{
+					currentIndex_ = index;
+					return convertTo!T(args_[index - 1], value);
+				}
+
+				return value;
 		}
 
-		return value;
 	}
 
 	/**
@@ -90,21 +106,13 @@ struct SafeIndexArgs
 			The value of the command line argument at index or defaultValue otherwise.
 			The next index after a get! call or defaultValue otherwise.
 	*/
-	T peek(T = string)(T defaultValue = T.init) @safe
+	T peek(T = string)(const T defaultValue = T.init) @safe
 	{
 		size_t index = currentIndex_ + 1;
 		T value = defaultValue.initDefaultValue();
 
-		if(args_.length >= index)
-		{
-			// We have to subtract index by one here since the array is 0 based but length is only the number of values passed.
-			value = to!T(args_[index - 1]);
-		}
-
-		return value;
+		return get!T(index, defaultValue);
 	}
-
-	///TODO: Add next method.
 
 	Array!string args_;
 	private size_t currentIndex_;
@@ -128,7 +136,7 @@ struct SafeIndexArgs
 ///
 unittest
 {
-	import std.stdio : writeln;
+	import std.stdio : writeln, write;
 	writeln("<=====================Beginning safeindexargs module=====================>");
 	auto arguments = ["testapp", "-flag", "true", "4.44"];
 	SafeIndexArgs args = SafeIndexArgs(arguments);
@@ -144,7 +152,7 @@ unittest
 	assert(args.get!bool(2, false) == true);
 	assert(args.get!string(1) == "-flag");
 	assert(args.peek!bool(false) == true);
-	assert(args.peek(false) == true); // Make sure peek doesn't modify currentIndex_;
+	assert(args.peek(false) == false);
 
 	import std.math : approxEqual;
 
@@ -163,4 +171,10 @@ unittest
 	assert(safeZeroArgs.peek() == string.init);
 	assert(safeZeroArgs.get(1) == string.init);
 	assert(safeZeroArgs.peek() == string.init);
+
+	string[] oneArg = ["cat"];
+	SafeIndexArgs safeOneArg = SafeIndexArgs(oneArg);
+
+	assert(safeOneArg.get(1) == string.init);
+	assert(safeOneArg.get(0) == "cat");
 }
