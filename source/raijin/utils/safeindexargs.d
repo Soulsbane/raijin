@@ -20,7 +20,7 @@ import raijin.types.functions;
 	Returns:
 		The converted value.
 */
-T initDefaultValue(T = string)(const T defaultValue = T.init) @safe
+private T initDefaultValue(T = string)(const T defaultValue = T.init) @safe
 {
 
 	T value = defaultValue;
