@@ -106,7 +106,7 @@ struct SafeIndexArgs
 			The value of the command line argument at index or defaultValue otherwise.
 			The next index after a get! call or defaultValue otherwise.
 	*/
-	T peek(T = string)(const T defaultValue = T.init) @safe
+	T next(T = string)(const T defaultValue = T.init) @safe
 	{
 		size_t index = currentIndex_ + 1;
 		T value = defaultValue.initDefaultValue();
@@ -131,6 +131,8 @@ struct SafeIndexArgs
 
 	/// Gets the value and converts it to a string.
 	alias asString = get!string;
+
+	alias peek = next;
 }
 
 ///
@@ -151,8 +153,8 @@ unittest
 	assert(args.get!bool(8, true) == true);
 	assert(args.get!bool(2, false) == true);
 	assert(args.get!string(1) == "-flag");
-	assert(args.peek!bool(false) == true);
-	assert(args.peek(false) == false);
+	assert(args.next!bool(false) == true);
+	assert(args.next(false) == false);
 
 	import std.math : approxEqual;
 
@@ -168,9 +170,9 @@ unittest
 	assert(safeZeroArgs.get(1) == string.init);
 	assert(safeZeroArgs.get(0) == string.init);
 
-	assert(safeZeroArgs.peek() == string.init);
+	assert(safeZeroArgs.next() == string.init);
 	assert(safeZeroArgs.get(1) == string.init);
-	assert(safeZeroArgs.peek() == string.init);
+	assert(safeZeroArgs.next() == string.init);
 
 	string[] oneArg = ["cat"];
 	SafeIndexArgs safeOneArg = SafeIndexArgs(oneArg);
