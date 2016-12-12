@@ -133,6 +133,9 @@ public:
 	*/
 	auto execute(const string[] args...)
 	{
+		// TODO: Add muliple options for phases.
+		//phases_ = ["◑", "◒", "◐", "◓"];
+		phases_ = ["○", "◔", "◑", "◕", "●"];
 		timer_ = new RepeatingTimer;
 		timer_.setCallBack("onTimer", &onStatusUpdate);
 
@@ -151,13 +154,14 @@ public:
 private:
 	void onStatusUpdate()
 	{
-		if(tickCount_ > 5)
+		if(tickCount_ == phases_.length)
 		{
 			clearLine();
 			tickCount_ = 0;
 		}
 
-		write(".");
+		clearLine();
+		write(phases_[tickCount_]);
 		stdout.flush();
 		++tickCount_;
 	}
@@ -169,7 +173,8 @@ private:
 	}
 
 private:
+	string[] phases_;
 	RepeatingTimer timer_;
 	ProcessReturnType process_;
-	size_t tickCount_ = 1;
+	size_t tickCount_;
 }
