@@ -133,13 +133,12 @@ public:
 	*/
 	auto execute(const string[] args...)
 	{
-		// TODO: Add muliple options for phases.
-		//phases_ = ["◑", "◒", "◐", "◓"];
-		phases_ = ["○", "◔", "◑", "◕", "●"];
+		phases_ = phaseTypes_[1];
 		timer_ = new RepeatingTimer;
 		timer_.setCallBack("onTimer", &onStatusUpdate);
 
 		auto pipes = pipeProcess(args);
+
 		timer_.start(dur!("msecs")(500));
 
 		auto exitStatus = wait(pipes.pid);
@@ -163,6 +162,7 @@ private:
 		clearLine();
 		write(phases_[tickCount_]);
 		stdout.flush();
+
 		++tickCount_;
 	}
 
@@ -176,4 +176,13 @@ private:
 	string[] phases_;
 	RepeatingTimer timer_;
 	size_t tickCount_;
+
+	string[][] phaseTypes_ =
+	[
+		["◑", "◒", "◐", "◓"],
+		["○", "◔", "◑", "◕", "●"],
+		["-", "\\", "|", "/"],
+		["◷", "◶", "◵", "◴"],
+		["⎺", "⎻", "⎼", "⎽", "⎼", "⎻"]
+	];
 }
