@@ -175,6 +175,5 @@ private:
 private:
 	string[] phases_;
 	RepeatingTimer timer_;
-	ProcessReturnType process_;
 	size_t tickCount_;
 }
