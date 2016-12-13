@@ -104,7 +104,7 @@ unittest
 auto waitForApplication(const size_t phaseType, const string[] args...)
 {
 	ProcessWait process;
-	auto exitStatus = process.execute(phaseType, args);
+	immutable auto exitStatus = process.execute(phaseType, args);
 
 	return exitStatus;
 }
@@ -142,7 +142,7 @@ public:
 		hideCursor();
 		timer_.start(dur!("msecs")(500));
 
-		auto exitStatus = wait(pipes.pid);
+		immutable auto exitStatus = wait(pipes.pid);
 
 		timer_.stop();
 
