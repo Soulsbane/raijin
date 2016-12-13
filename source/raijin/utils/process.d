@@ -101,10 +101,10 @@ unittest
 		Returns:
 			The same value as $(LINK2 http://dlang.org/phobos/std_process.html#.wait, std.process.wait).
 */
-auto waitForApplication(const string[] args...)
+auto waitForApplication(const size_t phaseType, const string[] args...)
 {
 	ProcessWait process;
-	auto exitStatus = process.execute(args);
+	auto exitStatus = process.execute(phaseType, args);
 
 	return exitStatus;
 }
@@ -112,7 +112,7 @@ auto waitForApplication(const string[] args...)
 ///
 unittest
 {
-	waitForApplication("ls");
+	waitForApplication(0, "ls");
 }
 
 /// Provides a progress indicator while waiting for the spawned process to complete.
@@ -131,9 +131,9 @@ public:
 		Returns:
 			The same value as $(LINK2 http://dlang.org/phobos/std_process.html#.wait, std.process.wait).
 	*/
-	auto execute(const string[] args...)
+	auto execute(const size_t phaseType, const string[] args...)
 	{
-		phases_ = phaseTypes_[1];
+		phases_ = phaseTypes_[phaseType];
 		timer_ = new RepeatingTimer;
 		timer_.setCallBack("onTimer", &onStatusUpdate);
 
@@ -196,7 +196,8 @@ private:
 		["○", "◔", "◑", "◕", "●"],
 		["-", "\\", "|", "/"],
 		["◷", "◶", "◵", "◴"],
-		["⎺", "⎻", "⎼", "⎽", "⎼", "⎻"]
+		["⎻", "⎼", "⎽", "⎼", "⎻"],
+		["▁", "▂", "▃", "▄", "▅", "▆", "▇", "█"]
 	];
 
 	immutable SHOW_CURSOR = "\x1b[?25h";
