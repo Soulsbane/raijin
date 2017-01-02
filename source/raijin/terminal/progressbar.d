@@ -8,6 +8,8 @@ import std.math;
 import std.conv;
 import std.range;
 
+import raijin.terminal.cursor;
+
 ///Handles the creation of a progressbar.
 struct ProgressBar
 {
@@ -43,6 +45,7 @@ struct ProgressBar
 		immutable auto percents = round(100.00 * (iteration / to!float(total_)));
 		immutable auto bar = to!string('█'.repeat(filledLength)) ~ to!string('░'.repeat(barLength_ - filledLength));
 
+		hideCursor();
 		writef("\r%s %s %s%s %s", prefix_, bar, percents, '%', suffix_);
 		stdout.flush;
 
@@ -50,6 +53,7 @@ struct ProgressBar
 		{
 			clearLine();
 			writeln;
+			showCursor();
 		}
 	}
 
