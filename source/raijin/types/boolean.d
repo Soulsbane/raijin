@@ -86,7 +86,7 @@ public:
 		return typeid(boolean_).getHash(&boolean_);
 	}
 
-	alias asBoolean this;
+	alias boolean_ this;
 
 private:
 	bool boolean_;
