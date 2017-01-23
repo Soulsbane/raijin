@@ -13,7 +13,7 @@ import std.container : Array;
 import std.regex : Regex, ctRegex, matchFirst;
 import std.algorithm : each;
 
-private Regex!char RECORD_FIELD_REGEX = ctRegex!(`\s+(?P<key>\w+)\s{1,1}(?P<value>.*)`);
+private auto RECORD_FIELD_REGEX = ctRegex!(`\s+(?P<key>\w+)\s{1,1}(?P<value>.*)`);
 
 /**
 	Manages a record format.
