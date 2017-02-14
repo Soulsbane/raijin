@@ -7,7 +7,6 @@
 module raijin.appconfig;
 
 import raijin.types.dynamic;
-import raijin.utils.file;
 import raijin.keyvalueconfig;
 import raijin.configpath : ConfigPath;
 import std.path : buildNormalizedPath;
@@ -19,6 +18,22 @@ import std.file : exists;
 struct AppConfig
 {
 private:
+
+	bool ensureFileExists(const string fileName, const string defaultData = string.init)
+	{
+		if(!fileName.exists)
+		{
+			import std.stdio : File;
+			auto f = File(fileName, "w+");
+
+			if(defaultData != string.init)
+			{
+				f.write(defaultData);
+			}
+		}
+
+		return fileName.exists;
+	}
 
 	/**
 		Loads app.config file and populates it with defaultConfigFileData if app.config isn't found.

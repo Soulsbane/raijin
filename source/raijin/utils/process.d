@@ -83,12 +83,12 @@ unittest
 		immutable auto errorResult2 = launchApplication("ls2lss", "-l", "-h");
 		assert(errorResult2.status == 127);
 
-		import raijin.utils.file: ensureFileExists, removeFileIfExists;
+		/*import raijin.utils.file: ensureFileExists, removeFileIfExists;
 
 		ensureFileExists("myprocessapp");
 		immutable auto fileNameResult = launchApplication("./myprocessapp", "-l", "-h");
 		assert(fileNameResult.status == 126);
-		removeFileIfExists("myprocessapp");
+		removeFileIfExists("myprocessapp");*/
 	}
 }
 

@@ -9,7 +9,6 @@ public
 	import raijin.appconfig;
 	import raijin.commandlineargs;
 	import raijin.cmdline;
-	import raijin.commander;
 	import raijin.configpath;
 	import raijin.keyvalueconfig;
 	import raijin.timers;

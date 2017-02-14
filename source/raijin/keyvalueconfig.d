@@ -697,7 +697,16 @@ unittest
 	config["aBool"] = true;
 	assert(config["aBool"].asString == "true");
 
-	import raijin.utils.file : removeFileIfExists;
+	bool removeFileIfExists(const string fileName)
+	{
+		if(fileName.exists)
+		{
+			fileName.remove;
+		}
+
+		return !fileName.exists;
+	}
+
 	immutable fileName = "custom-config-format.dat";
 
 	removeFileIfExists(fileName);
