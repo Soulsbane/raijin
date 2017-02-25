@@ -6,11 +6,12 @@
 
 module raijin.appconfig;
 
-import raijin.types.dynamic;
-import raijin.keyvalueconfig;
-import raijin.configpath : ConfigPath;
 import std.path : buildNormalizedPath;
 import std.file : exists;
+
+import raijin.types.dynamic;
+import raijin.keyvalueconfig;
+import dpathutils.config;
 
 /**
 	This class combines the functionality of KeyValueConfig and ConfigPath into one class.
@@ -46,7 +47,7 @@ private:
 	*/
 	bool loadConfigFile(const string defaultConfigFileData = string.init)
 	{
-		immutable string configFilePath = buildNormalizedPath(configPath_.getConfigDir("config"), "app.config");
+		immutable string configFilePath = buildNormalizedPath(configPath_.getDir("config"), "app.config");
 
 
 		ensureFileExists(configFilePath, defaultConfigFileData);
@@ -82,8 +83,8 @@ public:
 	{
 		configPath_.create(organizationName, applicationName);
 
-		configPath_.createConfigDir("config");
-		configPath_.createConfigDir("assets");
+		configPath_.createDir("config");
+		configPath_.createDir("assets");
 
 		loadConfigFile(defaultConfigFileData);
 	}
@@ -155,18 +156,18 @@ unittest
 	AppConfig config;
 
 	config.create("DlangUnitOrg", "AppConfigUnitTest", data);
-	writeln(config.path.getAppConfigDir());
+	writeln(config.path.getAppDir());
 	assert(config.asString("key") == "value");
 
-	config.path.removeAllConfigDirs();
+	config.path.removeAllDirs();
 
 	AppConfig config2 = AppConfig("DlangUnitOrg", "AppConfigUnitTest", data);
 
-	writeln(config2.path.getAppConfigDir());
-	writeln(config2.getAppConfigDir()); // Sugar! Uses opDispatch.
+	writeln(config2.path.getAppDir());
+	writeln(config2.getAppDir()); // Sugar! Uses opDispatch.
 
 	assert(config2.config["key"] == "value");
 	assert(config2.asString("key") == "value"); // Sugar! Uses opDispatch.
 
-	config2.path.removeAllConfigDirs();
+	config2.path.removeAllDirs();
 }
