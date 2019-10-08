@@ -1,6 +1,6 @@
 ## Summary
-This module is no longer maintained. Most the the functionality has been broken off into their own separate
-modules.
+This collection of modules are no longer maintained. Most of the functionality has been broken off into their own
+packages(libraries).
 
 ## Documentation
 Documentation can be found [here.](http://soulsbane.github.io/projects/docs/raijin/)
